@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGALd.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib"
+				AdditionalDependencies="SGALd.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
 				OutputFile="$(ProjectName)d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGAL.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib"
+				AdditionalDependencies="SGAL.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
 				OutputFile="$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
@@ -218,7 +218,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGALd64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib"
+				AdditionalDependencies="SGALd64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
 				GenerateDebugInformation="true"
@@ -294,7 +294,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGAL64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib"
+				AdditionalDependencies="SGAL64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
 				GenerateDebugInformation="true"
@@ -446,6 +446,122 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="UI"
+			>
+			<File
+				RelativePath="..\..\..\文件\KTSG\UI\DXUTUI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\文件\KTSG\UI\DXUTUI.h"
+				>
+			</File>
+			<Filter
+				Name="DXUT"
+				>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUT.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUT.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTcamera.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTcamera.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice11.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice11.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice9.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice9.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTgui.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTgui.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTguiIME.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTguiIME.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTLockFreePipe.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTmisc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTmisc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTres.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTres.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTsettingsdlg.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTsettingsdlg.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\ImeUi.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\ImeUi.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmesh.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmisc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmisc.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

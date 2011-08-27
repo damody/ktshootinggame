@@ -7,6 +7,8 @@
 #include <dwrite.h>
 #include "Timer.h"
 
+#include "../ui/DXUTUI.h"
+
 class D3DApp
 {
 public:
@@ -48,6 +50,8 @@ protected:
 	D3D_FEATURE_LEVEL  FeatureLevelsSupported;
 	ID3D11DeviceContext* mDeviceContext;
 
+	DXUTUI* m_DXUT_UI;
+
 	// Derived class should set these in derived constructor to customize starting values.
 	std::wstring mMainWndCaption;
 	D3D_DRIVER_TYPE md3dDriverType;
@@ -55,9 +59,6 @@ protected:
 	int mClientWidth;
 	int mClientHeight;
 
-	//second windows
-	HINSTANCE mhMAppInst;
-	HWND      mhMWnd;
 };
 
 

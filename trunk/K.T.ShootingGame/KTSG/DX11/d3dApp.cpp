@@ -1,5 +1,5 @@
 #include "d3dApp.h"
-
+#include "../ui/dxut/DXUT.h"
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -37,6 +37,7 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	mDepthStencilBuffer = 0;
 	mRenderTargetView   = 0;
 	mDepthStencilView   = 0;
+	m_DXUT_UI = NULL;
 	//mFont               = 0;
 
 	mMainWndCaption = L"D3D11 Application";
@@ -54,6 +55,8 @@ D3DApp::~D3DApp()
 	ReleaseCOM(mSwapChain);
 	ReleaseCOM(mDepthStencilBuffer);
 	ReleaseCOM(md3dDevice);
+	if (m_DXUT_UI)
+		delete m_DXUT_UI;
 	//	ReleaseCOM(mFont);
 }
 HINSTANCE D3DApp::getAppInst()
@@ -73,46 +76,53 @@ void D3DApp::initApp()
 
 void D3DApp::initDirect3D()
 {
-	// Fill out a DXGI_SWAP_CHAIN_DESC to describe our swap chain.
-	DXGI_SWAP_CHAIN_DESC sd;
-	sd.BufferDesc.Width  = mClientWidth;
-	sd.BufferDesc.Height = mClientHeight;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-	// No multisampling.
-	sd.SampleDesc.Count   = 1;
-	sd.SampleDesc.Quality = 0;
-	sd.BufferUsage  = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount  = 1;
-	sd.OutputWindow = mhMainWnd;
-	sd.Windowed     = true;
-	sd.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags        = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH ;
-
-	// Create the device.
-	UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG;
-	D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
-	UINT               numLevelsRequested = 1;
-	HR( D3D11CreateDeviceAndSwapChain(
-		0,                 //default adapter
-		md3dDriverType,
-		0,                 // no software device
-		createDeviceFlags,
-		&FeatureLevelsRequested, 
-		numLevelsRequested,
-		D3D11_SDK_VERSION,
-		&sd,
-		&mSwapChain,
-		&md3dDevice,
-		&FeatureLevelsSupported,
-		&mDeviceContext) );
+// 	// Fill out a DXGI_SWAP_CHAIN_DESC to describe our swap chain.
+// 	DXGI_SWAP_CHAIN_DESC sd;
+// 	sd.BufferDesc.Width  = mClientWidth;
+// 	sd.BufferDesc.Height = mClientHeight;
+// 	sd.BufferDesc.RefreshRate.Numerator = 60;
+// 	sd.BufferDesc.RefreshRate.Denominator = 1;
+// 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+// 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+// 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+// 
+// 	// No multisampling.
+// 	sd.SampleDesc.Count   = 1;
+// 	sd.SampleDesc.Quality = 0;
+// 	sd.BufferUsage  = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+// 	sd.BufferCount  = 1;
+// 	sd.OutputWindow = mhMainWnd;
+// 	sd.Windowed     = true;
+// 	sd.SwapEffect   = DXGI_SWAP_EFFECT_DISCARD;
+// 	sd.Flags        = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH ;
+// 
+// 	// Create the device.
+// 	UINT createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG;
+// 	D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
+// 	UINT               numLevelsRequested = 1;
+// 	HR( D3D11CreateDeviceAndSwapChain(
+// 		0,                 //default adapter
+// 		md3dDriverType,
+// 		0,                 // no software device
+// 		createDeviceFlags,
+// 		&FeatureLevelsRequested, 
+// 		numLevelsRequested,
+// 		D3D11_SDK_VERSION,
+// 		&sd,
+// 		&mSwapChain,
+// 		&md3dDevice,
+// 		&FeatureLevelsSupported,
+// 		&mDeviceContext) );
 	// The remaining steps that need to be carried out for d3d creation
 	// also need to be executed every time the window is resized.  So
 	// just call the onResize method here to avoid code duplication.
+	m_DXUT_UI = new DXUTUI;
+	m_DXUT_UI->InitDXUT();
+	m_DXUT_UI->SetWindow(mhMainWnd);
+	m_DXUT_UI->CreateDevice(mClientWidth, mClientHeight);
+	md3dDevice = m_DXUT_UI->GetDevice();
+	mDeviceContext = m_DXUT_UI->GetDeviceContext();
+	mSwapChain = m_DXUT_UI->GetSwapChaine();
 	onResize();
 }
 
@@ -121,25 +131,20 @@ void D3DApp::onResize()
 {
 	// Release the old views, as they hold references to the buffers we
 	// will be destroying.  Also release the old depth/stencil buffer.
-
 	ReleaseCOM(mRenderTargetView);
 	ReleaseCOM(mDepthStencilView);
 	ReleaseCOM(mDepthStencilBuffer);
-
+	DXUTResizeDXGIBuffers(mClientWidth, mClientHeight, 0);
 
 	// Resize the swap chain and recreate the render target view.
-
-	HR(mSwapChain->ResizeBuffers(1, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+	//HR(mSwapChain->ResizeBuffers(2, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 0));
 	ID3D11Texture2D* backBuffer;
 	HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
 	HR(md3dDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
 	ReleaseCOM(backBuffer);
 
-
 	// Create the depth/stencil buffer and view.
-
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
-
 	depthStencilDesc.Width     = mClientWidth;
 	depthStencilDesc.Height    = mClientHeight;
 	depthStencilDesc.MipLevels = 1;
@@ -151,10 +156,8 @@ void D3DApp::onResize()
 	depthStencilDesc.BindFlags      = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0; 
 	depthStencilDesc.MiscFlags      = 0;
-
 	HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &mDepthStencilBuffer));
 	HR(md3dDevice->CreateDepthStencilView(mDepthStencilBuffer, 0, &mDepthStencilView));
-
 
 	// Bind the render target view and depth/stencil view to the pipeline.
 
@@ -172,6 +175,7 @@ void D3DApp::onResize()
 	vp.MaxDepth = 1.0f;
 
 	mDeviceContext->RSSetViewports(1, &vp);
+	
 }
 void D3DApp::drawScene()
 {
@@ -181,6 +185,8 @@ void D3DApp::drawScene()
 
 LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	if (m_DXUT_UI)
+		m_DXUT_UI->MsgProc(mhMainWnd, msg, wParam, lParam);
 	switch( msg )
 	{
 		// WM_ACTIVATE is sent when the window is activated or deactivated.  
@@ -287,9 +293,8 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_GETMINMAXINFO:
 		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200; 
-		return 0;
+		return 0;		
 	}
-
 	return DefWindowProc(mhMainWnd, msg, wParam, lParam);
 }
 void D3DApp::updateScene(float dt)
@@ -318,6 +323,7 @@ void D3DApp::updateScene(float dt)
 		frameCnt = 0;
 		t_base  += 1.0f;
 	}
+	
 }
 
 
