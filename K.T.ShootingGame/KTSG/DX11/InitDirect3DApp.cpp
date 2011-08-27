@@ -40,6 +40,8 @@ void InitDirect3DApp::onResize()
 void InitDirect3DApp::updateScene(float dt)
 {
 	D3DApp::updateScene(dt);
+	m_DXUT_UI->UpdataUI(dt);
+	mSwapChain->Present(0, 0);
 }
 
 void InitDirect3DApp::drawScene()
@@ -56,7 +58,7 @@ void InitDirect3DApp::drawScene()
 	UINT offset = 0;
 	mDeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
 	mDeviceContext->Draw(4, 0);
-	mSwapChain->Present(0, 0);
+	
 }
 
 void InitDirect3DApp::buildPointFX()
@@ -140,61 +142,3 @@ void InitDirect3DApp::buildPoint()
 	vinitData.pSysMem = &Vertex[0];
 	HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
 }
-
-/*
-void InitDirect3DApp::doSlice()
-{
-D3DX11_TECHNIQUE_DESC techDesc;
-mSlTech->GetDesc( &techDesc );
-mDeviceContext->IASetInputLayout(mSliceLayout);
-float slicevalue=0.1f;
-gCamera->pos()=D3DXVECTOR3(3.0f,3.0f,0.0f);
-
-for(int i=0;i<64;i++)
-{
-
-
-
-gCamera->setLens(D3DX_PI * 0.25f, (float)mClientWidth/mClientHeight, i*slicevalue+0.0001f,(i+1)*slicevalue);
-
-mTest.beginArray(i);
-mSlWVPVar->SetMatrix((float*)&(gCamera->viewProj()));
-for(UINT p = 0; p < techDesc.Passes; ++p)
-{
-
-mSlTech->GetPassByIndex( p )->Apply(0,mDeviceContext);
-
-mSphere.draw();
-}
-
-
-}
-
-
-}
-*/
-
-
-//mfxWorldVar->SetMatrix((float*)&mCrateWorld);
-//	mfxWVPVar->SetMatrix((float*)&(mCrateWorld* gCamera->viewProj()));
-
-//mTexTech->GetDesc( &techDesc );
-
-//doSlice();
-/*
-mTest.beginArray(1);
-mSlTech->GetDesc( &techDesc );
-mDeviceContext->IASetInputLayout(mSliceLayout);
-
-
-
-mSlWVPVar->SetMatrix((float*)&(mCrateWorld*gCamera->viewProj()));
-for(UINT p = 0; p < techDesc.Passes; ++p)
-{
-mSlTech->GetPassByIndex( p )->Apply(0,mDeviceContext);
-
-mSphere.draw();
-
-}
-*/
-//mTest.end();
