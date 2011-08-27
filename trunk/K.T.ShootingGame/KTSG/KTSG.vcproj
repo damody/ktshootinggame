@@ -95,6 +95,81 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\ShootingGameAlgorithmLibrary\include"
+				PreprocessorDefinitions="WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="SGALd64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
@@ -149,81 +224,6 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\ShootingGameAlgorithmLibrary\include"
-				PreprocessorDefinitions="WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="SGALd64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -451,114 +451,114 @@
 			Name="UI"
 			>
 			<File
-				RelativePath="..\..\..\文件\KTSG\UI\DXUTUI.cpp"
+				RelativePath=".\UI\DXUTUI.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\文件\KTSG\UI\DXUTUI.h"
+				RelativePath=".\UI\DXUTUI.h"
 				>
 			</File>
 			<Filter
 				Name="DXUT"
 				>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUT.cpp"
+					RelativePath=".\UI\DXUT\DXUT.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUT.h"
+					RelativePath=".\UI\DXUT\DXUT.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTcamera.cpp"
+					RelativePath=".\UI\DXUT\DXUTcamera.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTcamera.h"
+					RelativePath=".\UI\DXUT\DXUTcamera.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice11.cpp"
+					RelativePath=".\UI\DXUT\DXUTDevice11.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice11.h"
+					RelativePath=".\UI\DXUT\DXUTDevice11.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice9.cpp"
+					RelativePath=".\UI\DXUT\DXUTDevice9.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTDevice9.h"
+					RelativePath=".\UI\DXUT\DXUTDevice9.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTgui.cpp"
+					RelativePath=".\UI\DXUT\DXUTgui.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTgui.h"
+					RelativePath=".\UI\DXUT\DXUTgui.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTguiIME.cpp"
+					RelativePath=".\UI\DXUT\DXUTguiIME.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTguiIME.h"
+					RelativePath=".\UI\DXUT\DXUTguiIME.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTLockFreePipe.h"
+					RelativePath=".\UI\DXUT\DXUTLockFreePipe.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTmisc.cpp"
+					RelativePath=".\UI\DXUT\DXUTmisc.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTmisc.h"
+					RelativePath=".\UI\DXUT\DXUTmisc.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTres.cpp"
+					RelativePath=".\UI\DXUT\DXUTres.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTres.h"
+					RelativePath=".\UI\DXUT\DXUTres.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTsettingsdlg.cpp"
+					RelativePath=".\UI\DXUT\DXUTsettingsdlg.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\DXUTsettingsdlg.h"
+					RelativePath=".\UI\DXUT\DXUTsettingsdlg.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\ImeUi.cpp"
+					RelativePath=".\UI\DXUT\ImeUi.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\ImeUi.h"
+					RelativePath=".\UI\DXUT\ImeUi.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmesh.cpp"
+					RelativePath=".\UI\DXUT\SDKmesh.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmesh.h"
+					RelativePath=".\UI\DXUT\SDKmesh.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmisc.cpp"
+					RelativePath=".\UI\DXUT\SDKmisc.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\文件\KTSG\UI\DXUT\SDKmisc.h"
+					RelativePath=".\UI\DXUT\SDKmisc.h"
 					>
 				</File>
 				<File
