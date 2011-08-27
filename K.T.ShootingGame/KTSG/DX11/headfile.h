@@ -28,7 +28,7 @@
 		HRESULT hr = x;                                \
 		if(FAILED(hr))                                 \
 		{                                              \
-		DXTraceW(_T(__FILE__), __LINE__, hr, L#x, TRUE); \
+		DXTrace(__FILE__, __LINE__, hr, _T(#x), TRUE); \
 		}                                              \
 	}
 	#endif
