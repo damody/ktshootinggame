@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGALd.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
+				AdditionalDependencies="SGALd.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
 				OutputFile="$(ProjectName)d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGAL.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
+				AdditionalDependencies="SGAL.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
 				OutputFile="$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
@@ -218,7 +218,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGALd64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
+				AdditionalDependencies="SGALd64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
 				GenerateDebugInformation="true"
@@ -294,7 +294,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SGAL64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib"
+				AdditionalDependencies="SGAL64.lib D3DX11Effects64.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
 				GenerateDebugInformation="true"
@@ -559,6 +559,22 @@
 				</File>
 				<File
 					RelativePath="..\..\..\¤å¥ó\KTSG\UI\DXUT\SDKmisc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UI\DXUT\SDKsound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UI\DXUT\SDKsound.h"
+					>
+				</File>
+				<File
+					RelativePath=".\UI\DXUT\SDKwavefile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\UI\DXUT\SDKwavefile.h"
 					>
 				</File>
 			</Filter>
