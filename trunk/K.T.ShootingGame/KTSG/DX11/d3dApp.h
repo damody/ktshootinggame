@@ -7,7 +7,7 @@
 #include <dwrite.h>
 #include "Timer.h"
 
-#include "../ui/DXUTUI.h"
+#include "ui/DXUTUI.h"
 
 class D3DApp
 {
@@ -21,7 +21,7 @@ public:
 	virtual void initApp();
 	virtual void onResize();// reset projection/etc
 	virtual void updateScene(float dt);
-	virtual void drawScene(); 
+	virtual void DrawScene(); 
 	virtual LRESULT msgProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
 protected:
