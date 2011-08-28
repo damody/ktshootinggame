@@ -1,14 +1,11 @@
 
 cbuffer cbPerFrame
 {
-	float4x4 gWVP;
 	float width;
 	float height;
 	float time;
 };
  
-// Nonnumeric values cannot be added to a cbuffer.
-TextureCube gCubeMap;
 Texture2D gMap;
 SamplerState gTriLinearSam
 {
@@ -21,15 +18,15 @@ struct VS_IN
 {
 	float3 position: POSITION;
 	float2 size: SIZE;
-	float angle : PI;
+	float  angle : PI;
 	float3 direction : DIR;
 };
 
 struct VS_OUT
 {
-	float4 pos : SV_POSITION;
-	float2 size : TEXCOORD0;
-	float angle : TEXCOORD1;
+	float4 pos   : SV_POSITION;
+	float2 size  : TEXCOORD0;
+	float  angle : TEXCOORD1;
 };
 
 struct GS_OUT
@@ -82,10 +79,11 @@ void gs_main(point VS_OUT input[1], inout TriangleStream<GS_OUT> triStream)
 	triStream.RestartStrip( );
 }
 
-
 float4 PS(GS_OUT pIn) : SV_Target
 {
 	float4 color=gMap.Sample( gTriLinearSam, pIn.texcoord );
+	//discard;
+	//color.a = color.r;
 	return color;
 }
 
