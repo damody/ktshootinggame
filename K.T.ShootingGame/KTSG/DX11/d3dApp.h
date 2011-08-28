@@ -7,6 +7,8 @@
 
 #include "ui/DXUTUI.h"
 
+extern ID3D11Device* g_d3dDevice;
+
 class D3DApp
 {
 public:
@@ -28,32 +30,32 @@ protected:
 	
 protected:
 
-	HINSTANCE mhAppInst;
+	HINSTANCE m_hAppInst;
 
-	HWND      mhMainWnd;
-	bool      mAppPaused;
-	bool      mMinimized;
-	bool      mMaximized;
-	bool      mResizing;
+	HWND      m_hMainWnd;
+	bool      m_AppPaused;
+	bool      m_Minimized;
+	bool      m_Maximized;
+	bool      m_Resizing;
 
-	GameTimer mTimer;
+	GameTimer m_Timer;
 
-	std::wstring mFrameStats;
+	std::wstring m_FrameStats;
  
-	ID3D11Device*    md3dDevice;
-	IDXGISwapChain*  mSwapChain;
-	ID3D11Texture2D* mDepthStencilBuffer;
-	ID3D11RenderTargetView* mRenderTargetView;
-	ID3D11DepthStencilView* mDepthStencilView;
-	D3D_FEATURE_LEVEL  FeatureLevelsSupported;
-	ID3D11DeviceContext* mDeviceContext;
+	ID3D11Device*    m_d3dDevice;
+	IDXGISwapChain*  m_SwapChain;
+	ID3D11Texture2D* m_DepthStencilBuffer;
+	ID3D11RenderTargetView* m_RenderTargetView;
+	ID3D11DepthStencilView* m_DepthStencilView;
+	D3D_FEATURE_LEVEL  m_FeatureLevelsSupported;
+	ID3D11DeviceContext* m_DeviceContext;
 
 	DXUTUI* m_DXUT_UI;
 
 	// Derived class should set these in derived constructor to customize starting values.
-	std::wstring mMainWndCaption;
-	D3D_DRIVER_TYPE md3dDriverType;
-	D3DXCOLOR mClearColor;
+	std::wstring m_MainWndCaption;
+	D3D_DRIVER_TYPE m_d3dDriverType;
+	D3DXCOLOR m_ClearColor;
 	int mClientWidth;
 	int mClientHeight;
 

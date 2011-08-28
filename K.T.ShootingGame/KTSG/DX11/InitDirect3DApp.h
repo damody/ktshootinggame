@@ -4,6 +4,7 @@
 #include <d3dx11effect.h>
 #include "Vertex.h"
 #include "Lua/LuaCell.h"
+#include "TextureManager.h"
 
 class InitDirect3DApp : public D3DApp
 {
@@ -31,4 +32,5 @@ private:
 	ID3DX11EffectScalarVariable* m_Width ;
 	ID3DX11EffectScalarVariable* m_Height;
 	LuaCell		m_Lua;
+	TextureManager	m_TextureManager;
 };
