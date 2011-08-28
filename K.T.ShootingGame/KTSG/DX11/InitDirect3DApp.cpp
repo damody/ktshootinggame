@@ -22,6 +22,7 @@ void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
 	LoadResource();
+	LoadBlend();
 	D3DX11CreateShaderResourceViewFromFile(m_d3dDevice, _T("pic//crate.jpg"), 0, 0, &m_DiffuseMapRV, 0);
 	buildPointFX();
 	buildPoint();
@@ -47,6 +48,9 @@ void InitDirect3DApp::updateScene(float dt)
 
 void InitDirect3DApp::DrawScene()
 {
+	float BlendFactor[4] = {255,255,0,0};
+	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
+	m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
 	static float time = 0.0;
 	time += 0.01f;
 	D3DApp::DrawScene();
@@ -161,4 +165,49 @@ void InitDirect3DApp::LoadResource()
 		else
 			break;
 	}
+}
+
+void InitDirect3DApp::LoadBlend()
+{
+	D3D11_DEPTH_STENCIL_DESC depth_stencil_desc;
+	ZeroMemory(&depth_stencil_desc, sizeof(depth_stencil_desc));
+	depth_stencil_desc.DepthEnable = TRUE;
+	depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depth_stencil_desc.DepthFunc = D3D11_COMPARISON_LESS;
+	depth_stencil_desc.StencilEnable = FALSE;
+	depth_stencil_desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	depth_stencil_desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+	// 開啟zbuffer write
+	if ( D3D_OK != m_d3dDevice->CreateDepthStencilState(&depth_stencil_desc, &m_pDepthStencil_ZWriteON) )
+		return ;
+
+	depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+
+	// 關閉zbuffer write
+	if ( D3D_OK != m_d3dDevice->CreateDepthStencilState(&depth_stencil_desc, &m_pDepthStencil_ZWriteOFF) )
+		return ;
+
+	CD3D11_BLEND_DESCX blend_state_desc(
+		FALSE,
+		FALSE,
+		TRUE,
+		D3D11_BLEND_ONE,
+		D3D11_BLEND_ONE,
+		D3D11_BLEND_OP_ADD,
+		D3D11_BLEND_ONE,
+		D3D11_BLEND_ONE,
+		D3D11_BLEND_OP_ADD,
+		D3D11_COLOR_WRITE_ENABLE_ALL);
+	// ADD混色模式
+	if ( D3D_OK != m_d3dDevice->CreateBlendState(&blend_state_desc, &m_pBlendState_ADD) )
+		return;
+	blend_state_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA ;
+	blend_state_desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+
+	blend_state_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+	blend_state_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+
+	// Alpha Blend混色模式
+	if ( D3D_OK != m_d3dDevice->CreateBlendState(&blend_state_desc, &m_pBlendState_BLEND) )
+		return ;
 }
