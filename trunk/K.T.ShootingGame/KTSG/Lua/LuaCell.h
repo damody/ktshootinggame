@@ -48,7 +48,7 @@ public:
 	/// 設定lua中的變數，不可使用超過1024字元的可變字串
 	template <class T> void setLua(T data, const char* pathString, ...);
 	bool setLua_NewTable(const char* table);
-	bool IsLua_NotNil(const char* pathString);
+	bool CheckNotNil(const char* pathString, ...);
 private:
 	void 		setLua_Value_UsePath(const char* pathString, int type, void* data);
 	void*		getLua_Value_UsePath(const char* pathString, int type );

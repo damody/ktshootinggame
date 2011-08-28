@@ -13,15 +13,16 @@ InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 
 InitDirect3DApp::~InitDirect3DApp()
 {
-	if( mDeviceContext )
-		mDeviceContext->ClearState();
+	if( m_DeviceContext )
+		m_DeviceContext->ClearState();
 	ReleaseCOM(m_DiffuseMapRV);
 }
 
 void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
-	D3DX11CreateShaderResourceViewFromFile(md3dDevice, _T("pic//crate.jpg"), 0, 0, &m_DiffuseMapRV, 0);
+	LoadResource();
+	D3DX11CreateShaderResourceViewFromFile(m_d3dDevice, _T("pic//crate.jpg"), 0, 0, &m_DiffuseMapRV, 0);
 	buildPointFX();
 	buildPoint();
 	onResize();
@@ -41,7 +42,7 @@ void InitDirect3DApp::updateScene(float dt)
 {
 	D3DApp::updateScene(dt);
 	m_DXUT_UI->UpdataUI(dt);
-	mSwapChain->Present(0, 0);
+	m_SwapChain->Present(0, 0);
 }
 
 void InitDirect3DApp::DrawScene()
@@ -51,13 +52,13 @@ void InitDirect3DApp::DrawScene()
 	D3DApp::DrawScene();
 	m_Time->SetFloat(time);
 	m_PMap->SetResource(m_DiffuseMapRV);
-	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	mDeviceContext->IASetInputLayout(m_PLayout);
-	m_PTech->GetPassByIndex(0)->Apply(0,mDeviceContext);
+	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_DeviceContext->IASetInputLayout(m_PLayout);
+	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
 	UINT stride = sizeof(VertexPoint);
 	UINT offset = 0;
-	mDeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
-	mDeviceContext->Draw(4, 0);
+	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
+	m_DeviceContext->Draw(4, 0);
 	
 }
 
@@ -77,7 +78,7 @@ void InitDirect3DApp::buildPointFX()
 		}
 		DXTrace(__FILE__, __LINE__, hr, _T("D3DX10CreateEffectFromFile"), TRUE);
 	} 
-	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, md3dDevice, &m_TFX2));
+	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_TFX2));
 	m_PTech = m_TFX2->GetTechniqueByName("PointTech");
 	m_Width = m_TFX2->GetVariableByName("width")->AsScalar();
 	m_Height =m_TFX2->GetVariableByName("height")->AsScalar();
@@ -94,7 +95,7 @@ void InitDirect3DApp::buildPointFX()
 
 	D3DX11_PASS_DESC PassDesc;
 	m_PTech->GetPassByIndex(0)->GetDesc(&PassDesc);
-	HR(md3dDevice->CreateInputLayout(vertexDesc, 4, PassDesc.pIAInputSignature,
+	HR(m_d3dDevice->CreateInputLayout(vertexDesc, 4, PassDesc.pIAInputSignature,
 		PassDesc.IAInputSignatureSize, &m_PLayout));
 }
 
@@ -141,10 +142,23 @@ void InitDirect3DApp::buildPoint()
 
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &Vertex[0];
-	HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
+	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
 }
 
 void InitDirect3DApp::LoadResource()
 {
-	m_Lua.InputLuaFile(L"resource.lua");
+	m_Lua.InputLuaFile("resource.lua");
+	for (int i=1;;++i)
+	{
+		if (m_Lua.CheckNotNil("pic/%d/1", i))
+		{
+			int idx = m_Lua.getLua<int>("pic/%d/1", i);
+			const char* file = m_Lua.getLua<const char*>("pic/%d/2", i);
+			assert(file != 0);
+			int getidx = m_TextureManager.AddTexture(file, idx);
+			assert(getidx == idx);
+		}
+		else
+			break;
+	}
 }

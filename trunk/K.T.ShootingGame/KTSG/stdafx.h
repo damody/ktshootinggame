@@ -7,11 +7,11 @@
 #include <d3dx11.h>
 
 #include <dxerr.h>
-
+#include <cassert>
 #include <string>
 #include <iostream>
-#include <time.h>
-#include <stdio.h>
+#include <ctime>
+#include <cstdio>
 #include <vector>
 #include <sstream>
 #include <tchar.h>

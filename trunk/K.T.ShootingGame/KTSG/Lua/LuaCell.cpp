@@ -443,13 +443,18 @@ void LuaCell::setLua(T data, const char* pathString, ...)
 	va_end (args);
 }
 
-bool LuaCell::IsLua_NotNil( const char* pathString )
+bool LuaCell::CheckNotNil( const char* pathString, ... )
 {
+	// 可變長度的字串
+	char *buffer = (char*)malloc(1024);
+	va_list args;
+	va_start (args, pathString);
+	vsprintf (buffer,pathString, args);
 	char path[250] = {0};
 	const char *pos;
 	char *target = path;
 	int pathLayer = 0;
-	for (pos = pathString;;pos++)
+	for (pos = buffer;;pos++)
 	{
 		if (*pos == '\\' || *pos == '/' || *pos == '\0') //get Layer string
 		{
@@ -461,6 +466,7 @@ bool LuaCell::IsLua_NotNil( const char* pathString )
 				if (lua_isnil(m_LuaState,-1)) 
 				{
 					lua_pop(m_LuaState, pathLayer);
+					free(buffer);
 					return false;
 				}
 			}
@@ -469,6 +475,7 @@ bool LuaCell::IsLua_NotNil( const char* pathString )
 				if (!lua_istable(m_LuaState,-1)) 
 				{
 					lua_pop(m_LuaState, pathLayer);
+					free(buffer);
 					return false;
 				}
 				if (isDigitString(path))	//is integer index?
@@ -479,6 +486,7 @@ bool LuaCell::IsLua_NotNil( const char* pathString )
 				if (lua_isnil(m_LuaState, -1))
 				{
 					lua_pop(m_LuaState, pathLayer);
+					free(buffer);
 					return false;	
 				}
 			}
@@ -493,5 +501,6 @@ bool LuaCell::IsLua_NotNil( const char* pathString )
 		}
 	}
 	lua_pop(m_LuaState, pathLayer);
+	free(buffer);
 	return true;
 }
