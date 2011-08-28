@@ -1,5 +1,7 @@
+#include "stdafx.h"
 #include "d3dApp.h"
 #include "ui/dxut/DXUT.h"
+
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

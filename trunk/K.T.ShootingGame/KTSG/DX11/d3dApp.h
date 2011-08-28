@@ -1,8 +1,6 @@
 #ifndef D3DAPP_H
 #define D3DAPP_H
 
-
-#include "d3dutil.h"
 #include <string>
 #include <dwrite.h>
 #include "Timer.h"
