@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "InitDirect3DApp.h"
 
 //°±¤î«ü¼Ð

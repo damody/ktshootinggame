@@ -1,7 +1,7 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "d3dutil.h"
+#include "headfile.h"
 
 // Vertex format
 struct VertexPoint
