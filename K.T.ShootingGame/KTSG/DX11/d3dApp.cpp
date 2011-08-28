@@ -1,5 +1,5 @@
 #include "d3dApp.h"
-#include "../ui/dxut/DXUT.h"
+#include "ui/dxut/DXUT.h"
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -177,7 +177,7 @@ void D3DApp::onResize()
 	mDeviceContext->RSSetViewports(1, &vp);
 	
 }
-void D3DApp::drawScene()
+void D3DApp::DrawScene()
 {
 	mDeviceContext->ClearRenderTargetView(mRenderTargetView, mClearColor);
 	mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -351,7 +351,7 @@ int D3DApp::run()
 			else
 				Sleep(50);
 
-			drawScene();
+			DrawScene();
 		}
 	}
 	return (int)msg.wParam;

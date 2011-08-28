@@ -7,6 +7,10 @@ const char* b = cell.getLua<const char*>("table2\\table23\\table2\\1");
 */
 #pragma once
 #include "lua.hpp"
+#include <string>
+#if defined (WIN32) || defined (WIN64)
+#include "windows.h"
+#endif
 #ifdef WIN64
 #	if _DEBUG
 #		pragma comment(lib, "Lua/lua5.1dx64.lib")
@@ -36,6 +40,9 @@ public:
 	bool callLua_Function(const char* functionName, const char* signString, ...);
 	/// 讀入一個lua檔，得到這個檔的函數與變數
 	bool InputLuaFile(const char* path);
+#if defined(WIN32) || defined(WIN64)
+	bool InputLuaFile(const wchar_t* path);
+#endif
 	/// 讀取lua中的變數，不可使用超過1024字元的可變字串
 	template <class T> T getLua(const char* pathString, ...);
 	/// 設定lua中的變數，不可使用超過1024字元的可變字串

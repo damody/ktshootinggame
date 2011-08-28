@@ -7,7 +7,7 @@ bool stop=false;
 bool show=false;
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
-: D3DApp(hInstance), mWidth(0), mHeight(0)
+: D3DApp(hInstance), m_Width(0), m_Height(0)
 {
 }
 
@@ -15,13 +15,13 @@ InitDirect3DApp::~InitDirect3DApp()
 {
 	if( mDeviceContext )
 		mDeviceContext->ClearState();
-	ReleaseCOM(mDiffuseMapRV);
+	ReleaseCOM(m_DiffuseMapRV);
 }
 
 void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
-	D3DX11CreateShaderResourceViewFromFile(md3dDevice, _T("pic//crate.jpg"), 0, 0, &mDiffuseMapRV, 0);
+	D3DX11CreateShaderResourceViewFromFile(md3dDevice, _T("pic//crate.jpg"), 0, 0, &m_DiffuseMapRV, 0);
 	buildPointFX();
 	buildPoint();
 	onResize();
@@ -30,10 +30,10 @@ void InitDirect3DApp::initApp()
 void InitDirect3DApp::onResize()
 {
 	D3DApp::onResize();
-	if (mWidth!=NULL && mHeight!=NULL)
+	if (m_Width!=NULL && m_Height!=NULL)
 	{
-		mWidth->SetFloat(mClientWidth);
-		mHeight->SetFloat(mClientHeight);
+		m_Width->SetFloat((float)mClientWidth);
+		m_Height->SetFloat((float)mClientHeight);
 	}
 }
 
@@ -44,16 +44,16 @@ void InitDirect3DApp::updateScene(float dt)
 	mSwapChain->Present(0, 0);
 }
 
-void InitDirect3DApp::drawScene()
+void InitDirect3DApp::DrawScene()
 {
 	static float time = 0.0;
 	time += 0.01f;
-	D3DApp::drawScene();
-	mTime->SetFloat(time);
-	mPMap->SetResource(mDiffuseMapRV);
+	D3DApp::DrawScene();
+	m_Time->SetFloat(time);
+	m_PMap->SetResource(m_DiffuseMapRV);
 	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	mDeviceContext->IASetInputLayout(mPLayout);
-	mPTech->GetPassByIndex(0)->Apply(0,mDeviceContext);
+	mDeviceContext->IASetInputLayout(m_PLayout);
+	m_PTech->GetPassByIndex(0)->Apply(0,mDeviceContext);
 	UINT stride = sizeof(VertexPoint);
 	UINT offset = 0;
 	mDeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
@@ -77,12 +77,12 @@ void InitDirect3DApp::buildPointFX()
 		}
 		DXTrace(__FILE__, __LINE__, hr, _T("D3DX10CreateEffectFromFile"), TRUE);
 	} 
-	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, md3dDevice, &mTFX2));
-	mPTech = mTFX2->GetTechniqueByName("PointTech");
-	mWidth = mTFX2->GetVariableByName("width")->AsScalar();
-	mHeight =mTFX2->GetVariableByName("height")->AsScalar();
-	mPMap =mTFX2->GetVariableByName("gMap")->AsShaderResource();
-	mTime =mTFX2->GetVariableByName("time")->AsScalar();
+	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, md3dDevice, &m_TFX2));
+	m_PTech = m_TFX2->GetTechniqueByName("PointTech");
+	m_Width = m_TFX2->GetVariableByName("width")->AsScalar();
+	m_Height =m_TFX2->GetVariableByName("height")->AsScalar();
+	m_PMap =m_TFX2->GetVariableByName("gMap")->AsShaderResource();
+	m_Time =m_TFX2->GetVariableByName("time")->AsScalar();
 
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
@@ -93,13 +93,14 @@ void InitDirect3DApp::buildPointFX()
 	};
 
 	D3DX11_PASS_DESC PassDesc;
-	mPTech->GetPassByIndex(0)->GetDesc(&PassDesc);
+	m_PTech->GetPassByIndex(0)->GetDesc(&PassDesc);
 	HR(md3dDevice->CreateInputLayout(vertexDesc, 4, PassDesc.pIAInputSignature,
-		PassDesc.IAInputSignatureSize, &mPLayout));
+		PassDesc.IAInputSignatureSize, &m_PLayout));
 }
 
 void InitDirect3DApp::buildPoint()
 {
+	// set 4 point to show
 	std::vector<VertexPoint> Vertex;
 	VertexPoint point;
 	point.position=D3DXVECTOR3(50,50,0);
@@ -141,4 +142,9 @@ void InitDirect3DApp::buildPoint()
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &Vertex[0];
 	HR(md3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
+}
+
+void InitDirect3DApp::LoadResource()
+{
+	m_Lua.InputLuaFile(L"resource.lua");
 }

@@ -69,7 +69,7 @@ bool LuaCell::callLua_Function( const char* functionName, const char* signString
 		}
 	}
 emdargs:
-	nres = strlen(signString);
+	nres = (int)strlen(signString);
 	if (lua_pcall(m_LuaState, narg, nres, 0) != 0)
 	{
 		return false;
@@ -84,7 +84,7 @@ emdargs:
 			*va_arg(v1, double *) = lua_tonumber(m_LuaState, nres);
 			break;
 		case 'i':
-			*va_arg(v1, int *) = lua_tointeger(m_LuaState, nres);
+			*va_arg(v1, int *) = (int)lua_tointeger(m_LuaState, nres);
 			break;
 		case 's':
 			*va_arg(v1, const char **) = lua_tostring(m_LuaState, nres);
@@ -104,7 +104,21 @@ bool LuaCell::InputLuaFile(const char* path)
 	if (luaL_loadfile(m_LuaState, path) || lua_pcall(m_LuaState, 0, 0, 0)) return false;
 	return true;
 }
-
+#if defined(WIN32) || defined(WIN64)
+bool LuaCell::InputLuaFile( const wchar_t* path )
+{
+	std::wstring wstr(path);
+	char* ansi = (char*)malloc(wstr.length()+1);
+	wcstombs(ansi, wstr.c_str(), INT_MAX);
+	if (luaL_loadfile(m_LuaState, ansi) || lua_pcall(m_LuaState, 0, 0, 0)) 
+	{
+		free(ansi);
+		return false;
+	}
+	free(ansi);
+	return true;
+}
+#endif
 //從 table1\table2\table3\varableName 這樣的路徑中得到資料的函數
 
 bool LuaCell::setLua_NewTable(const char* table)
@@ -175,7 +189,7 @@ void* LuaCell::getLua_Value_UsePath( const char* pathString, int type )
 			switch (type)
 			{
 			case BackType(INTEGER):
-				*((int*)result) = lua_tointeger(m_LuaState, -1);
+				*((int*)result) = (int)lua_tointeger(m_LuaState, -1);
 				break;
 			case BackType(LONGFLOAT):
 				*((double*)result) = lua_tonumber(m_LuaState, -1);
@@ -259,7 +273,7 @@ void LuaCell::setLua_Value_UsePath( const char* pathString, int type, void* data
 template <> 
 int LuaCell::getLua<int>()
 {
-	return lua_tointeger(m_LuaState, -1);
+	return (int)lua_tointeger(m_LuaState, -1);
 }
 template <> 
 double LuaCell::getLua<double>()
