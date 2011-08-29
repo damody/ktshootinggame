@@ -457,6 +457,34 @@
 					RelativePath=".\DX11\Timer.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\DX11\Vertex.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="planes"
+				>
+				<File
+					RelativePath=".\planes\MainPlane.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="towers"
+				>
+				<File
+					RelativePath=".\towers\tower.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="bullets"
+				>
+				<File
+					RelativePath=".\bullets\bullet.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -529,6 +557,30 @@
 				</File>
 				<File
 					RelativePath=".\DX11\Vertex.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="planes"
+				>
+				<File
+					RelativePath=".\planes\MainPlane.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="towers"
+				>
+				<File
+					RelativePath=".\towers\tower.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="bullets"
+				>
+				<File
+					RelativePath=".\bullets\bullet.h"
 					>
 				</File>
 			</Filter>
