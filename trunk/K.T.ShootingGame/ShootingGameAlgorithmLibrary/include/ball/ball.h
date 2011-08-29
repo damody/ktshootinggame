@@ -1,6 +1,6 @@
 #pragma once
-#include "../math/OgreVector3.h"
-#include "../common/utility.h"
+#include "math/OgreVector3.h"
+#include "common/utility.h"
 #include "behavior.h"
 #include <vector>
 #include <list>

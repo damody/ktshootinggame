@@ -308,6 +308,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\algo\nway.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\algo\RandomWay.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\algo\TrajectoryAnimator.cpp"
 					>
 				</File>
@@ -407,6 +415,10 @@
 				</File>
 				<File
 					RelativePath=".\include\algo\RandomWay.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\algo\sgmath.h"
 					>
 				</File>
 				<File

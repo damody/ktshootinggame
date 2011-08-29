@@ -41,7 +41,8 @@ public:
 	{
 	}
 	void AddBehavior(Trajectory* b, float time);
-	void AddBehaviorFrame(TrajectoryFrame b);
+	// if behavior no sort, it's error!
+	void AddBehaviorFrame(TrajectoryFrame& b);
 	void Sort();
 	Trajectory* GetNowBehavior(float time);
 };

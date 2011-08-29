@@ -67,7 +67,7 @@ void BallManager::Update( float time )
 	TrajectoryRawPtrs::iterator it = mTrajectoryRawPtrs.begin();
 	if (mNumThreads>1)
 	{
-		for (size_t i=0;i<mNumThreads;i++)
+		for (int i=0;i<mNumThreads;i++)
 		{
 			LOCK l(mThreadsWork[i]->m); // 鎖住並清除工作
 			mThreadsWork[i]->works.clear();
@@ -77,7 +77,7 @@ void BallManager::Update( float time )
 			BallVector& bv = (*it)->GetBallVector();
 			double step = bv.size()/(double)mNumThreads;
 			double now_step = 0;
-			for (size_t i=0;i<mNumThreads;i++)
+			for (int i=0;i<mNumThreads;i++)
 			{
 				LOCK l(mThreadsWork[i]->m); //鎖住並更新
 				if (mThreadsWork[i]->work_done)

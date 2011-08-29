@@ -1,7 +1,7 @@
 #pragma once
-#include "Trajectory.h"
 #include <iostream>
 #include <boost/random.hpp>
+#include "Trajectory.h"
 
 class RandomWay : public Trajectory
 {
@@ -17,12 +17,6 @@ public:
 	{
 		mRadiationAngle = angle;
 		this->Modifyed();
-	}
-	Ogre::Vector3 GetRotation(const Ogre::Vector3 src, float angle)
-	{
-		Ogre::Quaternion q;
-		q.FromAngleAxis( Ogre::Degree(angle), mUp );
-		return q * src;
 	}
 	virtual void AddBall(BallList& out)
 	{
@@ -45,18 +39,5 @@ public:
 		return mBall_PreComptue;
 	}
 protected:
-	virtual void Modifyed()
-	{
-		mBall_PreComptue.clear();
-		mBall_PreComptue.reserve(mNumTrajectory);
-		float step_angle;
-		boost::uniform_real<float> rng(-mRadiationAngle*0.5, mRadiationAngle*0.5);
-		for (int i = 0;i < mNumTrajectory;i++)
-		{
-			Ball ball(mPosition, GetRotation(mDirection, rng(mRandom)), mBehavior);
-			ball.Update(mInitializeTime);
-			mBall_PreComptue.push_back(ball);
-		}
-		mNeedUpdate = false;
-	}
+	virtual void Modifyed();
 };
