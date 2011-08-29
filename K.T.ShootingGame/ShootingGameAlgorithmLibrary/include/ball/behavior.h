@@ -1,5 +1,5 @@
 #pragma once
-#include "../common/shared_ptr.h"
+#include "common/shared_ptr.h"
 class Ball;
 class Behavior
 {

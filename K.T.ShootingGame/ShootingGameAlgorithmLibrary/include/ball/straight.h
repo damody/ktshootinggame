@@ -1,7 +1,7 @@
 #pragma once
 #include "ball.h"
 #include "behavior.h"
-#include "../math/OgreVector3.h"
+#include "math/OgreVector3.h"
 
 class Straight : public Behavior
 {

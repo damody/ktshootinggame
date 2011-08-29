@@ -6,7 +6,7 @@ void TrajectoryAnimator::AddBehavior( Trajectory* b, float time )
 	mBehaviorFrames.push_back(TrajectoryFrame(b, time));
 }
 
-void TrajectoryAnimator::AddBehaviorFrame( TrajectoryFrame b )
+void TrajectoryAnimator::AddBehaviorFrame( TrajectoryFrame& b )
 {
 	mBehaviorFrames.push_back(b);
 }

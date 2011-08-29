@@ -1,9 +1,9 @@
 #pragma once
-#include "../math/OgreVector3.h"
-#include "../math/OgreQuaternion.h"
-#include "../ball/ball.h"
-#include "../ball/behavior.h"
-#include "../common/shared_ptr.h"
+#include "math/OgreVector3.h"
+#include "math/OgreQuaternion.h"
+#include "ball/ball.h"
+#include "ball/behavior.h"
+#include "common/shared_ptr.h"
 
 class Trajectory
 {

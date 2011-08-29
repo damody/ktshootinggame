@@ -1,5 +1,9 @@
 #pragma once
-#include "../common/SGA_config.h"
+#include "common/SGA_config.h"
+#include "ball/ball.h"
+#include "Trajectory.h"
+#include "common/shared_ptr.h"
+
 #ifdef SGA_USE_MUTITHREAD
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -7,9 +11,6 @@
 typedef boost::mutex MUTEX;
 typedef MUTEX::scoped_lock LOCK;
 #endif
-#include "../ball/ball.h"
-#include "Trajectory.h"
-#include "../common/shared_ptr.h"
 
 class BallManager
 {

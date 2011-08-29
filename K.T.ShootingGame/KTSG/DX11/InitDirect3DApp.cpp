@@ -48,9 +48,10 @@ void InitDirect3DApp::updateScene(float dt)
 
 void InitDirect3DApp::DrawScene()
 {
-	float BlendFactor[4] = {255,255,0,0};
+	// Set blend
+	float BlendFactor[4] = {0,0,0,0};
 	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
-	m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
+	//m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
 	static float time = 0.0;
 	time += 0.01f;
 	D3DApp::DrawScene();
