@@ -1,15 +1,17 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "headfile.h"
+#include "stdafx.h"
 
 // Vertex format
-struct VertexPoint
+struct DXVertex
 {
 	D3DXVECTOR3 position;
 	D3DXVECTOR2 size;
 	float angle;
-	D3DXVECTOR3 direction;
 };
+
+// 
+extern D3D11_INPUT_ELEMENT_DESC VertexDesc1[];
 
 #endif // VERTEX_H

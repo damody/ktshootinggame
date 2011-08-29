@@ -19,7 +19,6 @@ struct VS_IN
 	float3 position: POSITION;
 	float2 size: SIZE;
 	float  angle : PI;
-	float3 direction : DIR;
 };
 
 struct VS_OUT
@@ -40,7 +39,7 @@ VS_OUT VS(VS_IN vIn)
 {
 	VS_OUT vOut;
 	// set z = w so that z/w = 1 (i.e., skydome always on far plane).
-	vIn.position.xy=(vIn.position.xy+time*vIn.direction.xy)/float2(width,height);
+	vIn.position.xy=(vIn.position.xy)/float2(width,height);
 	vOut.pos =float4(vIn.position*2-1,1);
 	// use local vertex position as cubemap lookup vector.
 	vOut.size = vIn.size;

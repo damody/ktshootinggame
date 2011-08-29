@@ -316,6 +316,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\algo\sgmath.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\algo\TrajectoryAnimator.cpp"
 					>
 				</File>

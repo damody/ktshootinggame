@@ -1,4 +1,5 @@
 #pragma once
+#include "algo/sgmath.h"
 #include "math/OgreVector3.h"
 #include "common/utility.h"
 #include "behavior.h"
@@ -30,9 +31,13 @@ public:
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
 	}
+	inline Ball(const Ogre::Vector3 pos, float angle, Behavior* behavior = NULL)
+		:mTimeRate(1), mPosition(pos), mDirection(GetRotation(pos, Ogre::Vector3::UNIT_Z, angle)), mUp(Ogre::Vector3::UNIT_Z), 
+		mpBehavior(behavior), mBallStatus(FLY)
+	{
+	}
 	int Update(float elapsedtime);
 	bool HasBehavior();
-	
 };
 typedef std::vector<Ball> BallVector;
 typedef std::list<Ball> BallList;
