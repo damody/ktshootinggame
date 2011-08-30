@@ -6,6 +6,8 @@
 #include "Lua/LuaCell.h"
 #include "TextureManager.h"
 
+#include "planes/MainPlane.h"
+
 class InitDirect3DApp : public D3DApp
 {
 public:
@@ -39,6 +41,8 @@ private:
 
 	LuaCell		m_Lua;
 	TextureManager	m_TextureManager;
+
+	MainPlane* m_warShip;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC

@@ -66,14 +66,14 @@ int TextureManager::AddTexture( std::wstring path, int index )
 	}
 }
 
-ID3D11ShaderResourceView* TextureManager::GetTexture( int index )
+Texture_Sptr TextureManager::GetTexture( int index )
 {
-	TextureMaps::iterator it = m_TextureMaps.find(m_index);
+	TextureMaps::iterator it = m_TextureMaps.find(index);
 	if (it != m_TextureMaps.end())
 	{
-		return *it->second;
+		return it->second;
 	}
-	return NULL;
+	return Texture_Sptr();
 }
 
 Texture::Texture( std::string path )

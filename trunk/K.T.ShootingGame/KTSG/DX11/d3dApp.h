@@ -7,6 +7,8 @@
 
 #include "ui/DXUTUI.h"
 
+#include "DX11/GetDirectXInput.h"
+
 extern ID3D11Device* g_d3dDevice;
 
 class D3DApp
@@ -15,8 +17,12 @@ public:
 	D3DApp(HINSTANCE hInstance);
 	virtual ~D3DApp();
 
-	HINSTANCE getAppInst();
-	HWND      getMainWnd();
+	static D3DApp* d3dAppInstance;
+
+	HINSTANCE			getAppInst();
+	HWND				getMainWnd();
+	GetDirectXInput		getDxInput();
+
 	int run();
 	virtual void initApp();
 	virtual void onResize();// reset projection/etc
@@ -58,6 +64,7 @@ protected:
 	D3DXCOLOR m_ClearColor;
 	int mClientWidth;
 	int mClientHeight;
+
 
 };
 

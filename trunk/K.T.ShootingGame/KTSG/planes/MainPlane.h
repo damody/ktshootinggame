@@ -12,9 +12,10 @@
 
 #if !defined(_MAINPLANE_H)
 #define _MAINPLANE_H
-#include "math\OgreVector3.h"
+
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
+#include "math\OgreVector3.h"
 
 
 class MainPlane {
@@ -25,10 +26,10 @@ public:
 	float		m_angle;
 	int		m_hp;
 	int		m_w, m_h;
-	void Update();
+	void Update(float dt);
 	void UpdateDataToDraw()
 	{
-		m_pic.position.x = m_position.x;
+ 		m_pic.position.x = m_position.x;
 		m_pic.position.y = m_position.y;
 		m_pic.position.z = 0;
 		m_pic.angle = m_angle;
