@@ -414,6 +414,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\DX11\GetDirectXInput.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\DX11\InitDirect3DApp.cpp"
 					>
 					<FileConfiguration
@@ -432,6 +436,14 @@
 							UsePrecompiledHeader="2"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DX11\Input.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DX11\InputState.cpp"
+					>
 				</File>
 				<File
 					RelativePath=".\DX11\TextureManager.cpp"
@@ -544,7 +556,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\DX11\GetDirectXInput.h"
+					>
+				</File>
+				<File
 					RelativePath=".\DX11\InitDirect3DApp.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DX11\Input.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DX11\InputState.h"
 					>
 				</File>
 				<File
@@ -553,6 +577,10 @@
 				</File>
 				<File
 					RelativePath=".\DX11\Timer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DX11\TShape.hpp"
 					>
 				</File>
 				<File

@@ -10,7 +10,7 @@ public:
 	~Input();
 	void poll();
 	const bool Keyinput(const char);
-		bool mouseButtonDown(int button);
+	bool mouseButtonDown(int button);
 	float mouseDX();
 	float mouseDY();
 	float mouseDZ();
