@@ -439,10 +439,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\DX11\Input.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\DX11\InputState.cpp"
 					>
 				</File>
@@ -562,10 +558,6 @@
 				</File>
 				<File
 					RelativePath=".\DX11\InitDirect3DApp.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DX11\Input.h"
 					>
 				</File>
 				<File
