@@ -51,7 +51,7 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	m_MainWndCaption = L"D3D11 Application";
 	m_d3dDriverType  = D3D_DRIVER_TYPE_HARDWARE;
 	//md3dDriverType  = D3D_DRIVER_TYPE_REFERENCE;
-	m_ClearColor     = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
+	m_ClearColor     = D3DXCOLOR(0.3f, 0.2f, 0.1f, 1.0f);
 	mClientWidth    = 1024;
 	mClientHeight   = 768;
 }

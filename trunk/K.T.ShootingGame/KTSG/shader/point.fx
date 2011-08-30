@@ -3,7 +3,6 @@ cbuffer cbPerFrame
 {
 	float width;
 	float height;
-	float time;
 };
  
 Texture2D gMap;
