@@ -1,5 +1,5 @@
 #include "input.h"
-#include "headfile.h"
+#include "stdafx.h"
 
 Input* DirectInput = 0;
 
