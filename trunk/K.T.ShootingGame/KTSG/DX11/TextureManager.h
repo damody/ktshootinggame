@@ -11,6 +11,7 @@ struct Texture
 {
 	Texture(std::string path);
 	Texture(std::wstring path);
+	Texture(ID3D11ShaderResourceView* t):texture(t){}
 	~Texture();
 	ID3D11ShaderResourceView* texture;
 	operator ID3D11ShaderResourceView*()
