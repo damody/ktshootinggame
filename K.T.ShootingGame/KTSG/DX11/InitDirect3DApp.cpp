@@ -2,7 +2,7 @@
 #include "InitDirect3DApp.h"
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
-: D3DApp(hInstance), m_Width(0), m_Height(0)
+: D3DApp(hInstance), m_Width(0), m_Height(0), m_Points(0)
 {
 }
 
@@ -10,7 +10,6 @@ InitDirect3DApp::~InitDirect3DApp()
 {
 	if( m_DeviceContext )
 		m_DeviceContext->ClearState();
-	ReleaseCOM(m_DiffuseMapRV);
 }
 
 void InitDirect3DApp::initApp()
@@ -18,18 +17,7 @@ void InitDirect3DApp::initApp()
 	D3DApp::initApp();
 	LoadResource();
 	LoadBlend();
-	D3DX11CreateShaderResourceViewFromFile(m_d3dDevice, _T("pic//crate.jpg"), 0, 0, &m_DiffuseMapRV, 0);
-
-	m_warShip = new MainPlane;
-	m_warShip->m_angle = 0;
-	m_warShip->m_h = 537;
-	m_warShip->m_w = 800;
-	m_warShip->m_position.x = 600;
-	m_warShip->m_position.y = 600;
-	m_warShip->m_texture = m_TextureManager.GetTexture(102);
-
-	m_Points = NULL;
-
+	LoadWarShip();
 	buildPointFX();
 	buildPoint();
 	onResize();
@@ -49,10 +37,13 @@ void InitDirect3DApp::updateScene(float dt)
 {
 	D3DApp::updateScene(dt);
 	m_DXUT_UI->UpdataUI(dt);
-	m_SwapChain->Present(0, 0);
-
-	m_warShip->Update(dt);
-
+	UpdateInput();
+	UpdateWarShip(dt);
+	UpdateDeliver(dt);
+	UpdateEnemy(dt);
+	UpdateBullectMove(dt);
+	UpdateBullectCollision();
+	UpdateUI();
 	buildPoint();
 }
 
@@ -62,22 +53,18 @@ void InitDirect3DApp::DrawScene()
 	float BlendFactor[4] = {0,0,0,0};
 	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
 	//m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
-	static float time = 0.0;
-	time += 0.01f;
-	D3DApp::DrawScene();
-	m_Time->SetFloat(time);
-	m_PMap->SetResource(m_DiffuseMapRV);
+	D3DApp::DrawScene(); // clear window
+	UINT stride = sizeof(DXVertex);
+	UINT offset = 0;
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout);
 	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
-	UINT stride = sizeof(DXVertex);
-	UINT offset = 0;
-	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
-	m_DeviceContext->Draw(4, 0);
-	m_PMap->SetResource(*m_warShip->m_texture);
-	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
-	m_DeviceContext->Draw(1, 4);
 	
+	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
+	m_PMap->SetResource(*m_warShip.m_texture);
+	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
+	m_DeviceContext->Draw(1, 0);
+	m_SwapChain->Present(0, 0);
 }
 
 void InitDirect3DApp::buildPointFX()
@@ -94,14 +81,13 @@ void InitDirect3DApp::buildPointFX()
 			MessageBoxA(0, (char*)pError->GetBufferPointer(), 0, 0);
 			ReleaseCOM(pError);
 		}
-		DXTrace(__FILE__, __LINE__, hr, _T("D3DX10CreateEffectFromFile"), TRUE);
+		DXTrace(__FILE__, __LINE__, hr, _T("D3DX11CreateEffectFromFile"), TRUE);
 	} 
 	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_TFX2));
 	m_PTech = m_TFX2->GetTechniqueByName("PointTech");
 	m_Width = m_TFX2->GetVariableByName("width")->AsScalar();
 	m_Height =m_TFX2->GetVariableByName("height")->AsScalar();
 	m_PMap =m_TFX2->GetVariableByName("gMap")->AsShaderResource();
-	m_Time =m_TFX2->GetVariableByName("time")->AsScalar();
 
 	D3DX11_PASS_DESC PassDesc;
 	m_PTech->GetPassByIndex(0)->GetDesc(&PassDesc);
@@ -113,35 +99,9 @@ void InitDirect3DApp::buildPoint()
 {
 	if(m_Points)
 		m_Points->Release();
-
-	// set 4 point to show
+	// set warship
 	std::vector<DXVertex> Vertex;
-	DXVertex point;
-	point.position=D3DXVECTOR3(300,300,0);
-	point.size=D3DXVECTOR2(50,50);
-	point.angle=0;
-
-	Vertex.push_back(point);
-
-	point.position=D3DXVECTOR3(300,300,0);
-	point.size=D3DXVECTOR2(50,50);
-	point.angle=10;
-
-	Vertex.push_back(point);
-
-	point.position=D3DXVECTOR3(300,300,0);
-	point.size=D3DXVECTOR2(50,50);
-	point.angle=30;
-
-	Vertex.push_back(point);
-
-	point.position=D3DXVECTOR3(300,300,0);
-	point.size=D3DXVECTOR2(50,50);
-	point.angle=45;
-
-	Vertex.push_back(point);
-	m_warShip->UpdateDataToDraw();
-	Vertex.push_back(m_warShip->m_pic);
+	Vertex.push_back(m_warShip.m_pic);
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -154,8 +114,6 @@ void InitDirect3DApp::buildPoint()
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &Vertex[0];
 	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
-	
-	
 }
 
 void InitDirect3DApp::LoadResource()
@@ -219,4 +177,49 @@ void InitDirect3DApp::LoadBlend()
 	// Alpha Blend²V¦â¼Ò¦¡
 	if ( D3D_OK != m_d3dDevice->CreateBlendState(&blend_state_desc, &m_pBlendState_BLEND) )
 		return ;
+}
+
+void InitDirect3DApp::LoadWarShip()
+{
+	m_warShip.m_angle = 0;
+	m_warShip.m_h = 350;
+	m_warShip.m_w = 600;
+	m_warShip.m_position.x = 300;
+	m_warShip.m_position.y = 200;
+	m_warShip.m_texture = m_TextureManager.GetTexture(102);
+}
+
+int InitDirect3DApp::UpdateInput()
+{
+	InputStateS::instance().GetInput();
+}
+
+int InitDirect3DApp::UpdateWarShip( float dt )
+{
+	m_warShip.Update(dt);
+}
+
+int InitDirect3DApp::UpdateDeliver( float dt )
+{
+
+}
+
+int InitDirect3DApp::UpdateEnemy( float dt )
+{
+
+}
+
+int InitDirect3DApp::UpdateBullectMove( float dt )
+{
+
+}
+
+int InitDirect3DApp::UpdateBullectCollision()
+{
+
+}
+
+int InitDirect3DApp::UpdateUI()
+{
+
 }

@@ -17,18 +17,33 @@ float updateUnit = 1.0f;
 
 void MainPlane::Update(float dt) 
 {
-	InputStateS::instance().GetInput();
-
+	
 	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
 
 	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = updateUnit * dt * 40;
 	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -updateUnit * dt * 40;
-	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += updateUnit * dt * 100;
-	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= updateUnit * dt * 100;
+	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += updateUnit * dt * 30;
+	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= updateUnit * dt * 30;
 
 	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
 
 	m_position += trans;
+	UpdateDataToDraw();
+}
+
+void MainPlane::UpdateDataToDraw()
+{
+	m_pic.position.x = m_position.x;
+	m_pic.position.y = m_position.y;
+	m_pic.position.z = 0;
+	m_pic.angle = m_angle;
+	m_pic.size.x = (float)m_w;
+	m_pic.size.y = (float)m_h;
+}
+
+int MainPlane::UpdateTower()
+{
+
 }
 
 

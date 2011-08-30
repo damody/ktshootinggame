@@ -27,15 +27,9 @@ public:
 	int		m_hp;
 	int		m_w, m_h;
 	void Update(float dt);
-	void UpdateDataToDraw()
-	{
- 		m_pic.position.x = m_position.x;
-		m_pic.position.y = m_position.y;
-		m_pic.position.z = 0;
-		m_pic.angle = m_angle;
-		m_pic.size.x = (float)m_w;
-		m_pic.size.y = (float)m_h;
-	}
+	int  UpdateTower();
+private:
+	void UpdateDataToDraw();
 };
 
 #endif  //_MAINPLANE_H

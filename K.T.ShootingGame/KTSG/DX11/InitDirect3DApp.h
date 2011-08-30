@@ -23,10 +23,17 @@ public:
 private:
 	void buildPointFX();
 	void buildPoint();
+	void LoadWarShip();
+	int  UpdateInput();
+	int UpdateWarShip(float dt);
+	int UpdateDeliver(float dt);
+	int UpdateEnemy(float dt);
+	int UpdateBullectMove(float dt);
+	int  UpdateBullectCollision();
+	int  UpdateUI();
 private:
 	ID3DX11EffectShaderResourceVariable*  m_PMap;
 	ID3DX11EffectScalarVariable* m_Time;
-	ID3D11ShaderResourceView* m_DiffuseMapRV;
 
 	ID3D11Buffer* m_Points;
 	ID3DX11Effect* m_TFX2;
@@ -42,7 +49,7 @@ private:
 	LuaCell		m_Lua;
 	TextureManager	m_TextureManager;
 
-	MainPlane* m_warShip;
+	MainPlane	m_warShip;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC
