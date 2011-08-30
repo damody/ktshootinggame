@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "InitDirect3DApp.h"
 
-
-
-
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 : D3DApp(hInstance), m_Width(0), m_Height(0)
 {
@@ -99,26 +96,26 @@ void InitDirect3DApp::buildPoint()
 	// set 4 point to show
 	std::vector<DXVertex> Vertex;
 	DXVertex point;
-	point.position=D3DXVECTOR3(50,50,0);
-	point.size=D3DXVECTOR2(10,20);
+	point.position=D3DXVECTOR3(300,300,0);
+	point.size=D3DXVECTOR2(50,50);
 	point.angle=0;
 
 	Vertex.push_back(point);
 
-	point.position=D3DXVECTOR3(100,100,0);
-	point.size=D3DXVECTOR2(20,10);
+	point.position=D3DXVECTOR3(300,300,0);
+	point.size=D3DXVECTOR2(50,50);
 	point.angle=10;
 
 	Vertex.push_back(point);
 
 	point.position=D3DXVECTOR3(300,300,0);
-	point.size=D3DXVECTOR2(55,55);
+	point.size=D3DXVECTOR2(50,50);
 	point.angle=30;
 
 	Vertex.push_back(point);
 
-	point.position=D3DXVECTOR3(300,200,0);
-	point.size=D3DXVECTOR2(420,200);
+	point.position=D3DXVECTOR3(300,300,0);
+	point.size=D3DXVECTOR2(50,50);
 	point.angle=45;
 
 	Vertex.push_back(point);
