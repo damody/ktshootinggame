@@ -82,7 +82,7 @@ float4 PS(GS_OUT pIn) : SV_Target
 {
 	float4 color=gMap.Sample( gTriLinearSam, pIn.texcoord );
 	//discard;
-	color.a = color.r;
+	color.a = 0.9;
 	return color;
 }
 
