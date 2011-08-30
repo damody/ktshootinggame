@@ -601,7 +601,7 @@ namespace Ogre
 		static T Clamp(T val, T minval, T maxval)
 		{
 			assert (minval < maxval && "Invalid clamp range");
-			return std::max(std::min(val, maxval), minval);
+			return __max(__min(val, maxval), minval);
 		}
 
 		static Matrix4 makeViewMatrix(const Vector3& position, const Quaternion& orientation, 

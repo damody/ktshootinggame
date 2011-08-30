@@ -19,6 +19,17 @@ void InitDirect3DApp::initApp()
 	LoadResource();
 	LoadBlend();
 	D3DX11CreateShaderResourceViewFromFile(m_d3dDevice, _T("pic//crate.jpg"), 0, 0, &m_DiffuseMapRV, 0);
+
+	m_warShip = new MainPlane;
+	m_warShip->m_angle = 0;
+	m_warShip->m_h = 537;
+	m_warShip->m_w = 800;
+	m_warShip->m_position.x = 600;
+	m_warShip->m_position.y = 600;
+	m_warShip->m_texture = m_TextureManager.GetTexture(102);
+
+	m_Points = NULL;
+
 	buildPointFX();
 	buildPoint();
 	onResize();
@@ -39,6 +50,10 @@ void InitDirect3DApp::updateScene(float dt)
 	D3DApp::updateScene(dt);
 	m_DXUT_UI->UpdataUI(dt);
 	m_SwapChain->Present(0, 0);
+
+	m_warShip->Update(dt);
+
+	buildPoint();
 }
 
 void InitDirect3DApp::DrawScene()
@@ -59,6 +74,9 @@ void InitDirect3DApp::DrawScene()
 	UINT offset = 0;
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
 	m_DeviceContext->Draw(4, 0);
+	m_PMap->SetResource(*m_warShip->m_texture);
+	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
+	m_DeviceContext->Draw(1, 4);
 	
 }
 
@@ -93,6 +111,9 @@ void InitDirect3DApp::buildPointFX()
 
 void InitDirect3DApp::buildPoint()
 {
+	if(m_Points)
+		m_Points->Release();
+
 	// set 4 point to show
 	std::vector<DXVertex> Vertex;
 	DXVertex point;
@@ -119,6 +140,8 @@ void InitDirect3DApp::buildPoint()
 	point.angle=45;
 
 	Vertex.push_back(point);
+	m_warShip->UpdateDataToDraw();
+	Vertex.push_back(m_warShip->m_pic);
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -131,6 +154,8 @@ void InitDirect3DApp::buildPoint()
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &Vertex[0];
 	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
+	
+	
 }
 
 void InitDirect3DApp::LoadResource()

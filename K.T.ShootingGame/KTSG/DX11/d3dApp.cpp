@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "d3dApp.h"
 #include "ui/dxut/DXUT.h"
+#include "InputState.h"
 
 ID3D11Device* g_d3dDevice = NULL;
+
+D3DApp* D3DApp::d3dAppInstance = NULL;
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -26,6 +29,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 {
+	d3dAppInstance = this;
+
 	m_hAppInst   = hInstance;
 
 	m_AppPaused  = false;
@@ -71,10 +76,14 @@ HWND D3DApp::getMainWnd()
 {
 	return m_hMainWnd;
 }
+
 void D3DApp::initApp()
 {
 	initMainWindow();
 	initDirect3D();
+
+	DirectXIS::instance().InputInit(m_hMainWnd, m_hAppInst);
+	InputStateS::instance().SetDirectXInput(&DirectXIS::instance());
 }
 
 void D3DApp::initDirect3D()

@@ -11,8 +11,24 @@
 
 
 #include "MainPlane.h"
+#include "DX11/InputState.h"
+#include "algo/sgmath.h"
+float updateUnit = 1.0f;
 
-void MainPlane::Update() {
+void MainPlane::Update(float dt) 
+{
+	InputStateS::instance().GetInput();
 
+	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
+
+	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = updateUnit * dt * 40;
+	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -updateUnit * dt * 40;
+	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += updateUnit * dt * 100;
+	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= updateUnit * dt * 100;
+
+	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
+
+	m_position += trans;
 }
+
 
