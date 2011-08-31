@@ -10,7 +10,5 @@ Ogre::Vector3 GetRotation( const Ogre::Vector3& src, const Ogre::Vector3& up, fl
 
 Ogre::Degree GetAngle( float x, float y )
 {
-	if (abs(y)<0.001)
-		return Ogre::Degree(0);
-	return Ogre::Degree(Ogre::Radian(atanf(x/y)));
+	return Ogre::Degree(Ogre::Radian(atan2f(x, y)));
 }

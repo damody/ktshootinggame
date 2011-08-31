@@ -618,6 +618,10 @@
 			Name="shader"
 			>
 			<File
+				RelativePath=".\shader\bullet.fx"
+				>
+			</File>
+			<File
 				RelativePath=".\shader\point.fx"
 				>
 			</File>

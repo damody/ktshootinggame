@@ -5,7 +5,7 @@
 static InitDirect3DApp* s_pd3dapp;
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
-: D3DApp(hInstance), m_Width(0), m_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0)
+: D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0)
 {
 	s_pd3dapp = this;
 }
@@ -33,9 +33,9 @@ void InitDirect3DApp::initApp()
 	buildPointFX();
 	onResize();
 	// create track
-	NWay nway(10, Ogre::Vector3(400, 400, 0), Ogre::Vector3(5, 0, 0));
-	nway.SetRadiationAngle(90);
-	straight->mVelocity = 100;
+	NWay nway(10, Ogre::Vector3(400, 400, 0), Ogre::Vector3(0, 5, 0));
+	nway.SetRadiationAngle(180);
+	straight->mVelocity = 50;
 	nway.SetBehavior(straight);
 	m_BallptrManager.AddBallptrs(nway.NewBallptrVector(GetBulletBall));
 	buildPoint();
@@ -44,10 +44,12 @@ void InitDirect3DApp::initApp()
 void InitDirect3DApp::onResize()
 {
 	D3DApp::onResize();
-	if (m_Width!=NULL && m_Height!=NULL)
+	if (m_Warship_Width!=NULL && m_Warship_Height!=NULL)
 	{
-		m_Width->SetFloat((float)mClientWidth);
-		m_Height->SetFloat((float)mClientHeight);
+		m_Warship_Width->SetFloat((float)mClientWidth);
+		m_Warship_Height->SetFloat((float)mClientHeight);
+		m_Bullets_Width->SetFloat((float)mClientWidth);
+		m_Bullets_Height->SetFloat((float)mClientHeight);
 	}
 }
 
@@ -75,17 +77,18 @@ void InitDirect3DApp::DrawScene()
 	UINT stride = sizeof(DXVertex);
 	UINT offset = 0;
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	m_DeviceContext->IASetInputLayout(m_PLayout);
-	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
-	
+	m_DeviceContext->IASetInputLayout(m_PLayout_Warship);
+	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
-	m_PMap->SetResource(*m_warShip.m_texture);
-	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
+	m_PMap_Warship->SetResource(*m_warShip.m_texture);
 	m_DeviceContext->Draw(1, 0);
 
-	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_Bullets, &stride, &offset);
-	m_PMap->SetResource(*m_TextureManager.GetTexture(100));
-	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
+	UINT stride2 = sizeof(BulletVertex);
+	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
+	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_Bullets, &stride2, &offset);
+	m_PMap_Bullets->SetResource(*m_TextureManager.GetTexture(100));
+	m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->Draw(m_BallptrManager.mBallptrVector.size(), 0);
 	m_SwapChain->Present(0, 0);
 }
@@ -106,16 +109,39 @@ void InitDirect3DApp::buildPointFX()
 		}
 		DXTrace(__FILE__, __LINE__, hr, _T("D3DX11CreateEffectFromFile"), TRUE);
 	} 
-	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_TFX2));
-	m_PTech = m_TFX2->GetTechniqueByName("PointTech");
-	m_Width = m_TFX2->GetVariableByName("width")->AsScalar();
-	m_Height =m_TFX2->GetVariableByName("height")->AsScalar();
-	m_PMap =m_TFX2->GetVariableByName("gMap")->AsShaderResource();
+	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_Effect_Warship));
+	m_PTech_Warship = m_Effect_Warship->GetTechniqueByName("PointTech");
+	m_Warship_Width = m_Effect_Warship->GetVariableByName("width")->AsScalar();
+	m_Warship_Height =m_Effect_Warship->GetVariableByName("height")->AsScalar();
+	m_PMap_Warship =m_Effect_Warship->GetVariableByName("gMap")->AsShaderResource();
 
 	D3DX11_PASS_DESC PassDesc;
-	m_PTech->GetPassByIndex(0)->GetDesc(&PassDesc);
-	HR(m_d3dDevice->CreateInputLayout(VertexDesc1, 3, PassDesc.pIAInputSignature,
-		PassDesc.IAInputSignatureSize, &m_PLayout));
+	m_PTech_Warship->GetPassByIndex(0)->GetDesc(&PassDesc);
+	HR(m_d3dDevice->CreateInputLayout(VertexDesc_DXVertex, 3, PassDesc.pIAInputSignature,
+		PassDesc.IAInputSignatureSize, &m_PLayout_Warship));
+
+	hr=D3DX11CompileFromFile(_T("shader\\bullet.fx"), NULL, NULL, NULL, 
+		"fx_5_0", D3D10_SHADER_ENABLE_STRICTNESS|D3D10_SHADER_DEBUG, NULL, NULL, &pCode, &pError, NULL );
+	if(FAILED(hr))
+	{
+		if( pError )
+		{
+			MessageBoxA(0, (char*)pError->GetBufferPointer(), 0, 0);
+			ReleaseCOM(pError);
+		}
+		DXTrace(__FILE__, __LINE__, hr, _T("D3DX11CreateEffectFromFile"), TRUE);
+	} 
+	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_Effect_Bullets));
+	
+	m_PTech_Bullets = m_Effect_Bullets->GetTechniqueByName("PointTech");
+	m_Bullets_Width = m_Effect_Bullets->GetVariableByName("width")->AsScalar();
+	m_Bullets_Height =m_Effect_Bullets->GetVariableByName("height")->AsScalar();
+	m_PMap_Bullets =m_Effect_Bullets->GetVariableByName("gMap")->AsShaderResource();
+
+	D3DX11_PASS_DESC PassDesc2;
+	m_PTech_Bullets->GetPassByIndex(0)->GetDesc(&PassDesc2);
+	HR(m_d3dDevice->CreateInputLayout(VertexDesc_BulletVertex, 4, PassDesc2.pIAInputSignature,
+		PassDesc2.IAInputSignatureSize, &m_PLayout_Bullets));
 }
 
 void InitDirect3DApp::buildPoint()
@@ -137,16 +163,16 @@ void InitDirect3DApp::buildPoint()
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &Vertex[0];
 	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_WarShip));
-	Vertex.clear();
-	BallptrVector& vec = m_BallptrManager.mBallptrVector;
-	
+
+	std::vector<BulletVertex> BVertex;
+	BallptrVector& vec = m_BallptrManager.mBallptrVector;	
 	for (BallptrVector::iterator it = vec.begin();
 		it != vec.end(); ++it)
 	{
-		Vertex.push_back(((Bullet*)(*it))->m_pic);
+		BVertex.push_back(((Bullet*)(*it))->m_pic);
 	}
-	vbd.ByteWidth = sizeof(DXVertex)*Vertex.size();
-	vinitData.pSysMem = &Vertex[0];
+	vbd.ByteWidth = sizeof(BulletVertex)*BVertex.size();
+	vinitData.pSysMem = &BVertex[0];
 	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
 }
 
