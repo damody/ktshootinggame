@@ -12,11 +12,13 @@
 
 #include "BullectManager.h"
 
-void BullectManager::AddBullect() {
+void BullectManager::AddBullet() 
+{
 
 }
 
-void BullectManager::Update() {
+void BullectManager::Update()
+{
 
 }
 
