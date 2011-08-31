@@ -12,16 +12,21 @@
 
 #if !defined(_BULLET_H)
 #define _BULLET_H
+#include "algo\BallTptrManager.h"
 #include "math\OgreVector3.h"
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
+#include "ball\ball.h"
 
-class bullet {
+class Bullet : public Ball 
+{
 public:
+	inline Bullet(Texture_Sptr texture)
+	:Ball(Ogre::Vector3(), 0), m_texture(texture)
+	{}
+	virtual ~Bullet(){}
 	DXVertex	m_pic;		// 要畫的圖
 	Texture_Sptr	m_texture;	// 材質
-	Ogre::Vector3	m_position;	// 位置
-	float		m_angle;	// 射擊方向
 
 	bool m_visable;	// 看不看的見
 	bool m_enble;	// 子彈有沒有效
@@ -33,7 +38,10 @@ public:
 	float m_speed;	// 速度
 	int m_owner;	// 子彈的主人
 
-	void Update();
+	virtual int Update(float dt);
+	void UpdateDataToDraw();
 };
+
+extern boost::object_pool<Bullet> pool_Bullet;
 
 #endif  //_BULLET_H bn

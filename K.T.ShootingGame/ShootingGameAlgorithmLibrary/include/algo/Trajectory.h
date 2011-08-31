@@ -15,18 +15,78 @@ public:
 	Ogre::Quaternion mOrient;
 	float		mInitializeTime;
 	Behavior*	mBehavior;
+	NewBallFunction mNewBallFunction;
 public:
-	Trajectory(int _mNumTrajectory, Ogre::Vector3 _mPosition, Ogre::Vector3 _mDirection)
+	Trajectory(int _mNumTrajectory, Ogre::Vector3 _mPosition, Ogre::Vector3 _mDirection, NewBallFunction _mNewBallFunction = NULL)
 		:mNumTrajectory(_mNumTrajectory), mPosition(_mPosition), mDirection(_mDirection),
-		mInitializeTime(0), mUp(Ogre::Vector3::UNIT_Z), mBehavior(0), mNeedUpdate(false)
+		mInitializeTime(0), mUp(Ogre::Vector3::UNIT_Z), mBehavior(0), mNeedUpdate(false), mNewBallFunction(_mNewBallFunction)
 	{}
 	virtual ~Trajectory()
 	{}
-	virtual void AddBall(BallList& out)=0;
-	virtual void AddBall(BallVector& out)=0;
-	virtual BallList	GenerateBallList()=0;
-	virtual BallVector	GenerateBallVector()=0;
-	virtual BallVector& GetBallVector()=0;
+	virtual void OutputBall(BallptrVector& out, NewBallFunction bf = NULL)
+	{
+		if (bf) // test not NULL
+			bf; // nothing
+		else if (mNewBallFunction) // test not NULL
+		{
+			bf = mNewBallFunction;
+		}
+		else // or retuen
+		{
+			assert(bf);
+			return ;
+		}
+		for (BallVector::iterator it = mBall_PreComptue.begin();
+			it != mBall_PreComptue.end();it++)
+		{
+			Ball* b = bf();
+			*b = *it;
+			out.push_back(b);
+		}
+	}
+	virtual void OutputBall(BallList& out)
+	{
+		std::copy(mBall_PreComptue.begin(), mBall_PreComptue.end(), out.end());
+	}
+	virtual void OutputBall(BallVector& out)
+	{
+		std::copy(mBall_PreComptue.begin(), mBall_PreComptue.end(), out.end());
+	}
+	virtual BallptrVector NewBallptrVector(NewBallFunction bf = NULL)
+	{
+		BallptrVector bv;
+		if (bf) // test not NULL
+			bf; // nothing
+		else if (mNewBallFunction) // test not NULL
+		{
+			bf = mNewBallFunction;
+		}
+		else // or retuen
+		{
+			assert(bf);
+			return bv;
+		}
+		for (BallVector::iterator it = mBall_PreComptue.begin();
+			it != mBall_PreComptue.end();it++)
+		{
+			Ball* b = bf();
+			*b = *it;
+			bv.push_back(b);
+		}
+		return bv;
+	}
+	virtual BallList NewBallList()
+	{
+		return BallList(mBall_PreComptue.begin(), mBall_PreComptue.end());
+	}
+	virtual BallVector NewBallVector()
+	{
+		return mBall_PreComptue;
+	}
+	virtual BallVector& GetBallVector()
+	{
+		return mBall_PreComptue;
+	}
 	virtual void SetBehavior(Behavior* b) 
 	{
 		mBehavior = b;
@@ -39,7 +99,10 @@ protected:
 	virtual void CheckModify()
 	{
 		if (mNeedUpdate)
+		{
 			Modifyed();
+			mNeedUpdate = false;
+		}
 	}
 	virtual void Modifyed()=0;
 };

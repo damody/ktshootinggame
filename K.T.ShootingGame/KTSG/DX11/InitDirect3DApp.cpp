@@ -2,9 +2,12 @@
 #include "InitDirect3DApp.h"
 #include "InputState.h"
 
+static InitDirect3DApp* s_pd3dapp;
+
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
-: D3DApp(hInstance), m_Width(0), m_Height(0), m_Points(0)
+: D3DApp(hInstance), m_Width(0), m_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0)
 {
+	s_pd3dapp = this;
 }
 
 InitDirect3DApp::~InitDirect3DApp()
@@ -13,6 +16,14 @@ InitDirect3DApp::~InitDirect3DApp()
 		m_DeviceContext->ClearState();
 }
 
+Ball* GetBulletBall()
+{
+	Bullet* bullet = pool_Bullet.construct(s_pd3dapp->m_TextureManager.GetTexture(100));
+	return static_cast<Ball*>(bullet);
+}
+
+Straight* straight = new Straight;
+
 void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
@@ -20,8 +31,14 @@ void InitDirect3DApp::initApp()
 	LoadBlend();
 	LoadWarShip();
 	buildPointFX();
-	buildPoint();
 	onResize();
+	// create track
+	NWay nway(10, Ogre::Vector3(400, 400, 0), Ogre::Vector3(5, 0, 0));
+	nway.SetRadiationAngle(90);
+	straight->mVelocity = 100;
+	nway.SetBehavior(straight);
+	m_BallptrManager.AddBallptrs(nway.NewBallptrVector(GetBulletBall));
+	buildPoint();
 }
 
 void InitDirect3DApp::onResize()
@@ -61,10 +78,15 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetInputLayout(m_PLayout);
 	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
 	
-	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Points, &stride, &offset);
+	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
 	m_PMap->SetResource(*m_warShip.m_texture);
 	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
 	m_DeviceContext->Draw(1, 0);
+
+	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_Bullets, &stride, &offset);
+	m_PMap->SetResource(*m_TextureManager.GetTexture(100));
+	m_PTech->GetPassByIndex(0)->Apply(0,m_DeviceContext);
+	m_DeviceContext->Draw(m_BallptrManager.mBallptrVector.size(), 0);
 	m_SwapChain->Present(0, 0);
 }
 
@@ -98,8 +120,8 @@ void InitDirect3DApp::buildPointFX()
 
 void InitDirect3DApp::buildPoint()
 {
-	if(m_Points)
-		m_Points->Release();
+	ReleaseCOM(m_Buffer_WarShip);
+	ReleaseCOM(m_Buffer_Bullets);
 	// set warship
 	std::vector<DXVertex> Vertex;
 	Vertex.push_back(m_warShip.m_pic);
@@ -114,7 +136,18 @@ void InitDirect3DApp::buildPoint()
 
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &Vertex[0];
-	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Points));
+	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_WarShip));
+	Vertex.clear();
+	BallptrVector& vec = m_BallptrManager.mBallptrVector;
+	
+	for (BallptrVector::iterator it = vec.begin();
+		it != vec.end(); ++it)
+	{
+		Vertex.push_back(((Bullet*)(*it))->m_pic);
+	}
+	vbd.ByteWidth = sizeof(DXVertex)*Vertex.size();
+	vinitData.pSysMem = &Vertex[0];
+	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
 }
 
 void InitDirect3DApp::LoadResource()
@@ -190,6 +223,8 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip.m_texture = m_TextureManager.GetTexture(102);
 }
 
+
+
 int InitDirect3DApp::UpdateInput()
 {
 	InputStateS::instance().GetInput();
@@ -214,6 +249,7 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 
 int InitDirect3DApp::UpdateBullectMove( float dt )
 {
+	m_BallptrManager.Update(dt);
 	return 0;
 }
 

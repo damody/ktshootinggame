@@ -1,4 +1,5 @@
 #include "ball.h"
+boost::object_pool<Ball> pool_Ball;
 
 int Ball::Update( float elapsedtime )
 {

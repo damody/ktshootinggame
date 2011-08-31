@@ -1,4 +1,6 @@
 #pragma once
+#include <boost/pool/pool.hpp>
+#include <boost/pool/object_pool.hpp>
 #include "algo/sgmath.h"
 #include "math/OgreVector3.h"
 #include "common/utility.h"
@@ -36,8 +38,13 @@ public:
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
 	}
-	int Update(float elapsedtime);
+	virtual int Update(float elapsedtime);
 	bool HasBehavior();
+	virtual ~Ball(){}
 };
+typedef Ball* (*NewBallFunction)();
 typedef std::vector<Ball> BallVector;
 typedef std::list<Ball> BallList;
+typedef std::vector<Ball*> BallptrVector;
+extern boost::object_pool<Ball> pool_Ball;
+
