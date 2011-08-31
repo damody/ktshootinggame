@@ -43,7 +43,7 @@ void MainPlane::UpdateDataToDraw()
 
 int MainPlane::UpdateTower()
 {
-
+	return 0;
 }
 
 

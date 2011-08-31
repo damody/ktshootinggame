@@ -16,7 +16,7 @@
 
 class BullectManager {
 public:
-	void AddBullect();
+	void AddBullet();
 	void Update();
 };
 
