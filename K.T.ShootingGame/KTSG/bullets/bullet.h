@@ -25,7 +25,7 @@ public:
 	:Ball(Ogre::Vector3(), 0), m_texture(texture)
 	{}
 	virtual ~Bullet(){}
-	DXVertex	m_pic;		// 要畫的圖
+	BulletVertex	m_pic;		// 要畫的圖
 	Texture_Sptr	m_texture;	// 材質
 
 	bool m_visable;	// 看不看的見

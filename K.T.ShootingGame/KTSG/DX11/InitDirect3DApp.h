@@ -38,16 +38,22 @@ private:
 	int  UpdateBullectCollision();
 	int  UpdateUI();
 private:
-	ID3DX11EffectShaderResourceVariable*  m_PMap;
-	ID3DX11EffectScalarVariable* m_Time;
+	ID3DX11EffectShaderResourceVariable*  m_PMap_Warship;
+	ID3DX11EffectShaderResourceVariable*  m_PMap_Bullets;
 
 	ID3D11Buffer* m_Buffer_WarShip;
 	ID3D11Buffer* m_Buffer_Bullets;
-	ID3DX11Effect* m_TFX2;
-	ID3DX11EffectTechnique* m_PTech;
-	ID3D11InputLayout* m_PLayout;
-	ID3DX11EffectScalarVariable* m_Width;
-	ID3DX11EffectScalarVariable* m_Height;
+	ID3DX11Effect* m_Effect_Warship;
+	ID3DX11Effect* m_Effect_Bullets;
+	ID3DX11EffectTechnique* m_PTech_Warship;
+	ID3DX11EffectTechnique* m_PTech_Bullets;
+	ID3D11InputLayout* m_PLayout_Warship;
+	ID3D11InputLayout* m_PLayout_Bullets;
+	ID3DX11EffectScalarVariable* m_Warship_Width;
+	ID3DX11EffectScalarVariable* m_Warship_Height;
+	ID3DX11EffectScalarVariable* m_Bullets_Width;
+	ID3DX11EffectScalarVariable* m_Bullets_Height;
+
 	ID3D11BlendState*	m_pBlendState_ADD;
 	ID3D11BlendState*	m_pBlendState_BLEND;
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteON;
