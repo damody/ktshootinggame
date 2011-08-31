@@ -2,7 +2,7 @@
 #include "Ball.h"
 
 template <typename _Type>
-class BallTdata : public Ball
+class BallTptr : public Ball
 {
 public:
 	_Type* mData;
