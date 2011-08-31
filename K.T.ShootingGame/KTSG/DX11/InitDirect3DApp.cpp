@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "InitDirect3DApp.h"
+#include "InputState.h"
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 : D3DApp(hInstance), m_Width(0), m_Height(0), m_Points(0)
@@ -192,34 +193,36 @@ void InitDirect3DApp::LoadWarShip()
 int InitDirect3DApp::UpdateInput()
 {
 	InputStateS::instance().GetInput();
+	return 0;
 }
 
 int InitDirect3DApp::UpdateWarShip( float dt )
 {
 	m_warShip.Update(dt);
+	return 0;
 }
 
 int InitDirect3DApp::UpdateDeliver( float dt )
 {
-
+	return 0;
 }
 
 int InitDirect3DApp::UpdateEnemy( float dt )
 {
-
+	return 0;
 }
 
 int InitDirect3DApp::UpdateBullectMove( float dt )
 {
-
+	return 0;
 }
 
 int InitDirect3DApp::UpdateBullectCollision()
 {
-
+	return 0;
 }
 
 int InitDirect3DApp::UpdateUI()
 {
-
+	return 0;
 }

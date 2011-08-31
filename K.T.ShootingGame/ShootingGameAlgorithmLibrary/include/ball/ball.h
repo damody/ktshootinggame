@@ -13,7 +13,7 @@ public:
 	{
 		FLY,
 		STOP,
-		DESTORY
+		DESTORY // if on this status, system will delete this ball
 	};
 	Ogre::Vector3	mPosition;
 	Ogre::Vector3	mDirection;
