@@ -11,7 +11,7 @@ void BallManager::AddTrajectory( Trajectory* t )
 	mTrajectoryRawPtrs.push_back(t);
 }
 
-#ifdef SGA_USE_MUTITHREAD
+#if (SGA_USE_MUTITHREAD > 0)
 
 BallManager::BallManager( int _mNumThreads/*=1*/ ) :mNumThreads(_mNumThreads), mOver(false)
 {
@@ -116,10 +116,10 @@ void BallManager::Update( float time )
 
 void BallManager::Update( float time )
 {
-	Trajectory_Sptrs::iterator it = mTrajectoryRawPtrs.begin();
+	TrajectoryRawPtrs::iterator it = mTrajectoryRawPtrs.begin();
 	for (;it != mTrajectoryRawPtrs.end();it++)
 	{
-		BallVector& bv = it->GetBallVector();
+		BallVector& bv = (**it).GetBallVector();
 		size_t bsize = bv.size();
 		for (size_t i=0;i < bsize;i++)
 		{

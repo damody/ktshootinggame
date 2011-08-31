@@ -1,12 +1,18 @@
 #pragma once
+#include "algo/BallTptrManager.h"
+#include "algo/nway.h"
+#include "algo/RandomWay.h"
+#include "ball/straight.h"
+
 #include "d3dApp.h"
 #include <d3dCompiler.h>
 #include <d3dx11effect.h>
 #include "Vertex.h"
 #include "Lua/LuaCell.h"
 #include "TextureManager.h"
-
 #include "planes/MainPlane.h"
+#include "bullets/bullet.h"
+
 
 class InitDirect3DApp : public D3DApp
 {
@@ -25,21 +31,22 @@ private:
 	void buildPoint();
 	void LoadWarShip();
 	int  UpdateInput();
-	int UpdateWarShip(float dt);
-	int UpdateDeliver(float dt);
-	int UpdateEnemy(float dt);
-	int UpdateBullectMove(float dt);
+	int  UpdateWarShip(float dt);
+	int  UpdateDeliver(float dt);
+	int  UpdateEnemy(float dt);
+	int  UpdateBullectMove(float dt);
 	int  UpdateBullectCollision();
 	int  UpdateUI();
 private:
 	ID3DX11EffectShaderResourceVariable*  m_PMap;
 	ID3DX11EffectScalarVariable* m_Time;
 
-	ID3D11Buffer* m_Points;
+	ID3D11Buffer* m_Buffer_WarShip;
+	ID3D11Buffer* m_Buffer_Bullets;
 	ID3DX11Effect* m_TFX2;
 	ID3DX11EffectTechnique* m_PTech;
 	ID3D11InputLayout* m_PLayout;
-	ID3DX11EffectScalarVariable* m_Width ;
+	ID3DX11EffectScalarVariable* m_Width;
 	ID3DX11EffectScalarVariable* m_Height;
 	ID3D11BlendState*	m_pBlendState_ADD;
 	ID3D11BlendState*	m_pBlendState_BLEND;
@@ -47,9 +54,9 @@ private:
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteOFF;
 
 	LuaCell		m_Lua;
-	TextureManager	m_TextureManager;
-
+public:	TextureManager	m_TextureManager;
 	MainPlane	m_warShip;
+	BallptrManager	m_BallptrManager;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC

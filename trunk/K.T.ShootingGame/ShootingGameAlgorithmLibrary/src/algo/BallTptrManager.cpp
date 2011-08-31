@@ -1,22 +1,7 @@
 #include "BallTptrManager.h"
 
-template <class T>
-void BallTptrManager<T>::SetNumThreads( int i )
-{
-	if (i<=0) i=1;
-	if (i>SGA_MAX_THREADS) i=SGA_MAX_THREADS;
-}
-
-template <class T>
-void BallTptrManager<T>::AddTrajectory( Trajectory* t )
-{
-	mTrajectoryRawPtrs.push_back(t);
-}
-
-#ifdef SGA_USE_MUTITHREAD
-
-template <class T>
-BallTptrManager<T>::BallTptrManager( int _mNumThreads/*=1*/ ) :mNumThreads(_mNumThreads), mOver(false)
+#if (SGA_USE_MUTITHREAD > 0)
+BallptrManager::BallptrManager( int _mNumThreads /*= 1 */ ) :mNumThreads(_mNumThreads), mOver(false)
 {
 	memset(mThreadsWork, 0, sizeof(mThreadsWork));
 	if (mNumThreads>1)
@@ -25,13 +10,12 @@ BallTptrManager<T>::BallTptrManager( int _mNumThreads/*=1*/ ) :mNumThreads(_mNum
 		{
 			mThreadsWork[i] = new work_info;
 			mThreadgroup.create_thread(
-				boost::bind(&BallManager::MutiThreadUpdate, boost::ref(*this), i));
+				boost::bind(&BallptrManager::MutiThreadUpdate, boost::ref(*this), i));
 		}
 	}
 }
 
-template <class T>
-BallTptrManager<T>::~BallTptrManager()
+BallptrManager::~BallptrManager()
 {
 	mOver = true;
 	mThreadgroup.join_all();
@@ -42,8 +26,7 @@ BallTptrManager<T>::~BallTptrManager()
 	}
 }
 
-template <class T>
-void BallTptrManager<T>::MutiThreadUpdate( int i )
+void BallptrManager::MutiThreadUpdate( int i )
 {
 	for (;!mOver;) // 程式還沒結束
 	{
@@ -54,11 +37,11 @@ void BallTptrManager<T>::MutiThreadUpdate( int i )
 			size_t numwork = info.works.size();
 			for (size_t nw=0;nw<numwork;nw++)
 			{
-				BallVector& bv = *(info.works[nw].bv);
+				BallptrVector& bv = *(info.works[nw].bv);
 				size_t bsize = bv.size();
 				for (size_t i=info.works[nw].begin;i < info.works[nw].end;i++)
 				{
-					bv[i].Update(info.time);
+					bv[i]->Update(info.time);
 				}
 			}
 			info.work_done = true;
@@ -66,10 +49,8 @@ void BallTptrManager<T>::MutiThreadUpdate( int i )
 	}
 }
 
-template <class T>
-void BallTptrManager<T>::Update( float time )
+void BallptrManager::Update( float time )
 {
-	TrajectoryRawPtrs::iterator it = mTrajectoryRawPtrs.begin();
 	if (mNumThreads>1)
 	{
 		for (int i=0;i<mNumThreads;i++)
@@ -77,55 +58,46 @@ void BallTptrManager<T>::Update( float time )
 			LOCK l(mThreadsWork[i]->m); // 鎖住並清除工作
 			mThreadsWork[i]->works.clear();
 		}
-		for (;it != mTrajectoryRawPtrs.end();it++)
+		double step = mBallptrVector.size()/(double)mNumThreads;
+		double now_step = 0;
+		for (int i=0;i<mNumThreads;i++)
 		{
-			BallVector& bv = (*it)->GetBallVector();
-			double step = bv.size()/(double)mNumThreads;
-			double now_step = 0;
-			for (int i=0;i<mNumThreads;i++)
+			LOCK l(mThreadsWork[i]->m); //鎖住並更新
+			if (mThreadsWork[i]->work_done)
 			{
-				LOCK l(mThreadsWork[i]->m); //鎖住並更新
-				if (mThreadsWork[i]->work_done)
-				{
-					if ((int)now_step == bv.size())
-						break;
-					mThreadsWork[i]->work_done = false;
-					mThreadsWork[i]->time = time;
-					work w;
-					w.bv = &bv;
-					w.begin = (int)now_step;
-					now_step += step;
-					if ((size_t)now_step >= bv.size())
-						now_step = bv.size();
-					w.end = (int)now_step;
-					mThreadsWork[i]->works.push_back(w);
-				}
+				if ((int)now_step == mBallptrVector.size())
+					break;
+				mThreadsWork[i]->work_done = false;
+				mThreadsWork[i]->time = time;
+				work w;
+				w.bv = &mBallptrVector;
+				w.begin = (int)now_step;
+				now_step += step;
+				if ((size_t)now_step >= mBallptrVector.size())
+					now_step = mBallptrVector.size();
+				w.end = (int)now_step;
+				mThreadsWork[i]->works.push_back(w);
 			}
 		}
 	}
 	else
 	{
-		for (;it != mTrajectoryRawPtrs.end();it++)
+		size_t bsize = mBallptrVector.size();
+		for (size_t i=0;i < bsize;i++)
 		{
-			BallVector& bv = (*it)->GetBallVector();
-			size_t bsize = bv.size();
-			for (size_t i=0;i < bsize;i++)
-			{
-				bv[i].Update(time);
-			}
+			mBallptrVector[i]->Update(time);
 		}
 	}
 }
 
 #else
 
-template <class T>
-void BallTptrManager<T>::Update( float time )
+void BallptrManager::Update( float time )
 {
 	Trajectory_Sptrs::iterator it = mTrajectoryRawPtrs.begin();
 	for (;it != mTrajectoryRawPtrs.end();it++)
 	{
-		BallVector& bv = it->GetBallVector();
+		BallTptrVector& bv = it->GetBallVector();
 		size_t bsize = bv.size();
 		for (size_t i=0;i < bsize;i++)
 		{
@@ -133,6 +105,4 @@ void BallTptrManager<T>::Update( float time )
 		}
 	}
 }
-
-
 #endif
