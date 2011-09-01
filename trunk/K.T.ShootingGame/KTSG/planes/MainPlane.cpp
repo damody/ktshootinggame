@@ -18,7 +18,11 @@ float updateUnit = 1.0f;
 
 void MainPlane::Update(float dt) 
 {
-	
+	static float speed = 150;
+	if (InputStateS::instance().isKeyDown(KEY_NUMPAD1))
+		m_straight->mVelocity +=50;
+	if (InputStateS::instance().isKeyDown(KEY_NUMPAD2))
+		m_straight->mVelocity -=50;
 	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
 
 	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = updateUnit * dt * 40;
@@ -26,21 +30,15 @@ void MainPlane::Update(float dt)
 	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += updateUnit * dt * 30;
 	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= updateUnit * dt * 30;
 
-	if(InputStateS::instance().isKeyDown(KEY_SPACE))
+	if(InputStateS::instance().isKeyPress(KEY_SPACE))
 	{
 		((InitDirect3DApp*)D3DApp::d3dAppInstance)->m_BallptrManager.AddBallptrs(m_nWay->NewBallptrVector(GetBulletBall));
 	}
-
 	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
-
 	m_position += trans;
-
 	m_nWay->Position() += trans;
-	m_straight->mVelocity = 50;
 	m_nWay->Direction() = GetRotation(Ogre::Vector3::UNIT_Y, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
 	
-	
-
 	UpdateDataToDraw();
 }
 

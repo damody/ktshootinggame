@@ -1,5 +1,6 @@
 #include "Timer.h"
 #include <windows.h>
+#include <stdio.h>
 
 GameTimer::GameTimer()
 : mSecondsPerCount(0.0), mDeltaTime(-1.0), mBaseTime(0), 
@@ -104,6 +105,7 @@ void GameTimer::tick()
 
 	// Time difference between this frame and the previous.
 	mDeltaTime = (mCurrTime - mPrevTime)*mSecondsPerCount;
+	//printf("dtime: %f\n", mDeltaTime);
 
 	// Prepare for next frame.
 	mPrevTime = mCurrTime;
