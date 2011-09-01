@@ -9,13 +9,34 @@ class Trajectory
 {
 public:
 	int		mNumTrajectory;
-	Ogre::Vector3	mPosition;
-	Ogre::Vector3	mDirection;
-	Ogre::Vector3	mUp;
 	Ogre::Quaternion mOrient;
 	float		mInitializeTime;
 	Behavior*	mBehavior;
 	NewBallFunction mNewBallFunction;
+	int& NumTrajectory()
+	{
+		mNeedUpdate = true;
+		return mNumTrajectory;
+	}
+	Ogre::Vector3&	Position()
+	{
+		mNeedUpdate = true;
+		return mPosition;
+	}
+	Ogre::Vector3&	Direction()
+	{
+		mNeedUpdate = true;
+		return mDirection;
+	}
+	Ogre::Vector3&	Up()
+	{
+		mNeedUpdate = true;
+		return mUp;
+	}
+private:
+	Ogre::Vector3	mPosition;
+	Ogre::Vector3	mDirection;
+	Ogre::Vector3	mUp;
 public:
 	Trajectory(int _mNumTrajectory, Ogre::Vector3 _mPosition, Ogre::Vector3 _mDirection, NewBallFunction _mNewBallFunction = NULL)
 		:mNumTrajectory(_mNumTrajectory), mPosition(_mPosition), mDirection(_mDirection),
@@ -25,6 +46,7 @@ public:
 	{}
 	virtual void OutputBall(BallptrVector& out, NewBallFunction bf = NULL)
 	{
+		CheckModify();
 		if (bf) // test not NULL
 			bf; // nothing
 		else if (mNewBallFunction) // test not NULL
@@ -46,14 +68,17 @@ public:
 	}
 	virtual void OutputBall(BallList& out)
 	{
+		CheckModify();
 		std::copy(mBall_PreComptue.begin(), mBall_PreComptue.end(), out.end());
 	}
 	virtual void OutputBall(BallVector& out)
 	{
+		CheckModify();
 		std::copy(mBall_PreComptue.begin(), mBall_PreComptue.end(), out.end());
 	}
 	virtual BallptrVector NewBallptrVector(NewBallFunction bf = NULL)
 	{
+		CheckModify();
 		BallptrVector bv;
 		if (bf) // test not NULL
 			bf; // nothing
@@ -77,14 +102,17 @@ public:
 	}
 	virtual BallList NewBallList()
 	{
+		CheckModify();
 		return BallList(mBall_PreComptue.begin(), mBall_PreComptue.end());
 	}
 	virtual BallVector NewBallVector()
 	{
+		CheckModify();
 		return mBall_PreComptue;
 	}
 	virtual BallVector& GetBallVector()
 	{
+		CheckModify();
 		return mBall_PreComptue;
 	}
 	virtual void SetBehavior(Behavior* b) 
