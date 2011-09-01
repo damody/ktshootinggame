@@ -94,15 +94,10 @@ void BallptrManager::Update( float time )
 
 void BallptrManager::Update( float time )
 {
-	Trajectory_Sptrs::iterator it = mTrajectoryRawPtrs.begin();
-	for (;it != mTrajectoryRawPtrs.end();it++)
+	size_t bsize = mBallptrVector.size();
+	for (size_t i=0;i < bsize;i++)
 	{
-		BallTptrVector& bv = it->GetBallVector();
-		size_t bsize = bv.size();
-		for (size_t i=0;i < bsize;i++)
-		{
-			bv[i].Update(time);
-		}
+		mBallptrVector[i]->Update(time);
 	}
 }
 #endif

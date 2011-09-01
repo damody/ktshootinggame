@@ -167,16 +167,19 @@ void InitDirect3DApp::buildPoint()
 	vinitData.pSysMem = &Vertex[0];
 	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_WarShip));
 
-	std::vector<BulletVertex> BVertex;
-	BallptrVector& vec = m_BallptrManager.mBallptrVector;	
-	for (BallptrVector::iterator it = vec.begin();
-		it != vec.end(); ++it)
+	if (!m_BallptrManager.mBallptrVector.empty())
 	{
-		BVertex.push_back(((Bullet*)(*it))->m_pic);
+		std::vector<BulletVertex> BVertex;
+		BallptrVector& vec = m_BallptrManager.mBallptrVector;	
+		for (BallptrVector::iterator it = vec.begin();
+			it != vec.end(); ++it)
+		{
+			BVertex.push_back(((Bullet*)(*it))->m_pic);
+		}
+		vbd.ByteWidth = sizeof(BulletVertex)*BVertex.size();
+		vinitData.pSysMem = &BVertex[0];
+		HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
 	}
-	vbd.ByteWidth = sizeof(BulletVertex)*BVertex.size();
-	vinitData.pSysMem = &BVertex[0];
-	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
 }
 
 void InitDirect3DApp::LoadResource()
@@ -251,11 +254,11 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip->m_position.y = 200;
 	m_warShip->m_texture = m_TextureManager.GetTexture(102);
 	m_warShip->m_straight = new Straight;
-	m_warShip->m_straight->mVelocity = 50;
-	m_warShip->m_nWay = new NWay(1, Ogre::Vector3(m_warShip->m_position.x, m_warShip->m_position.y, 0), Ogre::Vector3(0, 5, 0));
-	m_warShip->m_nWay->SetRadiationAngle(180);
-	m_warShip->m_nWay->SetBehavior(m_warShip->m_straight);
-	m_BallptrManager.AddBallptrs(m_warShip->m_nWay->NewBallptrVector(GetBulletBall));
+	m_warShip->m_straight->mVelocity = 150;
+	RandomWay* rw = new RandomWay(1, Ogre::Vector3(m_warShip->m_position.x, m_warShip->m_position.y, 0), Ogre::Vector3(0, 5, 0));
+	rw->SetRadiationAngle(180);
+	rw->SetBehavior(m_warShip->m_straight);
+	m_warShip->m_nWay = rw;
 }
 
 

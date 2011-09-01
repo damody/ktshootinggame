@@ -28,10 +28,10 @@ public:
 	float		m_angle;
 	int		m_hp;
 	int		m_w, m_h;
-	NWay*	m_nWay;
+	Trajectory*	m_nWay;
 	Straight*	m_straight;
 
-	MainPlane(NWay* nWay, Straight* straight):m_nWay(nWay), m_straight(straight)
+	MainPlane(Trajectory* nWay, Straight* straight):m_nWay(nWay), m_straight(straight)
 	{
 
 	}

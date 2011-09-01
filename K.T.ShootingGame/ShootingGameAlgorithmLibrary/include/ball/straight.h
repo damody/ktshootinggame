@@ -10,7 +10,6 @@ public:
 public:
 	inline Straight():mVelocity(1.0f)
 	{}
-	void SetVector(float v);
 	virtual int UpdateBall(Ball* b, float elapsedtime);
 	virtual ~Straight()
 	{}
