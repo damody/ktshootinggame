@@ -6,7 +6,7 @@ void NWay::Modifyed()
 {
 	mBall_PreComptue.clear();
 	mBall_PreComptue.reserve(mNumTrajectory);
-	float step_angle;
+	float step_angle = 0;
 	float start = -mRadiationAngle*0.5f;
 	if (mNumTrajectory > 1)
 		step_angle = mRadiationAngle/(mNumTrajectory-1);

@@ -13,6 +13,7 @@
 #include "MainPlane.h"
 #include "DX11/InputState.h"
 #include "algo/sgmath.h"
+#include "DX11/InitDirect3DApp.h"
 float updateUnit = 1.0f;
 
 void MainPlane::Update(float dt) 
@@ -25,9 +26,19 @@ void MainPlane::Update(float dt)
 	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += updateUnit * dt * 30;
 	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= updateUnit * dt * 30;
 
+	if(InputStateS::instance().isKeyDown(KEY_SPACE))
+	{
+		((InitDirect3DApp*)D3DApp::d3dAppInstance)->m_BallptrManager.AddBallptrs(m_nWay->NewBallptrVector(GetBulletBall));
+	}
+
 	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
 
 	m_position += trans;
+
+	m_nWay->mPosition += trans;
+	m_nWay->mDirection = GetRotation(Ogre::Vector3::UNIT_X, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+	
+
 	UpdateDataToDraw();
 }
 
