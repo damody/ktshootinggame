@@ -34,12 +34,12 @@ void InitDirect3DApp::initApp()
 	buildPointFX();
 	onResize();
 	// create track
-	NWay nway(50000, Ogre::Vector3(400, 400, 0), Ogre::Vector3(0, 5, 0));
-	nway.SetRadiationAngle(360);
-	straight->mVelocity = 10;
-	nway.SetBehavior(straight);
-	m_BallptrManager.AddBallptrs(nway.NewBallptrVector(GetBulletBall));
-	m_BallptrManager.SetNumThreads(1);
+// 	NWay nway(10, Ogre::Vector3(400, 400, 0), Ogre::Vector3(0, 5, 0));
+// 	nway.SetRadiationAngle(360);
+// 	straight->mVelocity = 10;
+// 	nway.SetBehavior(straight);
+// 	m_BallptrManager.AddBallptrs(nway.NewBallptrVector(GetBulletBall));
+// 	m_BallptrManager.SetNumThreads(1);
 	buildPoint();
 }
 

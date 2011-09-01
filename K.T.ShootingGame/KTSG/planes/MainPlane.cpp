@@ -35,8 +35,10 @@ void MainPlane::Update(float dt)
 
 	m_position += trans;
 
-	m_nWay->mPosition += trans;
-	m_nWay->mDirection = GetRotation(Ogre::Vector3::UNIT_X, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+	m_nWay->Position() += trans;
+	m_straight->mVelocity = 50;
+	m_nWay->Direction() = GetRotation(Ogre::Vector3::UNIT_Y, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+	
 	
 
 	UpdateDataToDraw();
