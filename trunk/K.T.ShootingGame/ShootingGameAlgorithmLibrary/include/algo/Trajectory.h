@@ -33,7 +33,7 @@ public:
 		mNeedUpdate = true;
 		return mUp;
 	}
-private:
+protected:
 	Ogre::Vector3	mPosition;
 	Ogre::Vector3	mDirection;
 	Ogre::Vector3	mUp;
