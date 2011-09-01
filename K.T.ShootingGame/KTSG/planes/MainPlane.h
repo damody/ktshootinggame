@@ -16,6 +16,8 @@
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
 #include "math\OgreVector3.h"
+#include "algo\nway.h"
+#include "ball\straight.h"
 
 
 class MainPlane {
@@ -26,6 +28,14 @@ public:
 	float		m_angle;
 	int		m_hp;
 	int		m_w, m_h;
+	NWay*	m_nWay;
+	Straight*	m_straight;
+
+	MainPlane(NWay* nWay, Straight* straight):m_nWay(nWay), m_straight(straight)
+	{
+
+	}
+
 	void Update(float dt);
 	int  UpdateTower();
 private:

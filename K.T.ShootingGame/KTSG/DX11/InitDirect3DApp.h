@@ -59,10 +59,10 @@ private:
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteON;
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteOFF;
 
-	LuaCell		m_Lua;
+	LuaCell				m_Lua;
 public:	TextureManager	m_TextureManager;
-	MainPlane	m_warShip;
-	BallptrManager	m_BallptrManager;
+	MainPlane*			m_warShip;
+	BallptrManager		m_BallptrManager;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC
@@ -95,3 +95,5 @@ struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC
 	~CD3D11_BLEND_DESCX(){}
 	operator const D3D11_BLEND_DESC&() const { return *this; }
 };
+
+Ball* GetBulletBall();

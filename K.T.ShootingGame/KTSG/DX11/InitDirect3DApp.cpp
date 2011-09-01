@@ -5,8 +5,9 @@
 static InitDirect3DApp* s_pd3dapp;
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
-: D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0)
+: D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) 
 {
+	m_warShip = new MainPlane(NULL, NULL);
 	s_pd3dapp = this;
 }
 
@@ -80,7 +81,7 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetInputLayout(m_PLayout_Warship);
 	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
-	m_PMap_Warship->SetResource(*m_warShip.m_texture);
+	m_PMap_Warship->SetResource(*(m_warShip->m_texture));
 	m_DeviceContext->Draw(1, 0);
 
 	UINT stride2 = sizeof(BulletVertex);
@@ -150,7 +151,7 @@ void InitDirect3DApp::buildPoint()
 	ReleaseCOM(m_Buffer_Bullets);
 	// set warship
 	std::vector<DXVertex> Vertex;
-	Vertex.push_back(m_warShip.m_pic);
+	Vertex.push_back(m_warShip->m_pic);
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -241,12 +242,18 @@ void InitDirect3DApp::LoadBlend()
 
 void InitDirect3DApp::LoadWarShip()
 {
-	m_warShip.m_angle = 0;
-	m_warShip.m_h = 350;
-	m_warShip.m_w = 600;
-	m_warShip.m_position.x = 300;
-	m_warShip.m_position.y = 200;
-	m_warShip.m_texture = m_TextureManager.GetTexture(102);
+	m_warShip->m_angle = 0;
+	m_warShip->m_h = 350;
+	m_warShip->m_w = 600;
+	m_warShip->m_position.x = 300;
+	m_warShip->m_position.y = 200;
+	m_warShip->m_texture = m_TextureManager.GetTexture(102);
+	m_warShip->m_straight = new Straight;
+	m_warShip->m_straight->mVelocity = 50;
+	m_warShip->m_nWay = new NWay(1, Ogre::Vector3(m_warShip->m_position.x, m_warShip->m_position.y, 0), Ogre::Vector3(0, 5, 0));
+	m_warShip->m_nWay->SetRadiationAngle(180);
+	m_warShip->m_nWay->SetBehavior(m_warShip->m_straight);
+	m_BallptrManager.AddBallptrs(m_warShip->m_nWay->NewBallptrVector(GetBulletBall));
 }
 
 
@@ -259,7 +266,7 @@ int InitDirect3DApp::UpdateInput()
 
 int InitDirect3DApp::UpdateWarShip( float dt )
 {
-	m_warShip.Update(dt);
+	m_warShip->Update(dt);
 	return 0;
 }
 
