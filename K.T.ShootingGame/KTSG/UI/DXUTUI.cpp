@@ -59,13 +59,10 @@ void DXUTUI::CreateDevice( int winWidth, int winHeight)
 
 bool DXUTUI::InitDXUT()
 {
-	DXUTInit( true, true ); 
-
+	DXUTInit( true, true );
 	m_D3DSettingsDlg.Init( &m_DialogResourceManager );
 	m_HUD.Init( &m_DialogResourceManager );
-
 	m_HUD.SetCallback( KTSGOnGUIEvent ); 
-
 	m_HUD.AddButton( 1, L"TEST_BUTTON1", 0, 100, 170, 23 );
 	m_HUD.AddStatic( 2, L"----", 5, 200, 108, 24 );
 	g_hud_test = &m_HUD;
@@ -77,13 +74,9 @@ bool DXUTUI::InitDXUT()
 void DXUTUI::UpdataUI(float dt)
 {
 	//DXUTRender3DEnvironment();
-	
 	DXUT_BeginPerfEvent( DXUT_PERFEVENTCOLOR, L"HUD / Stats" );
-	//m_HUD.SetRefreshTime(DXUTGetTime());
 	m_HUD.OnRender( dt );
-
 	DXUT_EndPerfEvent();
-
 }
 
 void DXUTUI::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

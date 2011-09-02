@@ -263,31 +263,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 }
 void D3DApp::updateScene(float dt)
 {
-	// Code computes the average frames per second, and also the 
-	// average time it takes to render one frame.
-
-	static int frameCnt = 0;
-	static float t_base = 0.0f;
-
-	frameCnt++;
-
-	// Compute averages over one second period.
-	if( (m_Timer.getGameTime() - t_base) >= 1.0f )
-	{
-		float fps = (float)frameCnt; // fps = frameCnt / 1
-		float mspf = 1000.0f / fps;
-
-		std::wostringstream outs;   
-		outs.precision(6);
-		outs << L"FPS: " << fps << L"\n" 
-			<< "Milliseconds: Per Frame: " << mspf;
-		m_FrameStats = outs.str();
-
-		// Reset for next average.
-		frameCnt = 0;
-		t_base  += 1.0f;
-	}
-	
+		
 }
 
 

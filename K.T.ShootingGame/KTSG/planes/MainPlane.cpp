@@ -18,7 +18,6 @@ float updateUnit = 1.0f;
 
 void MainPlane::Update(float dt) 
 {
-	static float speed = 150;
 	if (InputStateS::instance().isKeyDown(KEY_NUMPAD1))
 		m_straight->mVelocity +=50;
 	if (InputStateS::instance().isKeyDown(KEY_NUMPAD2))

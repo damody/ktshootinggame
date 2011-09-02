@@ -40,8 +40,7 @@ public:
 
 	virtual int Update(float dt);
 	void UpdateDataToDraw();
+	static boost::object_pool<Bullet> pool;
 };
-
-extern boost::object_pool<Bullet> pool_Bullet;
 
 #endif  //_BULLET_H bn
