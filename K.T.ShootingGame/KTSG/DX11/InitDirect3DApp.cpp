@@ -82,10 +82,13 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_Bullets, &stride2, &offset);
-	m_PMap_Bullets->SetResource(*m_TextureManager.GetTexture(100));
-	m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
-	m_DeviceContext->Draw(m_BallptrManager.mBallptrVector.size(), 0);
-	
+	for (DrawVertexGroups::iterator it = m_DrawVertexGroups.begin();
+		it != m_DrawVertexGroups.end();++it)
+	{
+		m_PMap_Bullets->SetResource(*(it->texture));
+		m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
+		m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
+	}
 }
 
 void InitDirect3DApp::buildPointFX()
@@ -161,13 +164,35 @@ void InitDirect3DApp::buildPoint()
 
 	if (!m_BallptrManager.mBallptrVector.empty())
 	{
+		// save each vertex groups's texture
+		m_DrawVertexGroups.clear();
+		DrawVertexGroup dvg;
+		dvg.texture = ((Bullet*)*(m_BallptrManager.mBallptrVector.begin()))->m_texture;
+		dvg.StartVertexLocation = 0;
+		// save all vertex points
 		std::vector<BulletVertex> BVertex;
-		BallptrVector& vec = m_BallptrManager.mBallptrVector;	
+		BallptrVector& vec = m_BallptrManager.mBallptrVector;
+		int vertexCount = 0, count = 0;
 		for (BallptrVector::iterator it = vec.begin();
 			it != vec.end(); ++it)
 		{
+			++vertexCount;
+			if (((Bullet*)(*it))->m_texture != dvg.texture)
+			{
+				dvg.VertexCount = vertexCount;
+				m_DrawVertexGroups.push_back(dvg);
+				vertexCount = 0;
+				// save next info
+				dvg.StartVertexLocation = count;
+				dvg.texture = ((Bullet*)(*it))->m_texture;
+			}
+			++count;
 			BVertex.push_back(((Bullet*)(*it))->m_pic);
 		}
+		// save finally dvg
+		dvg.VertexCount = vertexCount;
+		m_DrawVertexGroups.push_back(dvg);
+		// save other info
 		vbd.ByteWidth = sizeof(BulletVertex)*BVertex.size();
 		vinitData.pSysMem = &BVertex[0];
 		HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
@@ -277,14 +302,17 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 
 int InitDirect3DApp::UpdateBullectMove( float dt )
 {
+	// update all ball
 	m_BallptrManager.Update(dt);
+	// free delete ball
 	BallptrVector& bv = m_BallptrManager.mDeleteVector;
 	for (BallptrVector::iterator it = bv.begin();
 		it != bv.end();++it)
 	{
-		Bullet::pool.free((Bullet*)(*it));
+		Bullet::pool.destroy((Bullet*)(*it));
 	}
 	bv.clear();
+	std::sort(m_BallptrManager.mBallptrVector.begin(), m_BallptrManager.mBallptrVector.end(), CompareBullet);
 	return 0;
 }
 

@@ -26,3 +26,8 @@ int Bullet::Update( float dt )
 		mBallStatus = Ball::DESTORY;
 	return res;
 }
+
+bool CompareBullet( const Ball* lhs, const Ball* rhs )
+{
+	return (*(Bullet*)lhs)<(*(Bullet*)rhs);
+}
