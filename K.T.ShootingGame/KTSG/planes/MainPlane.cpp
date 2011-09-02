@@ -14,13 +14,10 @@
 #include "algo/sgmath.h"
 #include "DX11/InitDirect3DApp.h"
 #include "global.h"
+#include "DX11/WaveSound.h"
 
 void MainPlane::Update(float dt) 
 {
-	/*if (InputStateS::instance().isKeyDown(KEY_NUMPAD1))
-		m_straight->mVelocity +=50;
-	if (InputStateS::instance().isKeyDown(KEY_NUMPAD2))
-		m_straight->mVelocity -=50;*/
 	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
 
 	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 40;
@@ -56,6 +53,7 @@ int MainPlane::UpdateTower(float dt)
 				(**bvit).mPosition += m_position;
 			}
 			g_BallptrManager.AddBallptrs(bv);
+			WavSoundS::instance().PlayDup(18);
 		}
 	}
 	return 0;
