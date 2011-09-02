@@ -91,11 +91,11 @@ void D3DApp::initDirect3D()
 	g_d3dDevice = m_DXUT_UI->GetDevice();
 	m_DeviceContext = m_DXUT_UI->GetDeviceContext();
 	m_SwapChain = m_DXUT_UI->GetSwapChaine();
-	onResize();
+	OnResize();
 }
 
 
-void D3DApp::onResize()
+void D3DApp::OnResize()
 {
 	// Release the old views, as they hold references to the buffers we
 	// will be destroying.  Also release the old depth/stencil buffer.
@@ -182,7 +182,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 				m_AppPaused = false;
 				m_Minimized = false;
 				m_Maximized = true;
-				onResize();
+				OnResize();
 			}
 			else if( wParam == SIZE_RESTORED )
 			{
@@ -192,7 +192,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 				{
 					m_AppPaused = false;
 					m_Minimized = false;
-					onResize();
+					OnResize();
 				}
 
 				// Restoring from maximized state?
@@ -200,7 +200,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 				{
 					m_AppPaused = false;
 					m_Maximized = false;
-					onResize();
+					OnResize();
 				}
 				else if( m_Resizing )
 				{
@@ -215,7 +215,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
-					onResize();
+					OnResize();
 				}
 			}
 		}
@@ -234,7 +234,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		m_AppPaused = false;
 		m_Resizing  = false;
 		m_Timer.start();
-		onResize();
+		OnResize();
 		return 0;
 
 		// WM_DESTROY is sent when the window is being destroyed.
@@ -256,7 +256,7 @@ LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(m_hMainWnd, msg, wParam, lParam);
 }
-void D3DApp::updateScene(float dt)
+void D3DApp::UpdateScene(float dt)
 {
 		
 }
@@ -282,7 +282,7 @@ int D3DApp::run()
 			m_Timer.tick();
 
 			if( !m_AppPaused )
-				updateScene(m_Timer.getDeltaTime());	
+				UpdateScene(m_Timer.getDeltaTime());	
 			else
 				Sleep(50);
 

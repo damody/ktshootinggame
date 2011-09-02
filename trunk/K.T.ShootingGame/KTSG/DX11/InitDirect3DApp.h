@@ -19,18 +19,19 @@ class InitDirect3DApp : public D3DApp
 public:
 	InitDirect3DApp(HINSTANCE hInstance);
 	~InitDirect3DApp();
-
 	void initApp();
-	void onResize();
-	void updateScene(float dt);
-	void DrawScene();
+private:
+		
 	void LoadResource();
 	void LoadBlend();
-private:
+	void LoadWarShip();
+	void LoadTowers();
 	void buildPointFX();
 	void buildPoint();
-	void LoadWarShip();
-	int LoadTowers();
+	void OnResize();
+
+	void DrawScene();
+	void UpdateScene(float dt);
 	int  UpdateInput();
 	int  UpdateWarShip(float dt);
 	int  UpdateDeliver(float dt);

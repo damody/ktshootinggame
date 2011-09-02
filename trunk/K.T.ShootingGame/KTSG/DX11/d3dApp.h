@@ -19,8 +19,8 @@ public:
 
 	int run();
 	virtual void initApp();
-	virtual void onResize();// reset projection/etc
-	virtual void updateScene(float dt);
+	virtual void OnResize();// reset projection/etc
+	virtual void UpdateScene(float dt);
 	virtual void DrawScene(); 
 	virtual LRESULT msgProc(UINT msg, WPARAM wParam, LPARAM lParam);
 

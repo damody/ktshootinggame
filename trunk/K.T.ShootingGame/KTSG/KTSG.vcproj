@@ -474,6 +474,10 @@
 					RelativePath=".\DX11\Vertex.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\DX11\WaveSound.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="planes"
@@ -586,6 +590,10 @@
 				</File>
 				<File
 					RelativePath=".\DX11\Vertex.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DX11\WaveSound.h"
 					>
 				</File>
 			</Filter>
@@ -738,22 +746,6 @@
 				</File>
 				<File
 					RelativePath=".\UI\DXUT\SDKmisc.h"
-					>
-				</File>
-				<File
-					RelativePath=".\UI\DXUT\SDKsound.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\UI\DXUT\SDKsound.h"
-					>
-				</File>
-				<File
-					RelativePath=".\UI\DXUT\SDKwavefile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\UI\DXUT\SDKwavefile.h"
 					>
 				</File>
 			</Filter>

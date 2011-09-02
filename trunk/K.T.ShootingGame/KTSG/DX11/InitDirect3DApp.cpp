@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "InitDirect3DApp.h"
 #include "InputState.h"
+#include "WaveSound.h"
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 : D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) 
@@ -21,7 +22,7 @@ void InitDirect3DApp::initApp()
 	LoadWarShip();
 	LoadTowers();
 	buildPointFX();
-	onResize();
+	OnResize();
 	// Set blend
 	float BlendFactor[4] = {0,0,0,0};
 	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
@@ -29,19 +30,7 @@ void InitDirect3DApp::initApp()
 	buildPoint();
 }
 
-void InitDirect3DApp::onResize()
-{
-	D3DApp::onResize();
-	if (m_Warship_Width!=NULL && m_Warship_Height!=NULL)
-	{
-		m_Warship_Width->SetFloat((float)mClientWidth);
-		m_Warship_Height->SetFloat((float)mClientHeight);
-		m_Bullets_Width->SetFloat((float)mClientWidth);
-		m_Bullets_Height->SetFloat((float)mClientHeight);
-	}
-}
-
-void InitDirect3DApp::updateScene(float dt)
+void InitDirect3DApp::UpdateScene(float dt)
 {
 	m_DXUT_UI->UpdataUI(dt);
 	m_SwapChain->Present(0, 0);
@@ -55,6 +44,18 @@ void InitDirect3DApp::updateScene(float dt)
 	UpdateBullectCollision();
 	UpdateUI();
 	buildPoint();
+}
+
+void InitDirect3DApp::OnResize()
+{
+	D3DApp::OnResize();
+	if (m_Warship_Width!=NULL && m_Warship_Height!=NULL)
+	{
+		m_Warship_Width->SetFloat((float)mClientWidth);
+		m_Warship_Height->SetFloat((float)mClientHeight);
+		m_Bullets_Width->SetFloat((float)mClientWidth);
+		m_Bullets_Height->SetFloat((float)mClientHeight);
+	}
 }
 
 void InitDirect3DApp::DrawScene()
@@ -191,6 +192,7 @@ void InitDirect3DApp::buildPoint()
 void InitDirect3DApp::LoadResource()
 {
 	m_Lua.InputLuaFile("resource.lua");
+	// load pic
 	for (int i=1;;++i)
 	{
 		if (m_Lua.CheckNotNil("pic/%d/1", i))
@@ -200,6 +202,22 @@ void InitDirect3DApp::LoadResource()
 			assert(file != 0);
 			int getidx = g_TextureManager.AddTexture(file, idx);
 			assert(getidx == idx);
+		}
+		else
+			break;
+	}
+	// load wav file
+	WavSoundS::instance().Initialize(m_hMainWnd);
+	WavSoundS::instance().SetVolume(-2000);
+	for (int i=1;;++i)
+	{
+		if (m_Lua.CheckNotNil("wav/%d/1", i))
+		{
+			int idx = m_Lua.getLua<int>("wav/%d/1", i);
+			const char* file = m_Lua.getLua<const char*>("wav/%d/2", i);
+			assert(file != 0);
+			bool res = WavSoundS::instance().CreatSound(file, idx, 10);
+			assert(res);
 		}
 		else
 			break;
@@ -261,7 +279,7 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip.m_texture = g_TextureManager.GetTexture(102);
 }
 
-int InitDirect3DApp::LoadTowers()
+void InitDirect3DApp::LoadTowers()
 {
 	Tower t;
 	Straight* st = new Straight;
@@ -289,17 +307,29 @@ int InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.picpos.w = 2;
 	t.m_ball_pic.size.x = 20;
 	t.m_ball_pic.size.y = 200;
-	t.m_atkSpeed = 0.01;
+	t.m_atkSpeed = 0.05;
 	t.m_Trajectory = new NWay(3, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	ts.push_back(t);
 	m_warShip.m_Towers = ts;
-	return 0;
 }
 
 int InitDirect3DApp::UpdateInput()
 {
 	InputStateS::instance().GetInput();
+	static int sound = -2000;
+	if (InputStateS::instance().isKeyDown(KEY_NUMPAD1))
+	{
+		sound += 500;
+		WavSoundS::instance().SetVolume(sound);
+		printf("%d\n", sound);
+	}
+	if (InputStateS::instance().isKeyDown(KEY_NUMPAD2))
+	{
+		sound -= 500;
+		WavSoundS::instance().SetVolume(sound);
+		printf("%d\n", sound);
+	}
 	return 0;
 }
 
