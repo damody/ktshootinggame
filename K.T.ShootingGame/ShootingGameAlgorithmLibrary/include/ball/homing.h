@@ -2,15 +2,17 @@
 #include "ball.h"
 #include "behavior.h"
 #include "math/OgreVector3.h"
-#include "planes/MainPlane.h"
 
-class Homing : public Behavior
+typedef struct HomingData
 {
-public:
 	float	mVelocity;
 	Ogre::Vector3	(*GetEnemyPos)();
+}HomingData;
+
+class Homing : public Behavior
+{	
 public:
-	inline Homing():mVelocity(1.0f)
+	inline Homing()
 	{}
 	virtual int UpdateBall(Ball* b, float elapsedtime);
 	virtual ~Homing()

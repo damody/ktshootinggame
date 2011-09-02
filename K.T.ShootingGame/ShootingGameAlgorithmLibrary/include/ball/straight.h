@@ -3,12 +3,15 @@
 #include "behavior.h"
 #include "math/OgreVector3.h"
 
+struct StraightData
+{
+	float	mVelocity;
+};
+
 class Straight : public Behavior
 {
 public:
-	float	mVelocity;
-public:
-	inline Straight():mVelocity(1.0f)
+	inline Straight()
 	{}
 	virtual int UpdateBall(Ball* b, float elapsedtime);
 	virtual ~Straight()
