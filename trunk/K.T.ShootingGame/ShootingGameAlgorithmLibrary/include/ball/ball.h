@@ -23,7 +23,6 @@ public:
 	float		mTimeRate;
 	Behavior*	mpBehavior;
 	BallStatus	mBallStatus;
-	unsigned char*	mData;
 public:
 	GET_CLASS_SIZE(Ball)
 	inline Ball():mTimeRate(1)
@@ -33,17 +32,20 @@ public:
 		:mTimeRate(1), mPosition(pos), mDirection(dir), mUp(Ogre::Vector3::UNIT_Z), 
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
-		mData = (unsigned char*)malloc(nByte * sizeof(unsigned char));
 	}
 	inline Ball(const Ogre::Vector3 pos, float angle, int nByte, Behavior* behavior = NULL)
 		:mTimeRate(1), mPosition(pos), mDirection(GetRotation(pos, Ogre::Vector3::UNIT_Z, angle)), mUp(Ogre::Vector3::UNIT_Z), 
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
-		mData = (unsigned char*)malloc(nByte * sizeof(unsigned char));
 	}
 	virtual int Update(float elapsedtime);
 	bool HasBehavior();
-	virtual ~Ball(){}
+	virtual ~Ball()
+	{}
+	Ball(const Ball& b)
+	{
+		*this = b;
+	}
 };
 typedef Ball* (*NewBallFunction)();
 typedef std::vector<Ball> BallVector;

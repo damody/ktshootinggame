@@ -3,18 +3,15 @@
 #include "behavior.h"
 #include "math/OgreVector3.h"
 
-typedef struct GravityData
-{
-	Ogre::Vector3	mVelocity;
-	Ogre::Vector3	mForce;
-	Ogre::Vector3	mGravity;
-}GravityData;
-
 class Gravity : public Behavior
 {
 public:
+	Ogre::Vector3	mVelocity;
+	Ogre::Vector3	mForce;
+	Ogre::Vector3	mGravity;
+
 	inline Gravity()
-	{}
+	{m_typehash = strhasher("Gravity");}
 	virtual int UpdateBall(Ball* b, float elapsedtime);
 	virtual ~Gravity()
 	{}

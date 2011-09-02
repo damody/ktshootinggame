@@ -18,9 +18,10 @@
 #include "math\OgreVector3.h"
 #include "algo\nway.h"
 #include "ball\straight.h"
+#include "towers\tower.h"
 
-
-class MainPlane {
+class MainPlane
+{
 public:
 	DXVertex	m_pic;
 	Texture_Sptr	m_texture;
@@ -28,16 +29,11 @@ public:
 	float		m_angle;
 	int		m_hp;
 	int		m_w, m_h;
-	Trajectory*	m_nWay;
-	Straight*	m_straight;
-
-	MainPlane(Trajectory* nWay, Straight* straight):m_nWay(nWay), m_straight(straight)
-	{
-
-	}
-
+	Towers		m_Towers;
+public:
+	MainPlane(){}
 	void Update(float dt);
-	int  UpdateTower();
+	int  UpdateTower(float dt);
 private:
 	void UpdateDataToDraw();
 };

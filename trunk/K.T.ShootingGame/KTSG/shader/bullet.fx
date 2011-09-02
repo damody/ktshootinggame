@@ -58,23 +58,23 @@ void gs_main(point VS_OUT input[1], inout TriangleStream<GS_OUT> triStream)
 	float2 texsize = {1/input[0].picpos.z, 1/input[0].picpos.w};
 	GS_OUT out5;
 	out5.posH=float4(input[0].pos.xy-mul(float2(-input[0].size.x,-input[0].size.y), mat)*size ,0,1);
-	out5.texcoord = float2( texsize.x*(input[0].picpos.x-1), texsize.y*(input[0].picpos.y-1));
+	out5.texcoord = float2( texsize.x*(input[0].picpos.x), texsize.y*(input[0].picpos.y-1));
 	triStream.Append( out5 );
 	out5.posH=float4(input[0].pos.xy-mul(float2(-input[0].size.x,input[0].size.y), mat)*size,0,1);
-	out5.texcoord = float2( texsize.x*(input[0].picpos.x-1), texsize.y*(input[0].picpos.y));
+	out5.texcoord = float2( texsize.x*(input[0].picpos.x), texsize.y*(input[0].picpos.y));
 	triStream.Append( out5 );
 	out5.posH=float4(input[0].pos.xy-mul(float2(input[0].size.x,-input[0].size.y), mat)*size,0,1);
-	out5.texcoord = float2( texsize.x*(input[0].picpos.x), texsize.y*(input[0].picpos.y-1));
+	out5.texcoord = float2( texsize.x*(input[0].picpos.x-1), texsize.y*(input[0].picpos.y-1));
 	triStream.Append( out5 );
 	
 	out5.posH=float4(input[0].pos.xy-mul(float2(-input[0].size.x,input[0].size.y), mat)*size,0,1);
-	out5.texcoord = float2( texsize.x*(input[0].picpos.x-1), texsize.y*(input[0].picpos.y));
+	out5.texcoord = float2( texsize.x*(input[0].picpos.x), texsize.y*(input[0].picpos.y));
 	triStream.Append( out5 );
 	out5.posH=float4(input[0].pos.xy-mul(float2(input[0].size.x,-input[0].size.y), mat)*size,0,1);
-	out5.texcoord = float2( texsize.x*(input[0].picpos.x), texsize.y*(input[0].picpos.y-1));
+	out5.texcoord = float2( texsize.x*(input[0].picpos.x-1), texsize.y*(input[0].picpos.y-1));
 	triStream.Append( out5 );
 	out5.posH=float4(input[0].pos.xy-mul(float2(input[0].size.x,input[0].size.y), mat)*size,0,1);
-	out5.texcoord = float2( texsize.x*(input[0].picpos.x), texsize.y*(input[0].picpos.y));
+	out5.texcoord = float2( texsize.x*(input[0].picpos.x-1), texsize.y*(input[0].picpos.y));
 	triStream.Append( out5 );
 
 	triStream.RestartStrip( );

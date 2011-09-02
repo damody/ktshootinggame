@@ -128,6 +128,7 @@ protected:
 	{
 		if (mNeedUpdate)
 		{
+			mDirection.normalise();
 			Modifyed();
 			mNeedUpdate = false;
 		}

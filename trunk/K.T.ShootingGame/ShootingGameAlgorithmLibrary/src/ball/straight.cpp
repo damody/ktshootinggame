@@ -2,7 +2,7 @@
 
 int Straight::UpdateBall( Ball* b, float elapsedtime )
 {
-	StraightData* data = (StraightData*)b->mData;
-	b->mPosition += b->mDirection * data->mVelocity * elapsedtime;
+	b->mPosition += b->mDirection * mVelocity * elapsedtime;
 	return Ball::FLY;
 }
+

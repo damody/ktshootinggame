@@ -9,12 +9,11 @@
 //
 //
 
-
 #include "MainPlane.h"
 #include "DX11/InputState.h"
 #include "algo/sgmath.h"
 #include "DX11/InitDirect3DApp.h"
-float updateUnit = 1.0f;
+#include "global.h"
 
 void MainPlane::Update(float dt) 
 {
@@ -24,21 +23,42 @@ void MainPlane::Update(float dt)
 		m_straight->mVelocity -=50;*/
 	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
 
-	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = updateUnit * dt * 40;
-	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -updateUnit * dt * 40;
-	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += updateUnit * dt * 30;
-	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= updateUnit * dt * 30;
+	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 40;
+	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 40;
+	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
+	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
 
 	if(InputStateS::instance().isKeyPress(KEY_SPACE))
 	{
-		((InitDirect3DApp*)D3DApp::d3dAppInstance)->m_BallptrManager.AddBallptrs(m_nWay->NewBallptrVector(GetBulletBall));
+		//g_BallptrManager.AddBallptrs(m_nWay->NewBallptrVector(GetBulletBall));
 	}
 	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
 	m_position += trans;
-	m_nWay->Position() += trans;
-	m_nWay->Direction() = GetRotation(Ogre::Vector3::UNIT_Y, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
-	
+// 	m_nWay->Position() += trans;
+// 	m_nWay->Direction() = GetRotation(Ogre::Vector3::UNIT_Y, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+	UpdateTower(dt);
 	UpdateDataToDraw();
+}
+
+int MainPlane::UpdateTower(float dt)
+{
+	for (Towers::iterator it = m_Towers.begin();
+		it != m_Towers.end();++it)
+	{
+		it->m_angle = m_angle-90;
+		BallptrVector bv = it->Update(dt);
+		if (!bv.empty())
+		{
+			for (BallptrVector::iterator bvit = bv.begin();
+				bvit != bv.end(); ++bvit)
+			{
+				(**bvit).mPosition = GetRotation((**bvit).mPosition, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+				(**bvit).mPosition += m_position;
+			}
+			g_BallptrManager.AddBallptrs(bv);
+		}
+	}
+	return 0;
 }
 
 void MainPlane::UpdateDataToDraw()
@@ -49,11 +69,6 @@ void MainPlane::UpdateDataToDraw()
 	m_pic.angle = m_angle;
 	m_pic.size.x = (float)m_w;
 	m_pic.size.y = (float)m_h;
-}
-
-int MainPlane::UpdateTower()
-{
-	return 0;
 }
 
 

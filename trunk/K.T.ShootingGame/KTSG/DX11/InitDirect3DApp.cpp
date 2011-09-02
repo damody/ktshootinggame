@@ -2,13 +2,9 @@
 #include "InitDirect3DApp.h"
 #include "InputState.h"
 
-static InitDirect3DApp* s_pd3dapp;
-
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 : D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) 
 {
-	m_warShip = new MainPlane(NULL, NULL);
-	s_pd3dapp = this;
 }
 
 InitDirect3DApp::~InitDirect3DApp()
@@ -17,20 +13,13 @@ InitDirect3DApp::~InitDirect3DApp()
 		m_DeviceContext->ClearState();
 }
 
-Ball* GetBulletBall()
-{
-	Bullet* bullet = Bullet::pool.construct(s_pd3dapp->m_TextureManager.GetTexture(100));
-	return static_cast<Ball*>(bullet);
-}
-
-Straight* straight = new Straight;
-
 void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
 	LoadResource();
 	LoadBlend();
 	LoadWarShip();
+	LoadTowers();
 	buildPointFX();
 	onResize();
 	// Set blend
@@ -76,7 +65,7 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetInputLayout(m_PLayout_Warship);
 	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
-	m_PMap_Warship->SetResource(*(m_warShip->m_texture));
+	m_PMap_Warship->SetResource(*(m_warShip.m_texture));
 	m_DeviceContext->Draw(1, 0);
 	UINT stride2 = sizeof(BulletVertex);
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
@@ -148,7 +137,7 @@ void InitDirect3DApp::buildPoint()
 	ReleaseCOM(m_Buffer_Bullets);
 	// set warship
 	std::vector<DXVertex> Vertex;
-	Vertex.push_back(m_warShip->m_pic);
+	Vertex.push_back(m_warShip.m_pic);
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -162,21 +151,20 @@ void InitDirect3DApp::buildPoint()
 	vinitData.pSysMem = &Vertex[0];
 	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_WarShip));
 
-	if (!m_BallptrManager.mBallptrVector.empty())
+	if (!g_BallptrManager.mBallptrVector.empty())
 	{
 		// save each vertex groups's texture
 		m_DrawVertexGroups.clear();
 		DrawVertexGroup dvg;
-		dvg.texture = ((Bullet*)*(m_BallptrManager.mBallptrVector.begin()))->m_texture;
+		dvg.texture = ((Bullet*)*(g_BallptrManager.mBallptrVector.begin()))->m_texture;
 		dvg.StartVertexLocation = 0;
 		// save all vertex points
 		std::vector<BulletVertex> BVertex;
-		BallptrVector& vec = m_BallptrManager.mBallptrVector;
+		BallptrVector& vec = g_BallptrManager.mBallptrVector;
 		int vertexCount = 0, count = 0;
 		for (BallptrVector::iterator it = vec.begin();
 			it != vec.end(); ++it)
 		{
-			++vertexCount;
 			if (((Bullet*)(*it))->m_texture != dvg.texture)
 			{
 				dvg.VertexCount = vertexCount;
@@ -186,6 +174,7 @@ void InitDirect3DApp::buildPoint()
 				dvg.StartVertexLocation = count;
 				dvg.texture = ((Bullet*)(*it))->m_texture;
 			}
+			++vertexCount;
 			++count;
 			BVertex.push_back(((Bullet*)(*it))->m_pic);
 		}
@@ -209,7 +198,7 @@ void InitDirect3DApp::LoadResource()
 			int idx = m_Lua.getLua<int>("pic/%d/1", i);
 			const char* file = m_Lua.getLua<const char*>("pic/%d/2", i);
 			assert(file != 0);
-			int getidx = m_TextureManager.AddTexture(file, idx);
+			int getidx = g_TextureManager.AddTexture(file, idx);
 			assert(getidx == idx);
 		}
 		else
@@ -264,18 +253,48 @@ void InitDirect3DApp::LoadBlend()
 
 void InitDirect3DApp::LoadWarShip()
 {
-	m_warShip->m_angle = 0;
-	m_warShip->m_h = 350;
-	m_warShip->m_w = 600;
-	m_warShip->m_position.x = 300;
-	m_warShip->m_position.y = 200;
-	m_warShip->m_texture = m_TextureManager.GetTexture(102);
-	m_warShip->m_straight = new Straight;
-	m_warShip->m_straight->mVelocity = 150;
-	NWay* rw = new NWay(100, Ogre::Vector3(m_warShip->m_position.x, m_warShip->m_position.y, 0), Ogre::Vector3(0, 5, 0));
-	rw->SetRadiationAngle(180);
-	rw->SetBehavior(m_warShip->m_straight);
-	m_warShip->m_nWay = rw;
+	m_warShip.m_angle = 0;
+	m_warShip.m_h = 350;
+	m_warShip.m_w = 600;
+	m_warShip.m_position.x = 800;
+	m_warShip.m_position.y = 200;
+	m_warShip.m_texture = g_TextureManager.GetTexture(102);
+}
+
+int InitDirect3DApp::LoadTowers()
+{
+	Tower t;
+	Straight* st = new Straight;
+	st->mVelocity = 500;
+	t.m_Behavior = st;
+	t.m_Trajectory = new NWay(5, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory->SetBehavior(t.m_Behavior);
+	t.m_position = Ogre::Vector3(-100, 0, 0);
+	t.m_texture = g_TextureManager.GetTexture(104);
+	t.m_ball_texture = g_TextureManager.GetTexture(100);
+	t.m_ball_pic.picpos.x = 3;
+	t.m_ball_pic.picpos.y = 1;
+	t.m_ball_pic.picpos.z = 4;
+	t.m_ball_pic.picpos.w = 2;
+	t.m_ball_pic.size.x = 25;
+	t.m_ball_pic.size.y = 25;
+	t.m_atkSpeed = 0.5;
+	Towers ts;
+	ts.push_back(t);
+	t.m_position = Ogre::Vector3(100, 0, 0);
+	t.m_ball_texture = g_TextureManager.GetTexture(103);
+	t.m_ball_pic.picpos.x = 1;
+	t.m_ball_pic.picpos.y = 1;
+	t.m_ball_pic.picpos.z = 2;
+	t.m_ball_pic.picpos.w = 2;
+	t.m_ball_pic.size.x = 20;
+	t.m_ball_pic.size.y = 200;
+	t.m_atkSpeed = 0.2;
+	t.m_Trajectory = new NWay(3, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory->SetBehavior(t.m_Behavior);
+	ts.push_back(t);
+	m_warShip.m_Towers = ts;
+	return 0;
 }
 
 int InitDirect3DApp::UpdateInput()
@@ -286,7 +305,7 @@ int InitDirect3DApp::UpdateInput()
 
 int InitDirect3DApp::UpdateWarShip( float dt )
 {
-	m_warShip->Update(dt);
+	m_warShip.Update(dt);
 	return 0;
 }
 
@@ -303,16 +322,16 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 int InitDirect3DApp::UpdateBullectMove( float dt )
 {
 	// update all ball
-	m_BallptrManager.Update(dt);
+	g_BallptrManager.Update(dt);
 	// free delete ball
-	BallptrVector& bv = m_BallptrManager.mDeleteVector;
+	BallptrVector& bv = g_BallptrManager.mDeleteVector;
 	for (BallptrVector::iterator it = bv.begin();
 		it != bv.end();++it)
 	{
 		Bullet::pool.destroy((Bullet*)(*it));
 	}
 	bv.clear();
-	std::sort(m_BallptrManager.mBallptrVector.begin(), m_BallptrManager.mBallptrVector.end(), CompareBullet);
+	std::sort(g_BallptrManager.mBallptrVector.begin(), g_BallptrManager.mBallptrVector.end(), CompareBullet);
 	return 0;
 }
 
@@ -338,7 +357,7 @@ void InitDirect3DApp::PrintInfo()
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
-		std::wcout << L"FPS: " << fps << L" Balls: " << m_BallptrManager.mBallptrVector.size() << L"\n";
+		std::wcout << L"FPS: " << fps << L" Balls: " << g_BallptrManager.mBallptrVector.size() << L"\n";
 		std::wcout << m_FrameStats;
 		// Reset for next average.
 		frameCnt = 0;

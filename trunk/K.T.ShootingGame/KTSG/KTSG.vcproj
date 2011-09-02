@@ -340,6 +340,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\global.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 				<FileConfiguration
@@ -503,6 +507,10 @@
 			>
 			<File
 				RelativePath=".\ConvStr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\global.h"
 				>
 			</File>
 			<File

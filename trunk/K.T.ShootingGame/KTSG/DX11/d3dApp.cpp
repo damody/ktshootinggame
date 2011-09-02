@@ -2,10 +2,7 @@
 #include "d3dApp.h"
 #include "ui/dxut/DXUT.h"
 #include "InputState.h"
-
-ID3D11Device* g_d3dDevice = NULL;
-
-D3DApp* D3DApp::d3dAppInstance = NULL;
+#include "global.h"
 
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -29,8 +26,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 {
-	d3dAppInstance = this;
-
 	m_hAppInst   = hInstance;
 
 	m_AppPaused  = false;

@@ -1,21 +1,17 @@
 #ifndef D3DAPP_H
 #define D3DAPP_H
-
+#include "common/SGA_config.h"
 #include <string>
 #include <dwrite.h>
 #include "Timer.h"
 #include "ui/DXUTUI.h"
 #include "DX11/GetDirectXInput.h"
 
-extern ID3D11Device* g_d3dDevice;
-
 class D3DApp
 {
 public:
 	D3DApp(HINSTANCE hInstance);
 	virtual ~D3DApp();
-
-	static D3DApp* d3dAppInstance;
 
 	HINSTANCE	getAppInst();
 	HWND		getMainWnd();
