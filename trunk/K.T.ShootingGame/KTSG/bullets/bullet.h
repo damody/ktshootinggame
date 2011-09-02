@@ -12,7 +12,7 @@
 
 #if !defined(_BULLET_H)
 #define _BULLET_H
-#include "algo\BallTptrManager.h"
+#include "algo\BallptrManager.h"
 #include "math\OgreVector3.h"
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
@@ -41,6 +41,24 @@ public:
 	virtual int Update(float dt);
 	void UpdateDataToDraw();
 	static boost::object_pool<Bullet> pool;
+
+	bool operator < (const Bullet& rhs)
+	{
+		return m_texture < rhs.m_texture;
+	}
+	bool operator == (const Bullet& rhs)
+	{
+		return m_texture == rhs.m_texture;
+	}
 };
+
+bool CompareBullet(const Ball* lhs, const Ball* rhs);
+
+struct DrawVertexGroup
+{
+	Texture_Sptr	texture;	// §÷½è
+	int	VertexCount, StartVertexLocation;
+};
+typedef std::vector<DrawVertexGroup> DrawVertexGroups;
 
 #endif  //_BULLET_H bn

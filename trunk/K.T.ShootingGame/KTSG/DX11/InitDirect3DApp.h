@@ -1,5 +1,5 @@
 #pragma once
-#include "algo/BallTptrManager.h"
+#include "algo/BallptrManager.h"
 #include "algo/nway.h"
 #include "algo/RandomWay.h"
 #include "ball/straight.h"
@@ -61,6 +61,7 @@ private:
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteOFF;
 
 	LuaCell			m_Lua;
+	DrawVertexGroups	m_DrawVertexGroups;
 public:
 	TextureManager		m_TextureManager;
 	MainPlane*		m_warShip;

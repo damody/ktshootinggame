@@ -17,6 +17,14 @@ struct Texture
 	{
 		return texture;
 	}
+	bool operator < (const Texture& rhs)
+	{
+		return texture < rhs.texture;
+	}
+	bool operator == (const Texture& rhs)
+	{
+		return texture == rhs.texture;
+	}
 };
 SHARE_PTR(Texture)
 
