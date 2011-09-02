@@ -296,6 +296,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\ball\homing.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\ball\split.cpp"
 					>
 				</File>
@@ -399,6 +403,10 @@
 				</File>
 				<File
 					RelativePath=".\include\ball\BehaviorAnimator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\ball\homing.h"
 					>
 				</File>
 				<File
