@@ -289,7 +289,7 @@ int InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.picpos.w = 2;
 	t.m_ball_pic.size.x = 20;
 	t.m_ball_pic.size.y = 200;
-	t.m_atkSpeed = 0.2;
+	t.m_atkSpeed = 0.01;
 	t.m_Trajectory = new NWay(3, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	ts.push_back(t);
