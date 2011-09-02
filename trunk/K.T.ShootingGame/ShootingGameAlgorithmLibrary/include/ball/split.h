@@ -3,15 +3,18 @@
 #include "behavior.h"
 #include "math/OgreVector3.h"
 
-class Split : public Behavior
+struct SplitData
 {
-public:
 	float	mVelocity;
 	float	mAngle;
 	float	mMaxAngle;
 	float	mOAngle;
+};
+
+class Split : public Behavior
+{
 public:
-	inline Split():mVelocity(1.0f), mAngle(0), mMaxAngle(0)
+	inline Split()
 	{}
 	virtual int UpdateBall(Ball* b, float elapsedtime);
 	virtual ~Split()

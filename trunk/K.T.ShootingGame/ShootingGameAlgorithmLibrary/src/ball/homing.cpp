@@ -2,13 +2,15 @@
 
 int Homing::UpdateBall( Ball* b, float elapsedtime )
 {
-	Ogre::Vector3 enemyPos = GetEnemyPos();
+	HomingData* data = (HomingData*)b->mData;
+
+	Ogre::Vector3 enemyPos = data->GetEnemyPos();
 
 	Ogre::Vector3 direction = enemyPos - b->mPosition;
 
-	if(direction.angleBetween(b->mDirection).valueDegrees() > Ogre::Degree(45))
+	if(direction.angleBetween(b->mDirection).valueDegrees() > 45)
 		b->mDirection = direction;
 
-	b->mPosition += b->mDirection * mVelocity * elapsedtime;
+	b->mPosition += b->mDirection * data->mVelocity * elapsedtime;
 	return Ball::FLY;
 }

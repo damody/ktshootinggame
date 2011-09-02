@@ -3,11 +3,13 @@
 
 int Split::UpdateBall( Ball* b, float elapsedtime )
 {
-	if(abs(mOAngle) < mMaxAngle)
+	SplitData* data = (SplitData*)b->mData;
+
+	if(abs(data->mOAngle) < data->mMaxAngle)
 	{
-		b->mDirection = GetRotation(b->mDirection, Ogre::Vector3::NEGATIVE_UNIT_Z, mAngle *elapsedtime);
-		mOAngle+=mAngle*elapsedtime;
+		b->mDirection = GetRotation(b->mDirection, Ogre::Vector3::NEGATIVE_UNIT_Z, data->mAngle *elapsedtime);
+		data->mOAngle+=data->mAngle*elapsedtime;
 	}
-	b->mPosition += b->mDirection * mVelocity * elapsedtime;
+	b->mPosition += b->mDirection * data->mVelocity * elapsedtime;
 	return Ball::FLY;
 }

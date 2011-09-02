@@ -18,10 +18,10 @@ float updateUnit = 1.0f;
 
 void MainPlane::Update(float dt) 
 {
-	if (InputStateS::instance().isKeyDown(KEY_NUMPAD1))
+	/*if (InputStateS::instance().isKeyDown(KEY_NUMPAD1))
 		m_straight->mVelocity +=50;
 	if (InputStateS::instance().isKeyDown(KEY_NUMPAD2))
-		m_straight->mVelocity -=50;
+		m_straight->mVelocity -=50;*/
 	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
 
 	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = updateUnit * dt * 40;

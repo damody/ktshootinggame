@@ -15,12 +15,14 @@ void StraightWay::Modifyed()
 		start = 0;
 	for (int i = 0;i < mNumTrajectory;i++, start += step_angle)
 	{
-		Split* split = new Split;
-		split->mAngle = start / mRadiationAngle*200;
-		split->mVelocity = 500;
-		split->mMaxAngle = mRadiationAngle*0.5f;
-		split->mOAngle = 0;
-		Ball ball(mPosition, mDirection, split);
+		Ball ball(mPosition, mDirection, 0, mBehavior);
+
+		SplitData* data = (SplitData*)(ball.mData);
+		data->mAngle = start / mRadiationAngle*200;
+		data->mVelocity = 500;
+		data->mMaxAngle = mRadiationAngle*0.5f;
+		data->mOAngle = 0;
+
 		mBall_PreComptue.push_back(ball);
 	}
 	mNeedUpdate = false;
