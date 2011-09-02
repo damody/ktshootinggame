@@ -1,4 +1,4 @@
-#include "BallTptrManager.h"
+#include "BallptrManager.h"
 
 #if (SGA_USE_MUTITHREAD > 0)
 BallptrManager::BallptrManager( int _mNumThreads /*= 1 */ ) :mNumThreads(_mNumThreads), mOver(false)

@@ -253,8 +253,6 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip->m_nWay = rw;
 }
 
-
-
 int InitDirect3DApp::UpdateInput()
 {
 	InputStateS::instance().GetInput();

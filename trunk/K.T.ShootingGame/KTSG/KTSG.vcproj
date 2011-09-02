@@ -491,10 +491,6 @@
 				Name="bullets"
 				>
 				<File
-					RelativePath=".\bullets\BullectManager.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\bullets\bullet.cpp"
 					>
 				</File>
@@ -604,10 +600,6 @@
 			<Filter
 				Name="bullets"
 				>
-				<File
-					RelativePath=".\bullets\BullectManager.h"
-					>
-				</File>
 				<File
 					RelativePath=".\bullets\bullet.h"
 					>
