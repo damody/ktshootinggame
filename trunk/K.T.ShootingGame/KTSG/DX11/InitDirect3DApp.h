@@ -37,6 +37,7 @@ private:
 	int  UpdateBullectMove(float dt);
 	int  UpdateBullectCollision();
 	int  UpdateUI();
+	void PrintInfo();
 private:
 	ID3DX11EffectShaderResourceVariable*  m_PMap_Warship;
 	ID3DX11EffectShaderResourceVariable*  m_PMap_Bullets;
@@ -59,9 +60,10 @@ private:
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteON;
 	ID3D11DepthStencilState *m_pDepthStencil_ZWriteOFF;
 
-	LuaCell				m_Lua;
-public:	TextureManager	m_TextureManager;
-	MainPlane*			m_warShip;
+	LuaCell			m_Lua;
+public:
+	TextureManager		m_TextureManager;
+	MainPlane*		m_warShip;
 	BallptrManager		m_BallptrManager;
 };
 

@@ -19,7 +19,7 @@ InitDirect3DApp::~InitDirect3DApp()
 
 Ball* GetBulletBall()
 {
-	Bullet* bullet = pool_Bullet.construct(s_pd3dapp->m_TextureManager.GetTexture(100));
+	Bullet* bullet = Bullet::pool.construct(s_pd3dapp->m_TextureManager.GetTexture(100));
 	return static_cast<Ball*>(bullet);
 }
 
@@ -33,13 +33,10 @@ void InitDirect3DApp::initApp()
 	LoadWarShip();
 	buildPointFX();
 	onResize();
-	// create track
-// 	NWay nway(10, Ogre::Vector3(400, 400, 0), Ogre::Vector3(0, 5, 0));
-// 	nway.SetRadiationAngle(360);
-// 	straight->mVelocity = 10;
-// 	nway.SetBehavior(straight);
-// 	m_BallptrManager.AddBallptrs(nway.NewBallptrVector(GetBulletBall));
-// 	m_BallptrManager.SetNumThreads(1);
+	// Set blend
+	float BlendFactor[4] = {0,0,0,0};
+	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
+	//m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
 	buildPoint();
 }
 
@@ -57,9 +54,10 @@ void InitDirect3DApp::onResize()
 
 void InitDirect3DApp::updateScene(float dt)
 {
-	printf("%fsec, %ffps\n", dt, 1.0/dt);
-	D3DApp::updateScene(dt);
 	m_DXUT_UI->UpdataUI(dt);
+	m_SwapChain->Present(0, 0);
+	D3DApp::DrawScene(); // clear window
+	PrintInfo();
 	UpdateInput();
 	UpdateWarShip(dt);
 	UpdateDeliver(dt);
@@ -72,11 +70,6 @@ void InitDirect3DApp::updateScene(float dt)
 
 void InitDirect3DApp::DrawScene()
 {
-	// Set blend
-	float BlendFactor[4] = {0,0,0,0};
-	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
-	//m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
-	D3DApp::DrawScene(); // clear window
 	UINT stride = sizeof(DXVertex);
 	UINT offset = 0;
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
@@ -85,7 +78,6 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
 	m_PMap_Warship->SetResource(*(m_warShip->m_texture));
 	m_DeviceContext->Draw(1, 0);
-
 	UINT stride2 = sizeof(BulletVertex);
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
@@ -93,7 +85,7 @@ void InitDirect3DApp::DrawScene()
 	m_PMap_Bullets->SetResource(*m_TextureManager.GetTexture(100));
 	m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->Draw(m_BallptrManager.mBallptrVector.size(), 0);
-	m_SwapChain->Present(0, 0);
+	
 }
 
 void InitDirect3DApp::buildPointFX()
@@ -255,7 +247,7 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip->m_texture = m_TextureManager.GetTexture(102);
 	m_warShip->m_straight = new Straight;
 	m_warShip->m_straight->mVelocity = 150;
-	RandomWay* rw = new RandomWay(1, Ogre::Vector3(m_warShip->m_position.x, m_warShip->m_position.y, 0), Ogre::Vector3(0, 5, 0));
+	NWay* rw = new NWay(100, Ogre::Vector3(m_warShip->m_position.x, m_warShip->m_position.y, 0), Ogre::Vector3(0, 5, 0));
 	rw->SetRadiationAngle(180);
 	rw->SetBehavior(m_warShip->m_straight);
 	m_warShip->m_nWay = rw;
@@ -288,6 +280,13 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 int InitDirect3DApp::UpdateBullectMove( float dt )
 {
 	m_BallptrManager.Update(dt);
+	BallptrVector& bv = m_BallptrManager.mDeleteVector;
+	for (BallptrVector::iterator it = bv.begin();
+		it != bv.end();++it)
+	{
+		Bullet::pool.free((Bullet*)(*it));
+	}
+	bv.clear();
 	return 0;
 }
 
@@ -299,4 +298,24 @@ int InitDirect3DApp::UpdateBullectCollision()
 int InitDirect3DApp::UpdateUI()
 {
 	return 0;
+}
+
+void InitDirect3DApp::PrintInfo()
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.
+	static int frameCnt = 0;
+	static float t_base = 0.0f;
+	frameCnt++;
+	// Compute averages over one second period.
+	if( (m_Timer.getGameTime() - t_base) >= 1.0f )
+	{
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+		std::wcout << L"FPS: " << fps << L" Balls: " << m_BallptrManager.mBallptrVector.size() << L"\n";
+		std::wcout << m_FrameStats;
+		// Reset for next average.
+		frameCnt = 0;
+		t_base  += 1.0f;
+	}
 }

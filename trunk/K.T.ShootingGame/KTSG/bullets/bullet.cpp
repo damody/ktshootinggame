@@ -1,7 +1,6 @@
 
 #include "bullet.h"
-
-boost::object_pool<Bullet> pool_Bullet;
+boost::object_pool<Bullet> Bullet::pool;
 
 void Bullet::UpdateDataToDraw()
 {
@@ -21,5 +20,9 @@ int Bullet::Update( float dt )
 {
 	int res = Ball::Update(dt);
 	UpdateDataToDraw();
+	if (mPosition.x > 1920+300 || mPosition.x < -300)
+		mBallStatus = Ball::DESTORY;
+	if (mPosition.y > 1200+300 || mPosition.y < -300)
+		mBallStatus = Ball::DESTORY;
 	return res;
 }

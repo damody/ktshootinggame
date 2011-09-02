@@ -26,6 +26,25 @@ BallptrManager::~BallptrManager()
 	}
 }
 
+void BallptrManager::SetNumThreads( int i )
+{
+	if (i<=0) i=1;
+	if (i>SGA_MAX_THREADS) i=SGA_MAX_THREADS;
+	mNumThreads = i;
+	mOver = true;
+	mThreadgroup.join_all();
+	memset(mThreadsWork, 0, sizeof(mThreadsWork));
+	if (mNumThreads>1)
+	{
+		for (int i=0;i<mNumThreads;i++)
+		{
+			mThreadsWork[i] = new work_info;
+			mThreadgroup.create_thread(
+				boost::bind(&BallptrManager::MutiThreadUpdate, boost::ref(*this), i));
+		}
+	}
+}
+
 void BallptrManager::MutiThreadUpdate( int i )
 {
 	for (;!mOver;) // 程式還沒結束
@@ -41,7 +60,16 @@ void BallptrManager::MutiThreadUpdate( int i )
 				size_t bsize = bv.size();
 				for (size_t i=info.works[nw].begin;i < info.works[nw].end;i++)
 				{
-					bv[i]->Update(info.time);
+					if (i < bv.size())
+					{
+						bv[i]->Update(info.time);
+						if (bv[i]->mBallStatus == Ball::DESTORY)
+						{
+							mDeleteVector.push_back(bv[i]);
+							mBallptrVector.erase(mBallptrVector.begin()+i);
+							i--;
+						}
+					}
 				}
 			}
 			info.work_done = true;
@@ -86,6 +114,13 @@ void BallptrManager::Update( float time )
 		for (size_t i=0;i < bsize;i++)
 		{
 			mBallptrVector[i]->Update(time);
+			if (mBallptrVector[i]->mBallStatus == Ball::DESTORY)
+			{
+				mDeleteVector.push_back(mBallptrVector[i]);
+				mBallptrVector.erase(mBallptrVector.begin()+i);
+				i--;
+				bsize--;
+			}
 		}
 	}
 }
@@ -98,6 +133,14 @@ void BallptrManager::Update( float time )
 	for (size_t i=0;i < bsize;i++)
 	{
 		mBallptrVector[i]->Update(time);
+		if (mBallptrVector[i]->mBallStatus == Ball::DESTORY)
+		{
+			mDeleteVector.push_back(mBallptrVector[i]);
+			mBallptrVector.erase(mBallptrVector.begin()+i);
+			i--;
+			bsize--;
+		}
 	}
 }
+
 #endif

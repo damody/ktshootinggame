@@ -8,6 +8,7 @@ class BallptrManager
 {
 public:
 	BallptrVector	mBallptrVector;
+	BallptrVector	mDeleteVector;
 private:
 	int		mNumThreads;
 #if (SGA_USE_MUTITHREAD > 0)
@@ -37,17 +38,17 @@ public:
 	~BallptrManager();
 	void MutiThreadUpdate( int i );
 	void Update( float time );
+	void SetNumThreads( int i );
 #else
 	BallptrManager(int _mNumThreads=1)
 		:mNumThreads(_mNumThreads)
 	{}
 	void Update( float time );
-#endif
 	void SetNumThreads( int i )
-	{
-		if (i<=0) i=1;
-		if (i>SGA_MAX_THREADS) i=SGA_MAX_THREADS;
-	}
+	{}
+#endif
+	
+	
 	void AddBallptr( Ball* b )
 	{
 		mBallptrVector.push_back(b);
