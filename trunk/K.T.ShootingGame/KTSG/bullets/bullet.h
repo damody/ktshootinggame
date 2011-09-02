@@ -22,7 +22,7 @@ class Bullet : public Ball
 {
 public:
 	inline Bullet(Texture_Sptr texture)
-	:Ball(Ogre::Vector3(), 0), m_texture(texture)
+	:Ball(Ogre::Vector3(), 0, 0), m_texture(texture)
 	{}
 	virtual ~Bullet(){}
 	BulletVertex	m_pic;		// 要畫的圖
