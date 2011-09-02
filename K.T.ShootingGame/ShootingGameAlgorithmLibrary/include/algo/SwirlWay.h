@@ -7,7 +7,11 @@ class SwirlWay : public Trajectory
 {
 public:
 	float mSecPerCircle;
-	int mCircles;
+	int   mCircles;
+	float mElapsedTime;
+	float mLaunchTime;
+	float mVelocity;
+
 	SwirlWay(int _mNumPerCircle, int _mCircles, float _mSecPerCircle, Ogre::Vector3 _mPosition)
 		:Trajectory(_mNumPerCircle, _mPosition, Ogre::Vector3(0,0,0)), mSecPerCircle(_mSecPerCircle), mCircles(_mCircles)
 	{}

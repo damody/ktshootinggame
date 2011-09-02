@@ -2,12 +2,9 @@
 
 int Delay::UpdateBall( Ball* b, float elapsedtime )
 {
-	DelayData* data = (DelayData*)b->mData;
-
-
-	if(data->mElapsedTime >= data->mLaunchTime)
-		b->mPosition += b->mDirection * data->mVelocity * elapsedtime;
+	if(mElapsedTime >= mLaunchTime)
+		b->mPosition += b->mDirection * mVelocity * elapsedtime;
 	else
-		data->mElapsedTime += elapsedtime;
+		mElapsedTime += elapsedtime;
 	return Ball::FLY;
 }

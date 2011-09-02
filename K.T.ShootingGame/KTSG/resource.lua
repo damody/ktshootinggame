@@ -3,4 +3,5 @@ pic = {
 {101, "pic/crate.jpg"},
 {102, "pic/main_warship.png"},
 {103, "pic/ray1.png"},
+{104, "pic/tower1.png"},
 }

@@ -2,11 +2,8 @@
 
 int Gravity::UpdateBall( Ball* b, float elapsedtime )
 {
-	GravityData* data = (GravityData*)b->mData;
-
-	data->mForce -= data->mGravity * elapsedtime;
-
-	b->mPosition += b->mDirection * data->mVelocity * elapsedtime;
-	b->mPosition += data->mForce;
+	mForce -= mGravity * elapsedtime;
+	b->mPosition += b->mDirection * mVelocity * elapsedtime;
+	b->mPosition += mForce;
 	return Ball::FLY;
 }

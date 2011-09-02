@@ -3,18 +3,15 @@
 #include "behavior.h"
 #include "math/OgreVector3.h"
 
-typedef struct DelayData
-{
-	float mElapsedTime;
-	float mLaunchTime;
-	float mVelocity;
-}DelayData;
-
 class Delay : public Behavior
 {
 public:
+	float mElapsedTime;
+	float mLaunchTime;
+	float mVelocity;
+
 	inline Delay()
-	{}
+	{m_typehash = strhasher("Delay");}
 	virtual int UpdateBall(Ball* b, float elapsedtime);
 	virtual ~Delay()
 	{}

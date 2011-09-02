@@ -23,9 +23,8 @@ void SwirlWay::Modifyed()
 		{
 			Ball ball(mPosition, GetRotation(mDirection, mUp, start_angle), 0, mBehavior);
 
-			DelayData* data = (DelayData*)(ball.mData);
-			data->mVelocity = 50;
-			data->mLaunchTime = start_sec;
+			mVelocity = 50;
+			mLaunchTime = start_sec;
 
 			ball.Update(mInitializeTime);
 			mBall_PreComptue.push_back(ball);

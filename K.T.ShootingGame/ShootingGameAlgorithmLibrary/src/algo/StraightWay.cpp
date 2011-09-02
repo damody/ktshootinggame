@@ -17,11 +17,10 @@ void StraightWay::Modifyed()
 	{
 		Ball ball(mPosition, mDirection, 0, mBehavior);
 
-		SplitData* data = (SplitData*)(ball.mData);
-		data->mAngle = start / mRadiationAngle*200;
-		data->mVelocity = 500;
-		data->mMaxAngle = mRadiationAngle*0.5f;
-		data->mOAngle = 0;
+		mAngle = start / mRadiationAngle*200;
+		mVelocity = 500;
+		mMaxAngle = mRadiationAngle*0.5f;
+		mOAngle = 0;
 
 		mBall_PreComptue.push_back(ball);
 	}

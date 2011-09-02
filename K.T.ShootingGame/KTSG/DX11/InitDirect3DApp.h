@@ -1,10 +1,10 @@
 #pragma once
+#include "d3dApp.h"
 #include "algo/BallptrManager.h"
 #include "algo/nway.h"
 #include "algo/RandomWay.h"
 #include "ball/straight.h"
-
-#include "d3dApp.h"
+#include "global.h"
 #include <d3dCompiler.h>
 #include <d3dx11effect.h>
 #include "Vertex.h"
@@ -12,7 +12,7 @@
 #include "TextureManager.h"
 #include "planes/MainPlane.h"
 #include "bullets/bullet.h"
-
+#include "towers/tower.h"
 
 class InitDirect3DApp : public D3DApp
 {
@@ -30,6 +30,7 @@ private:
 	void buildPointFX();
 	void buildPoint();
 	void LoadWarShip();
+	int LoadTowers();
 	int  UpdateInput();
 	int  UpdateWarShip(float dt);
 	int  UpdateDeliver(float dt);
@@ -62,10 +63,7 @@ private:
 
 	LuaCell			m_Lua;
 	DrawVertexGroups	m_DrawVertexGroups;
-public:
-	TextureManager		m_TextureManager;
-	MainPlane*		m_warShip;
-	BallptrManager		m_BallptrManager;
+	MainPlane		m_warShip;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC
@@ -99,4 +97,3 @@ struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC
 	operator const D3D11_BLEND_DESC&() const { return *this; }
 };
 
-Ball* GetBulletBall();
