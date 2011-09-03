@@ -26,6 +26,7 @@ public:
 	DXVertex	m_pic;
 	Texture_Sptr	m_texture;
 	Ogre::Vector3	m_position;
+
 	float		m_angle;
 	int		m_hp;
 	int		m_w, m_h;
