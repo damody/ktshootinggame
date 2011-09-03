@@ -1,4 +1,4 @@
-﻿
+﻿#include "stdafx.h"
 #include "InputState.h"
 
 InputState::InputState()
