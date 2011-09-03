@@ -24,17 +24,22 @@ Ogre::Vector3 BsplineCurve::GetValue(float time)
 	else if (m_points[0].time > time)
 		return m_points[0].pos;
 	int i;
-	for(i=0; i < size; i++) 
+	if (m_points.back().time >= time)
 	{
-		if (m_points[i].time > time)
+		for(i=0; i < size; i++) 
 		{
-			int id1 = i-2, id2 = i+1;
-			if (id1 < 0) id1=0;
-			if (id2 >=size) id2=size-1;
-			time = (time - m_points[id1].time)/(m_points[id2].time-m_points[id1].time);
-			break;
+			if (m_points[i].time > time)
+			{
+				time = (time - m_points[i-1].time)/(m_points[i].time-m_points[i-1].time);
+				break;
+			}
 		}
 	}
+	else
+	{
+		i = size;
+		time = time-m_points[i-1].time;
+	}	
 	index[0] = i-2;
 	index[1] = i-1;
 	index[2] = i;

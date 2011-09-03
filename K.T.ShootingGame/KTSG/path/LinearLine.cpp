@@ -34,7 +34,7 @@ Ogre::Vector3 LinearLine::GetValue(float time)
 	}
 	index[0] = i-1;
 	index[1] = i;
-	for (int j = 0;j<4;++j)
+	for (int j = 0;j<2;++j)
 	{
 		if (index[j] < 0)
 			index[j] = 0;

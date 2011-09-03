@@ -15,24 +15,23 @@
 #include "DX11/InitDirect3DApp.h"
 #include "global.h"
 #include "DX11/WaveSound.h"
+#include <iostream>
 
 void MainPlane::Update(float dt) 
 {
-	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
-
+	Ogre::Vector3 temp = Ogre::Vector3::ZERO;
 	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 40;
 	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 40;
 	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
 	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
 
-	if(InputStateS::instance().isKeyPress(KEY_SPACE))
-	{
-		//g_BallptrManager.AddBallptrs(m_nWay->NewBallptrVector(GetBulletBall));
-	}
 	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
-	m_position += trans;
-// 	m_nWay->Position() += trans;
-// 	m_nWay->Direction() = GetRotation(Ogre::Vector3::UNIT_Y, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+	//m_position += trans;
+
+	static float startvalue = 0;
+	startvalue += dt;
+	m_position = ll.GetValue(startvalue);
+	//std::cout << m_position << std::endl;
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }

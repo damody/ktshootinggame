@@ -19,6 +19,10 @@
 #include "algo\nway.h"
 #include "ball\straight.h"
 #include "towers\tower.h"
+#include "path\LinearLine.h"
+#include "path\BezierCurve.h"
+#include "path\BsplineCurve.h"
+#include "path\HSplineCurve.h"
 
 class MainPlane
 {
@@ -31,8 +35,17 @@ public:
 	int		m_hp;
 	int		m_w, m_h;
 	Towers		m_Towers;
+	HSplineCurve ll;
 public:
-	MainPlane(){}
+	MainPlane()
+	{
+		ll.AddPoint(2, Ogre::Vector3(0,0,0));
+		ll.AddPoint(3, Ogre::Vector3(500,500,0));
+		ll.AddPoint(4, Ogre::Vector3(400,400,0));
+		ll.AddPoint(5, Ogre::Vector3(400,500,0));
+		ll.AddPoint(6, Ogre::Vector3(600,600,0));
+		ll.AddPoint(7, Ogre::Vector3(600,700,0));
+	}
 	void Update(float dt);
 	int  UpdateTower(float dt);
 protected:
