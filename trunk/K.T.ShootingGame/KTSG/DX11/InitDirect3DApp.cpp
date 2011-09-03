@@ -215,8 +215,9 @@ void InitDirect3DApp::LoadResource()
 		{
 			int idx = m_Lua.getLua<int>("wav/%d/1", i);
 			const char* file = m_Lua.getLua<const char*>("wav/%d/2", i);
+			int mutiplay = m_Lua.getLua<int>("wav/%d/3", i);
 			assert(file != 0);
-			bool res = WavSoundS::instance().CreatSound(file, idx, 10);
+			bool res = WavSoundS::instance().CreatSound(file, idx, mutiplay);
 			assert(res);
 		}
 		else
@@ -283,6 +284,7 @@ void InitDirect3DApp::LoadTowers()
 {
 	Tower t;
 	Straight* st = new Straight;
+	Towers ts;
 	st->mVelocity = 500;
 	t.m_Behavior = st;
 	t.m_Trajectory = new NWay(5, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
@@ -294,22 +296,27 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.picpos.y = 1;
 	t.m_ball_pic.picpos.z = 4;
 	t.m_ball_pic.picpos.w = 2;
-	t.m_ball_pic.size.x = 25;
-	t.m_ball_pic.size.y = 25;
+	t.m_ball_pic.size.x = 50;
+	t.m_ball_pic.size.y = 50;
 	t.m_atkSpeed = 0.5;
-	Towers ts;
-	ts.push_back(t);
+	//ts.push_back(t);
 	t.m_position = Ogre::Vector3(100, 0, 0);
 	t.m_ball_texture = g_TextureManager.GetTexture(103);
 	t.m_ball_pic.picpos.x = 1;
 	t.m_ball_pic.picpos.y = 1;
 	t.m_ball_pic.picpos.z = 2;
 	t.m_ball_pic.picpos.w = 2;
-	t.m_ball_pic.size.x = 20;
-	t.m_ball_pic.size.y = 200;
-	t.m_atkSpeed = 0.05;
-	t.m_Trajectory = new NWay(3, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_ball_pic.size.x = 5;
+	t.m_ball_pic.size.y = 80;
+	t.m_atkSpeed = 0.1f;
+	t.m_Trajectory = new NWay(20, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
+	ts.push_back(t);
+	t.m_position = Ogre::Vector3(-100, 0, 0);
+	ts.push_back(t);
+	t.m_position = Ogre::Vector3(-150, 0, 0);
+	ts.push_back(t);
+	t.m_position = Ogre::Vector3(150, 0, 0);
 	ts.push_back(t);
 	m_warShip.m_Towers = ts;
 }

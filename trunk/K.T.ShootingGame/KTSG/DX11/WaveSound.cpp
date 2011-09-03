@@ -11,11 +11,10 @@ dsSound::~dsSound()
 	Release();
 }
 
-
 //建立聲音檔
 bool dsSound::Create(LPCTSTR file , DWORD flags, LPDIRECTSOUND8 ds_DS,bool isLooping)
 {
-	HMMIO mmIO = NULL ;
+	HMMIO mmIO = NULL;
 	MMCKINFO mmRiff ;
 	MMCKINFO mmChunk ;
 	bool ok ;
