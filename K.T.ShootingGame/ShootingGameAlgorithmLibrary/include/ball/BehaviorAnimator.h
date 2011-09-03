@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "behavior.h"
+#include "ball/ball.h"
 
 struct BehaviorFrame
 {
@@ -29,10 +30,22 @@ typedef std::vector<BehaviorFrame> BehaviorFrames;
 class BehaviorAnimator
 {
 public:
+	bool started;
+	bool paused;
+	float elapsedTime;
+	float stopTime;
 	BehaviorFrames mBehaviorFrames;
+
+	inline BehaviorAnimator() : elapsedTime(0), started(false), paused(false), stopTime(0){}
+	~BehaviorAnimator(){}
+
 	void AddBehavior(Behavior* b, float time);
 	void AddBehaviorFrame(BehaviorFrame b);
 	void Sort();
+	void Update(Ball* b, float dt);
 	Behavior* GetNowBehavior(float time);
+	void Start();
+	void Stop();
+	Behavior* Pause(float stopTime = 0);
 };
 
