@@ -20,6 +20,7 @@ void InitDirect3DApp::initApp()
 	LoadResource();
 	LoadBlend();
 	LoadWarShip();
+	LoadEnemyShips();
 	LoadTowers();
 	buildPointFX();
 	OnResize();
@@ -67,7 +68,7 @@ void InitDirect3DApp::DrawScene()
 	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
 	m_PMap_Warship->SetResource(*(m_warShip.m_texture));
-	m_DeviceContext->Draw(1, 0);
+	m_DeviceContext->Draw(1 + m_EnemyShips.size(), 0);
 	UINT stride2 = sizeof(BulletVertex);
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
@@ -139,6 +140,12 @@ void InitDirect3DApp::buildPoint()
 	// set warship
 	std::vector<DXVertex> Vertex;
 	Vertex.push_back(m_warShip.m_pic);
+
+	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
+		it != m_EnemyShips.end(); it++)
+	{
+		Vertex.push_back(it->m_pic);
+	}
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -280,6 +287,18 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip.m_texture = g_TextureManager.GetTexture(102);
 }
 
+void InitDirect3DApp::LoadEnemyShips()
+{
+	EnemyMainPlane ship;
+	ship.m_texture = g_TextureManager.GetTexture(102);
+	ship.m_angle = 180;
+	ship.m_h = 175;
+	ship.m_w = 300;
+	ship.m_position.x = 1000;
+	ship.m_position.y = 1000;
+	m_EnemyShips.push_back(ship);
+}
+
 void InitDirect3DApp::LoadTowers()
 {
 	Tower t;
@@ -319,6 +338,12 @@ void InitDirect3DApp::LoadTowers()
 	t.m_position = Ogre::Vector3(150, 0, 0);
 	ts.push_back(t);
 	m_warShip.m_Towers = ts;
+
+	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
+		it != m_EnemyShips.end(); it++)
+	{
+		it->m_Towers = ts;
+	}
 }
 
 int InitDirect3DApp::UpdateInput()
@@ -353,6 +378,11 @@ int InitDirect3DApp::UpdateDeliver( float dt )
 
 int InitDirect3DApp::UpdateEnemy( float dt )
 {
+	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
+		it != m_EnemyShips.end();it++)
+	{
+		it->Update(dt);
+	}
 	return 0;
 }
 

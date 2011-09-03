@@ -13,6 +13,7 @@
 #include "planes/MainPlane.h"
 #include "bullets/bullet.h"
 #include "towers/tower.h"
+#include "planes/EnemyMainPlane.h"
 
 class InitDirect3DApp : public D3DApp
 {
@@ -25,6 +26,7 @@ private:
 	void LoadResource();
 	void LoadBlend();
 	void LoadWarShip();
+	void LoadEnemyShips();
 	void LoadTowers();
 	void buildPointFX();
 	void buildPoint();
@@ -65,6 +67,7 @@ private:
 	LuaCell			m_Lua;
 	DrawVertexGroups	m_DrawVertexGroups;
 	MainPlane		m_warShip;
+	std::vector<EnemyMainPlane>	m_EnemyShips;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC

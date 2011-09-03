@@ -10,8 +10,8 @@
 //
 
 
-#if !defined(_MAINPLANE_H)
-#define _MAINPLANE_H
+#if !defined(_ENEMYMAINPLANE_H)
+#define _ENEMYMAINPLANE_H
 
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
@@ -19,19 +19,16 @@
 #include "algo\nway.h"
 #include "ball\straight.h"
 #include "towers\tower.h"
+#include "MainPlane.h"
 
-class MainPlane
+class EnemyMainPlane : public MainPlane
 {
 public:
-	DXVertex	m_pic;
-	Texture_Sptr	m_texture;
-	Ogre::Vector3	m_position;
-	float		m_angle;
-	int		m_hp;
-	int		m_w, m_h;
-	Towers		m_Towers;
+	Ogre::Vector3	targetPos;
+	float		secPerBullet;
+	int		launchCounts;
 public:
-	MainPlane(){}
+	EnemyMainPlane(){}
 	void Update(float dt);
 	int  UpdateTower(float dt);
 protected:
