@@ -18,44 +18,14 @@
 
 void EnemyMainPlane::Update(float dt) 
 {
-// 	Ogre::Vector3 temp = Ogre::Vector3(0, 0, 0);
-// 
-// 	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 40;
-// 	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 40;
-// 	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
-// 	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
-// 
-// 	if(InputStateS::instance().isKeyPress(KEY_SPACE))
-// 	{
-// 		//g_BallptrManager.AddBallptrs(m_nWay->NewBallptrVector(GetBulletBall));
-// 	}
 	Ogre::Vector3 trans = Ogre::Vector3(0, -10 * dt, 0);
 	m_position += trans;
-// 	m_nWay->Position() += trans;
-// 	m_nWay->Direction() = GetRotation(Ogre::Vector3::UNIT_Y, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }
 
 int EnemyMainPlane::UpdateTower(float dt)
 {
-// 	for (Towers::iterator it = m_Towers.begin();
-// 		it != m_Towers.end();++it)
-// 	{
-// 		it->m_angle = m_angle-90;
-// 		BallptrVector bv = it->Update(dt);
-// 		if (!bv.empty())
-// 		{
-// 			for (BallptrVector::iterator bvit = bv.begin();
-// 				bvit != bv.end(); ++bvit)
-// 			{
-// 				(**bvit).mPosition = GetRotation((**bvit).mPosition, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
-// 				(**bvit).mPosition += m_position;
-// 			}
-// 			g_BallptrManager.AddBallptrs(bv);
-// 			WavSoundS::instance().PlayDup(18);
-// 		}
-// 	}
 	return MainPlane::UpdateTower(dt);
 }
 

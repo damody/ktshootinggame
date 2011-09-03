@@ -24,7 +24,7 @@ public:
 	Behavior*	mpBehavior;
 	BallStatus	mBallStatus;
 public:
-	GET_CLASS_SIZE(Ball)
+	VIRTUAL_GET_CLASS_SIZE(Behavior)
 	inline Ball():mTimeRate(1)
 	{
 	}

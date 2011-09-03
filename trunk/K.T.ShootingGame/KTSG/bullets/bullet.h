@@ -21,6 +21,7 @@
 class Bullet : public Ball 
 {
 public:
+	GET_CLASS_SIZE(Behavior)
 	inline Bullet(Texture_Sptr texture)
 	:Ball(Ogre::Vector3(), 0, 0), m_texture(texture)
 	{}

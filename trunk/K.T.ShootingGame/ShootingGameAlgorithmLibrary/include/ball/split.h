@@ -10,7 +10,7 @@ public:
 	float	mAngle;
 	float	mMaxAngle;
 	float	mOAngle;
-
+	GET_CLASS_SIZE(Split)
 	inline Split()
 	{m_typehash = strhasher("Split");}
 	virtual int UpdateBall(Ball* b, float elapsedtime);

@@ -45,9 +45,7 @@ public:
 	void Update( float time );
 	void SetNumThreads( int i )
 	{}
-#endif
-	
-	
+#endif	
 	void AddBallptr( Ball* b )
 	{
 		mBallptrVector.push_back(b);
