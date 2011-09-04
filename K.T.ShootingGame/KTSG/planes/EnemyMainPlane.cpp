@@ -18,26 +18,52 @@
 
 void EnemyMainPlane::Update(float dt) 
 {
-	Ogre::Vector3 trans = Ogre::Vector3(0, 0, 0);
-	m_position += trans;
+	if(motherShip)
+	{
+		m_position = motherShip->m_position + GetRotation(motherShipOffset, motherShip->m_angle);
+		m_angle = motherShip->m_angle;
+	}
+	else
+	{
+		Ogre::Vector3 trans = GetRotation(Ogre::Vector3(0, dt*10, 0), m_angle);
+		m_position += trans;
+	}
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }
 
 int EnemyMainPlane::UpdateTower(float dt)
 {
-	return MainPlane::UpdateTower(dt);
+	for (Towers::iterator it = m_Towers.begin();
+		it != m_Towers.end();++it)
+	{
+		it->m_angle = m_angle-90;
+		BallptrVector bv = it->Update(dt);
+		if (!bv.empty())
+		{
+			for (BallptrVector::iterator bvit = bv.begin();
+				bvit != bv.end(); ++bvit)
+			{
+				(**bvit).mPosition = GetRotation((**bvit).mPosition, m_angle);
+				(**bvit).mPosition += m_position;
+				size_t size = (**bvit).mPolygon2D.Points().size();
+				(**bvit).mPolygon2D.Offset((**bvit).mPosition);
+			}
+			g_BallptrManager.AddBallptrs(bv);
+			WavSoundS::instance().PlayDup(18);
+		}
+	}
+	return 0;
 }
 
 void EnemyMainPlane::UpdateDataToDraw()
 {
-// 	m_pic.position.x = m_position.x;
-// 	m_pic.position.y = m_position.y;
-// 	m_pic.position.z = 0;
-// 	m_pic.angle = m_angle;
-// 	m_pic.size.x = (float)m_w;
-// 	m_pic.size.y = (float)m_h;
-	MainPlane::UpdateDataToDraw();
+	m_pic.position.x = m_position.x;
+	m_pic.position.y = m_position.y;
+	m_pic.position.z = 0;
+	m_pic.angle = m_angle;
+	m_pic.size.x = (float)m_w;
+	m_pic.size.y = (float)m_h;
 }
 
 
