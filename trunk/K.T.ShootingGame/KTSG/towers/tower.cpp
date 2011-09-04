@@ -7,7 +7,8 @@ Texture_Sptr texture;
 BulletVertex ball_pic;
 Ball* GetBulletBall()
 {
-	Bullet* bullet = Bullet::pool.construct(texture);
+	//Bullet* bullet = Bullet::pool.construct(texture);
+	Bullet* bullet = new Bullet(texture);
 	bullet->m_pic = ball_pic;
 	return static_cast<Ball*>(bullet);
 }

@@ -28,12 +28,12 @@ public:
 	inline Ball():mTimeRate(1)
 	{
 	}
-	inline Ball(const Ogre::Vector3 pos, const Ogre::Vector3 dir, int nByte, Behavior* behavior = NULL)
+	inline Ball(const Ogre::Vector3 pos, const Ogre::Vector3 dir, Behavior* behavior = NULL)
 		:mTimeRate(1), mPosition(pos), mDirection(dir), mUp(Ogre::Vector3::UNIT_Z), 
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
 	}
-	inline Ball(const Ogre::Vector3 pos, float angle, int nByte, Behavior* behavior = NULL)
+	inline Ball(const Ogre::Vector3 pos, float angle, Behavior* behavior = NULL)
 		:mTimeRate(1), mPosition(pos), mDirection(GetRotation(pos, Ogre::Vector3::UNIT_Z, angle)), mUp(Ogre::Vector3::UNIT_Z), 
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
@@ -47,6 +47,7 @@ public:
 		*this = b;
 	}
 };
+// TODO: typedef Ball* (*NewBallFunction)(void*);
 typedef Ball* (*NewBallFunction)();
 typedef std::vector<Ball> BallVector;
 typedef std::list<Ball> BallList;

@@ -102,7 +102,7 @@ void BallptrManager::Update( float time )
 				w.begin = (int)now_step;
 				now_step += step;
 				if ((size_t)now_step >= mBallptrVector.size())
-					now_step = mBallptrVector.size();
+					now_step = (double)mBallptrVector.size();
 				w.end = (int)now_step;
 				mThreadsWork[i]->works.push_back(w);
 			}

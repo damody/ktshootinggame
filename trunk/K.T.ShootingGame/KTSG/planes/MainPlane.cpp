@@ -26,11 +26,11 @@ void MainPlane::Update(float dt)
 	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
 
 	Ogre::Vector3 trans = GetRotation(temp, Ogre::Vector3(0, 0, -1), m_angle);
-	//m_position += trans;
+	m_position += trans;
 
 	static float startvalue = 0;
 	startvalue += dt;
-	m_position = ll.GetValue(startvalue);
+	//m_position = ll.GetValue(startvalue);
 	//std::cout << m_position << std::endl;
 	UpdateTower(dt);
 	UpdateDataToDraw();
@@ -52,7 +52,7 @@ int MainPlane::UpdateTower(float dt)
 				(**bvit).mPosition += m_position;
 			}
 			g_BallptrManager.AddBallptrs(bv);
-			WavSoundS::instance().PlayDup(18);
+			//WavSoundS::instance().PlayDup(18);
 		}
 	}
 	return 0;

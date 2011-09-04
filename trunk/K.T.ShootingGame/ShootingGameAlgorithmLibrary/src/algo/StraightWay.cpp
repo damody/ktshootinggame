@@ -15,7 +15,7 @@ void StraightWay::Modifyed()
 		start = 0;
 	for (int i = 0;i < mNumTrajectory;i++, start += step_angle)
 	{
-		Ball ball(mPosition, mDirection, 0, mBehavior);
+		Ball ball(mPosition, mDirection, mBehavior);
 
 		mAngle = start / mRadiationAngle*200;
 		mVelocity = 500;

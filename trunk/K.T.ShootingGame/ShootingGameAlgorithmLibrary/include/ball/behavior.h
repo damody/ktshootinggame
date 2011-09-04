@@ -8,7 +8,7 @@ class Ball;
 class Behavior
 {
 public:
-	int	m_typehash;
+	size_t	m_typehash;
 	virtual ~Behavior(){}
 	virtual int UpdateBall(Ball* b, float elapsedtime) = 0;
 };

@@ -15,7 +15,7 @@ void NWay::Modifyed()
 		start = 0;
 	for (int i = 0;i < mNumTrajectory;i++, start += step_angle)
 	{
-		Ball ball(mPosition, GetRotation(mDirection, mUp, start), 0, mBehavior);
+		Ball ball(mPosition, GetRotation(mDirection, mUp, start), mBehavior);
 		ball.Update(mInitializeTime);
 		mBall_PreComptue.push_back(ball);
 	}
