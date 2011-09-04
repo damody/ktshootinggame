@@ -36,7 +36,7 @@ void InitDirect3DApp::UpdateScene(float dt)
 	m_DXUT_UI->UpdataUI(dt);
 	m_SwapChain->Present(0, 0);
 	D3DApp::DrawScene(); // clear window
-	//PrintInfo();
+	PrintInfo();
 	UpdateInput();
 	UpdateWarShip(dt);
 	UpdateDeliver(dt);
@@ -294,8 +294,8 @@ void InitDirect3DApp::LoadEnemyShips()
 	ship.m_angle = 180;
 	ship.m_h = 175;
 	ship.m_w = 300;
-	ship.m_position.x = 1000;
-	ship.m_position.y = 1000;
+	ship.m_position.x = 500;
+	ship.m_position.y = 800;
 	m_EnemyShips.push_back(ship);
 }
 
@@ -304,7 +304,7 @@ void InitDirect3DApp::LoadTowers()
 	Tower t;
 	Straight* st = new Straight;
 	Towers ts;
-	st->mVelocity = 0;
+	st->mVelocity = 100;
 	t.m_Behavior = st;
 	t.m_Trajectory = new NWay(5, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
@@ -319,7 +319,7 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.size.y = 50;
 	t.m_atkSpeed = 0.5;
 	//ts.push_back(t);
-	t.m_position = Ogre::Vector3(100, 0, 0);
+	
 	t.m_ball_texture = g_TextureManager.GetTexture(103);
 	t.m_ball_pic.picpos.x = 1;
 	t.m_ball_pic.picpos.y = 1;
@@ -327,24 +327,24 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.picpos.w = 2;
 	t.m_ball_pic.size.x = 5;
 	t.m_ball_pic.size.y = 80;
-	t.m_atkSpeed = 1.1f;
-	t.m_Trajectory = new NWay(1, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_atkSpeed = 0.1f;
+	t.m_Trajectory = new NWay(50, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
 	t.m_Trajectory->mPolygon.AddPoint(0,80);
+	t.m_Trajectory->mPolygon.AddPoint(1,80);
+	t.m_position = Ogre::Vector3(200, 0, 0);
 	ts.push_back(t);
-// 	t.m_position = Ogre::Vector3(-100, 0, 0);
-// 	ts.push_back(t);
-// 	t.m_position = Ogre::Vector3(-150, 0, 0);
-// 	ts.push_back(t);
-// 	t.m_position = Ogre::Vector3(150, 0, 0);
-// 	ts.push_back(t);
-	m_warShip.m_Towers = ts;
+	t.m_position = Ogre::Vector3(-200, 0, 0);
+	ts.push_back(t);
+	t.m_position = Ogre::Vector3(0, 150, 0);
+	ts.push_back(t);
+	//m_warShip.m_Towers = ts;
 
 	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
-		//it->m_Towers = ts;
+		it->m_Towers = ts;
 	}
 }
 
@@ -370,6 +370,14 @@ int InitDirect3DApp::UpdateInput()
 int InitDirect3DApp::UpdateWarShip( float dt )
 {
 	m_warShip.Update(dt);
+	Polygon2D poly = m_warShip.m_Polygon2D;
+	poly.Offset(m_warShip.m_position);
+	poly.BuildEdges();
+	BallptrVector ans = g_BallptrManager.GetCollision(poly);
+	for (size_t i=0;i < ans.size();++i)
+	{
+		ans[i]->mBallStatus = Ball::DESTORY;
+	}
 	return 0;
 }
 
@@ -397,7 +405,6 @@ int InitDirect3DApp::UpdateBullectMove( float dt )
 	for (BallptrVector::iterator it = bv.begin();
 		it != bv.end();++it)
 	{
-		//Bullet::pool.destroy((Bullet*)(*it));
 		delete *it;
 	}
 	bv.clear();

@@ -20,18 +20,17 @@
 void MainPlane::Update(float dt) 
 {
 	Ogre::Vector3 temp = Ogre::Vector3::ZERO;
-	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 40;
-	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 40;
+	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 140;
+	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 140;
 	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
 	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
 
 	Ogre::Vector3 trans = GetRotation(temp, m_angle);
 	m_position += trans;
+	m_Polygon2D.SetAngle(m_angle);
 
 	static float startvalue = 0;
 	startvalue += dt;
-	//m_position = ll.GetValue(startvalue);
-	//std::cout << m_position << std::endl;
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }
@@ -53,7 +52,6 @@ int MainPlane::UpdateTower(float dt)
 				size_t size = (**bvit).mPolygon2D.Points().size();
 				(**bvit).mPolygon2D.Offset((**bvit).mPosition);
 			}
-			std::cout << bv.front()->mPolygon2D.Points()[0] << "\t" << bv.front()->mPolygon2D.Points()[1] << std::endl;
 			g_BallptrManager.AddBallptrs(bv);
 			WavSoundS::instance().PlayDup(18);
 		}
@@ -69,6 +67,13 @@ void MainPlane::UpdateDataToDraw()
 	m_pic.angle = m_angle;
 	m_pic.size.x = (float)m_w;
 	m_pic.size.y = (float)m_h;
+}
+
+MainPlane::MainPlane()
+{
+	m_Polygon2D.AddPoint(-200, -100);
+	m_Polygon2D.AddPoint(0, 150);
+	m_Polygon2D.AddPoint(200, -100);
 }
 
 

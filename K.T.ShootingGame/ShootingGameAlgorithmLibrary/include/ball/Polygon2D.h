@@ -22,6 +22,7 @@ typedef std::vector<Ogre::Vector2> Vector2s;
 class Polygon2D 
 {
 public:
+	Polygon2D():m_angle(0){}
 	Vector2s& Points()
 	{
 		m_needBuildEdges = true;
@@ -63,8 +64,18 @@ public:
 			it->y += v.y;
 		}
 	}
+	void SetAngle(float angle)
+	{
+		for (Vector2s::iterator it = m_points.begin();
+			it != m_points.end();++it)
+		{
+			*it = GetRotation(*it, angle-m_angle, Ogre::Vector2::ZERO);
+		}
+		m_angle = angle;
+	}
 	void Rotation(float angle, const Ogre::Vector2& middle = Ogre::Vector2::ZERO)
 	{
+		m_angle = angle;
 		for (Vector2s::iterator it = m_points.begin();
 			it != m_points.end();++it)
 		{
@@ -72,8 +83,8 @@ public:
 		}
 	}
 	bool IsCollision(const Polygon2D& rhs);
-private:
 	void BuildEdges();
+private:
 	// Calculate the distance between [minA, maxA] and [minB, maxB]
 	// The distance will be negative if the intervals overlap
 	inline float IntervalDistance(float minA, float maxA, float minB, float maxB)
@@ -89,6 +100,7 @@ private:
 private:
 	Vector2s m_points, m_edges;
 	bool	m_needBuildEdges;
+	float	m_angle;
 };
 
 #endif  //_POLYGON_H
