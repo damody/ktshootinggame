@@ -42,7 +42,6 @@ public:
 
 	virtual int Update(float dt);
 	void UpdateDataToDraw();
-	static boost::object_pool<Bullet> pool;
 
 	bool operator < (const Bullet& rhs)
 	{

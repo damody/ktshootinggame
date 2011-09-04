@@ -1,6 +1,5 @@
 
 #include "bullet.h"
-boost::object_pool<Bullet> Bullet::pool(sizeof(Bullet), 100000);
 
 void Bullet::UpdateDataToDraw()
 {

@@ -10,7 +10,7 @@ void RandomWay::Modifyed()
 	boost::uniform_real<float> rng(-mRadiationAngle*0.5f, mRadiationAngle*0.5f);
 	for (int i = 0;i < mNumTrajectory;i++)
 	{
-		Ball ball(mPosition, GetRotation(mDirection, mUp, rng(mRandom)), mBehavior);
+		Ball ball(mPosition, GetRotation(mDirection, rng(mRandom)), mBehavior);
 		ball.Update(mInitializeTime);
 		mBall_PreComptue.push_back(ball);
 	}

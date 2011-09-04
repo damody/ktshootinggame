@@ -14,6 +14,7 @@
 #include "ball\Ball.h"
 #include "algo\Trajectory.h"
 #include "ball\behavior.h"
+#include "ball\Polygon2D.h"
 
 class Tower 
 {
@@ -44,7 +45,7 @@ public:
 	int		m_hp;		// 炮台血量
 	int		m_level;	// 炮台等級
 	tower_type	m_type;		// 子彈種類
-	
+
 	BallptrVector Update(float dt);
 	BallptrVector NewBallptrVector()
 	{

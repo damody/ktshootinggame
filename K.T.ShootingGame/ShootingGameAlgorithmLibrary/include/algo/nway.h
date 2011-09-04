@@ -6,7 +6,7 @@
 class NWay : public Trajectory
 {
 public:
-	float		mRadiationAngle;
+	float	mRadiationAngle;
 	NWay(int _mNumTrajectory, Ogre::Vector3 _mPosition, Ogre::Vector3 _mDirection, float _angle = 90.0f)
 		:Trajectory(_mNumTrajectory, _mPosition, _mDirection), mRadiationAngle(_angle)
 	{}
