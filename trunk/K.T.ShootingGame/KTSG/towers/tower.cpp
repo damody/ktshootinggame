@@ -17,7 +17,7 @@ BallptrVector Tower::Update(float dt)
 {
 	BallptrVector bv;
 	m_elapsedTime += dt;
-	m_Trajectory->Direction() = GetRotation(Ogre::Vector3::UNIT_X, Ogre::Vector3::NEGATIVE_UNIT_Z, m_angle);
+	m_Trajectory->Direction() = GetRotation(Ogre::Vector3::UNIT_X, m_angle);
 	if (m_elapsedTime >= m_atkSpeed)
 	{
 		m_Trajectory->Position() = m_position;

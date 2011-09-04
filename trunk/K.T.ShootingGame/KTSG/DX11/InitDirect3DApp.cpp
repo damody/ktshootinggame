@@ -36,7 +36,7 @@ void InitDirect3DApp::UpdateScene(float dt)
 	m_DXUT_UI->UpdataUI(dt);
 	m_SwapChain->Present(0, 0);
 	D3DApp::DrawScene(); // clear window
-	PrintInfo();
+	//PrintInfo();
 	UpdateInput();
 	UpdateWarShip(dt);
 	UpdateDeliver(dt);
@@ -282,7 +282,7 @@ void InitDirect3DApp::LoadWarShip()
 	m_warShip.m_angle = 0;
 	m_warShip.m_h = 350;
 	m_warShip.m_w = 600;
-	m_warShip.m_position.x = 800;
+	m_warShip.m_position.x = 100;
 	m_warShip.m_position.y = 200;
 	m_warShip.m_texture = g_TextureManager.GetTexture(102);
 }
@@ -304,7 +304,7 @@ void InitDirect3DApp::LoadTowers()
 	Tower t;
 	Straight* st = new Straight;
 	Towers ts;
-	st->mVelocity = 500;
+	st->mVelocity = 0;
 	t.m_Behavior = st;
 	t.m_Trajectory = new NWay(5, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
@@ -327,22 +327,24 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.picpos.w = 2;
 	t.m_ball_pic.size.x = 5;
 	t.m_ball_pic.size.y = 80;
-	t.m_atkSpeed = 0.1f;
-	t.m_Trajectory = new NWay(200, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_atkSpeed = 1.1f;
+	t.m_Trajectory = new NWay(1, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
+	t.m_Trajectory->mPolygon.AddPoint(0,0);
+	t.m_Trajectory->mPolygon.AddPoint(0,80);
 	ts.push_back(t);
-	t.m_position = Ogre::Vector3(-100, 0, 0);
-	ts.push_back(t);
-	t.m_position = Ogre::Vector3(-150, 0, 0);
-	ts.push_back(t);
-	t.m_position = Ogre::Vector3(150, 0, 0);
-	ts.push_back(t);
+// 	t.m_position = Ogre::Vector3(-100, 0, 0);
+// 	ts.push_back(t);
+// 	t.m_position = Ogre::Vector3(-150, 0, 0);
+// 	ts.push_back(t);
+// 	t.m_position = Ogre::Vector3(150, 0, 0);
+// 	ts.push_back(t);
 	m_warShip.m_Towers = ts;
 
 	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
-		it->m_Towers = ts;
+		//it->m_Towers = ts;
 	}
 }
 

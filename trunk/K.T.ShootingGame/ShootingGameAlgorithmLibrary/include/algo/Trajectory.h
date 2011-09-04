@@ -9,10 +9,10 @@ class Trajectory
 {
 public:
 	int		mNumTrajectory;
-	Ogre::Quaternion mOrient;
 	float		mInitializeTime;
 	Behavior*	mBehavior;
 	NewBallFunction mNewBallFunction;
+	Polygon2D	mPolygon;
 	int& NumTrajectory()
 	{
 		mNeedUpdate = true;
@@ -22,6 +22,11 @@ public:
 	{
 		mNeedUpdate = true;
 		return mPosition;
+	}
+	void SetAngle(float a)
+	{
+		mNeedUpdate = true;
+		mDirection = GetRotation(Ogre::Vector3::ZERO, a);
 	}
 	Ogre::Vector3&	Direction()
 	{
@@ -36,11 +41,12 @@ public:
 protected:
 	Ogre::Vector3	mPosition;
 	Ogre::Vector3	mDirection;
+	float		mAngle;
 	Ogre::Vector3	mUp;
 public:
 	Trajectory(int _mNumTrajectory, Ogre::Vector3 _mPosition, Ogre::Vector3 _mDirection, NewBallFunction _mNewBallFunction = NULL)
 		:mNumTrajectory(_mNumTrajectory), mPosition(_mPosition), mDirection(_mDirection),
-		mInitializeTime(0), mUp(Ogre::Vector3::UNIT_Z), mBehavior(0), mNeedUpdate(false), mNewBallFunction(_mNewBallFunction)
+		mInitializeTime(0), mUp(Ogre::Vector3::NEGATIVE_UNIT_Z), mBehavior(0), mNeedUpdate(false), mNewBallFunction(_mNewBallFunction)
 	{}
 	virtual ~Trajectory()
 	{}
@@ -122,13 +128,14 @@ public:
 		CheckModify();
 	}
 protected:
-	BallVector mBall_PreComptue;
+	BallVector	mBall_PreComptue;
 	bool		mNeedUpdate;
 	virtual void CheckModify()
 	{
 		if (mNeedUpdate)
 		{
 			mDirection.normalise();
+			mAngle = GetAngle(mDirection.x, mDirection.y).valueDegrees();
 			Modifyed();
 			mNeedUpdate = false;
 		}

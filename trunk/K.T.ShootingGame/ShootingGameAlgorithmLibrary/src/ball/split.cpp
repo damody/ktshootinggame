@@ -5,7 +5,7 @@ int Split::UpdateBall( Ball* b, float elapsedtime )
 {
 	if(abs(mOAngle) < mMaxAngle)
 	{
-		b->mDirection = GetRotation(b->mDirection, Ogre::Vector3::NEGATIVE_UNIT_Z, mAngle *elapsedtime);
+		b->mDirection = GetRotation(b->mDirection, mAngle *elapsedtime);
 		mOAngle+=mAngle*elapsedtime;
 	}
 	b->mPosition += b->mDirection * mVelocity * elapsedtime;
