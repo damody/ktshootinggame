@@ -822,6 +822,22 @@
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="memory"
+			>
+			<File
+				RelativePath=".\memory\BitSet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\memory\BitSet.h"
+				>
+			</File>
+			<File
+				RelativePath=".\memory\VMemPool.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

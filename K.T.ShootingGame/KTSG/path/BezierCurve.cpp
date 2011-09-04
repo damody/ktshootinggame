@@ -19,7 +19,7 @@ Ogre::Vector3 BezierCurve::GetValue(float time)
 	if (m_points.empty())
 		return Ogre::Vector3::ZERO;
 	int index[4] = {0};
-	const int size = m_points.size();
+	const size_t size = m_points.size();
 	if (size == 1)
 		return m_points[0].pos;
 	else if (m_points[0].time > time)

@@ -17,13 +17,14 @@
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
 #include "ball\ball.h"
+#include "memory\VMemPool.h"
 
-class Bullet : public Ball 
+class Bullet : public Ball , public CVMemPool<Bullet,120000>
 {
 public:
 	GET_CLASS_SIZE(Behavior)
 	inline Bullet(Texture_Sptr texture)
-	:Ball(Ogre::Vector3(), 0, 0), m_texture(texture)
+	:Ball(Ogre::Vector3(), 0), m_texture(texture)
 	{}
 	virtual ~Bullet(){}
 	BulletVertex	m_pic;		// 要畫的圖

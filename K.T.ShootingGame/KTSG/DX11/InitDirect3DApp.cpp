@@ -68,7 +68,7 @@ void InitDirect3DApp::DrawScene()
 	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
 	m_PMap_Warship->SetResource(*(m_warShip.m_texture));
-	m_DeviceContext->Draw(1 + m_EnemyShips.size(), 0);
+	m_DeviceContext->Draw(1 + (UINT)m_EnemyShips.size(), 0);
 	UINT stride2 = sizeof(BulletVertex);
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
@@ -78,7 +78,7 @@ void InitDirect3DApp::DrawScene()
 	{
 		m_PMap_Bullets->SetResource(*(it->texture));
 		m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
-		m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
+		//m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
 	}
 }
 
@@ -149,7 +149,7 @@ void InitDirect3DApp::buildPoint()
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(DXVertex)*Vertex.size();
+	vbd.ByteWidth = (UINT)(sizeof(DXVertex)*Vertex.size());
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
 	vbd.MiscFlags = 0;
@@ -190,7 +190,7 @@ void InitDirect3DApp::buildPoint()
 		dvg.VertexCount = vertexCount;
 		m_DrawVertexGroups.push_back(dvg);
 		// save other info
-		vbd.ByteWidth = sizeof(BulletVertex)*BVertex.size();
+		vbd.ByteWidth = (UINT)(sizeof(BulletVertex)*BVertex.size());
 		vinitData.pSysMem = &BVertex[0];
 		HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
 	}
@@ -328,7 +328,7 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.size.x = 5;
 	t.m_ball_pic.size.y = 80;
 	t.m_atkSpeed = 0.1f;
-	t.m_Trajectory = new NWay(20, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory = new NWay(300, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	ts.push_back(t);
 	t.m_position = Ogre::Vector3(-100, 0, 0);
@@ -395,7 +395,8 @@ int InitDirect3DApp::UpdateBullectMove( float dt )
 	for (BallptrVector::iterator it = bv.begin();
 		it != bv.end();++it)
 	{
-		Bullet::pool.destroy((Bullet*)(*it));
+		//Bullet::pool.destroy((Bullet*)(*it));
+		delete *it;
 	}
 	bv.clear();
 	std::sort(g_BallptrManager.mBallptrVector.begin(), g_BallptrManager.mBallptrVector.end(), CompareBullet);

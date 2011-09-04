@@ -21,7 +21,7 @@ void SwirlWay::Modifyed()
 	{
 		for (int i = 0;i < mNumTrajectory;i++, start_angle += step_angle, start_sec += step_sec)
 		{
-			Ball ball(mPosition, GetRotation(mDirection, mUp, start_angle), 0, mBehavior);
+			Ball ball(mPosition, GetRotation(mDirection, mUp, start_angle), mBehavior);
 
 			mVelocity = 50;
 			mLaunchTime = start_sec;
