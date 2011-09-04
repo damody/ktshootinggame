@@ -52,7 +52,7 @@ int MainPlane::UpdateTower(float dt)
 				(**bvit).mPosition += m_position;
 			}
 			g_BallptrManager.AddBallptrs(bv);
-			//WavSoundS::instance().PlayDup(18);
+			WavSoundS::instance().PlayDup(18);
 		}
 	}
 	return 0;
