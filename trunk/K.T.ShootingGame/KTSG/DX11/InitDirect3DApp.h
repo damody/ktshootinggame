@@ -68,6 +68,10 @@ private:
 	DrawVertexGroups	m_DrawVertexGroups;
 	MainPlane		m_warShip;
 	std::vector<EnemyMainPlane>	m_EnemyShips;
+
+	std::vector<DXVertex>		m_ShipVertex;
+	std::vector<BulletVertex>	m_BVertex;
+	D3D11_BUFFER_DESC	m_vbd;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC

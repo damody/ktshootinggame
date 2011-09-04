@@ -78,7 +78,7 @@ void InitDirect3DApp::DrawScene()
 	{
 		m_PMap_Bullets->SetResource(*(it->texture));
 		m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
-		//m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
+		m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
 	}
 }
 
@@ -131,6 +131,12 @@ void InitDirect3DApp::buildPointFX()
 	m_PTech_Bullets->GetPassByIndex(0)->GetDesc(&PassDesc2);
 	HR(m_d3dDevice->CreateInputLayout(VertexDesc_BulletVertex, 4, PassDesc2.pIAInputSignature,
 		PassDesc2.IAInputSignatureSize, &m_PLayout_Bullets));
+
+	m_vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	m_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_vbd.CPUAccessFlags = 0;
+	m_vbd.MiscFlags = 0;
+	m_vbd.StructureByteStride=sizeof(DXVertex);
 }
 
 void InitDirect3DApp::buildPoint()
@@ -138,26 +144,19 @@ void InitDirect3DApp::buildPoint()
 	ReleaseCOM(m_Buffer_WarShip);
 	ReleaseCOM(m_Buffer_Bullets);
 	// set warship
-	std::vector<DXVertex> Vertex;
-	Vertex.push_back(m_warShip.m_pic);
+	m_ShipVertex.clear();
+	m_ShipVertex.push_back(m_warShip.m_pic);
 
 	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
-		Vertex.push_back(it->m_pic);
+		m_ShipVertex.push_back(it->m_pic);
 	}
-
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = (UINT)(sizeof(DXVertex)*Vertex.size());
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	vbd.MiscFlags = 0;
-	vbd.StructureByteStride=sizeof(DXVertex);
-
+	m_vbd.ByteWidth = (UINT)(sizeof(DXVertex)*m_ShipVertex.size());
+	m_vbd.StructureByteStride=sizeof(DXVertex);
 	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &Vertex[0];
-	HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_WarShip));
+	vinitData.pSysMem = &m_ShipVertex[0];
+	HR(m_d3dDevice->CreateBuffer(&m_vbd, &vinitData, &m_Buffer_WarShip));
 
 	if (!g_BallptrManager.mBallptrVector.empty())
 	{
@@ -167,7 +166,7 @@ void InitDirect3DApp::buildPoint()
 		dvg.texture = ((Bullet*)*(g_BallptrManager.mBallptrVector.begin()))->m_texture;
 		dvg.StartVertexLocation = 0;
 		// save all vertex points
-		std::vector<BulletVertex> BVertex;
+		m_BVertex.clear();
 		BallptrVector& vec = g_BallptrManager.mBallptrVector;
 		int vertexCount = 0, count = 0;
 		for (BallptrVector::iterator it = vec.begin();
@@ -184,15 +183,16 @@ void InitDirect3DApp::buildPoint()
 			}
 			++vertexCount;
 			++count;
-			BVertex.push_back(((Bullet*)(*it))->m_pic);
+			m_BVertex.push_back(((Bullet*)(*it))->m_pic);
 		}
 		// save finally dvg
 		dvg.VertexCount = vertexCount;
 		m_DrawVertexGroups.push_back(dvg);
 		// save other info
-		vbd.ByteWidth = (UINT)(sizeof(BulletVertex)*BVertex.size());
-		vinitData.pSysMem = &BVertex[0];
-		HR(m_d3dDevice->CreateBuffer(&vbd, &vinitData, &m_Buffer_Bullets));
+		m_vbd.ByteWidth = (UINT)(sizeof(BulletVertex)*m_BVertex.size());
+		m_vbd.StructureByteStride=sizeof(BulletVertex);
+		vinitData.pSysMem = &m_BVertex[0];
+		HR(m_d3dDevice->CreateBuffer(&m_vbd, &vinitData, &m_Buffer_Bullets));
 	}
 }
 
@@ -328,7 +328,7 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.size.x = 5;
 	t.m_ball_pic.size.y = 80;
 	t.m_atkSpeed = 0.1f;
-	t.m_Trajectory = new NWay(300, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory = new NWay(200, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	ts.push_back(t);
 	t.m_position = Ogre::Vector3(-100, 0, 0);
