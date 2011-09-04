@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Trajectory.h"
+#include "Trajectory.h" 
 
 struct TrajectoryFrame
 {
@@ -34,16 +34,28 @@ public:
 	Ogre::Vector3	mUp;
 	Ogre::Quaternion mOrient;
 	TrajectoryFrames mBehaviorFrames;
-	float		mOffsetTime;
+	float		mElapsedTime;
+	float		mStopTime;
 	bool		mLoop;
-	TrajectoryAnimator(float offsetTime = 0, bool loop = true)
-		:mOffsetTime(offsetTime), mLoop(loop)
+
+	bool		mStarted;
+	bool		mPaused;
+
+
+
+	TrajectoryAnimator(float elapsedTime = 0, bool loop = true)
+		:mElapsedTime(elapsedTime), mLoop(loop), mStopTime(0), mStarted(false), mPaused(false)
 	{
 	}
-	void AddBehavior(Trajectory* b, float time);
+	void AddTrajectory(Trajectory* b, float time);
 	// if behavior no sort, it's error!
-	void AddBehaviorFrame(TrajectoryFrame& b);
+	void AddTrajectoryFrame(TrajectoryFrame& b);
 	void Sort();
-	Trajectory* GetNowBehavior(float time);
+	Trajectory* GetNowTrajectory(float time);
+
+	void Update(float dt);
+	void Start();
+	void Stop();
+	Trajectory* Pause(float stopTime = 0);
 };
 
