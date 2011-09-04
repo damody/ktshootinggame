@@ -18,7 +18,7 @@
 
 void EnemyMainPlane::Update(float dt) 
 {
-	Ogre::Vector3 trans = Ogre::Vector3(0, -10 * dt, 0);
+	Ogre::Vector3 trans = Ogre::Vector3(0, 0, 0);
 	m_position += trans;
 	UpdateTower(dt);
 	UpdateDataToDraw();

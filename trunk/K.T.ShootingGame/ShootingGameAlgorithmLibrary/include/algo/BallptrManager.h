@@ -2,6 +2,7 @@
 #include "common/SGA_config.h"
 #include "common/shared_ptr.h"
 #include "Trajectory.h"
+#include "ball/Polygon2D.h"
 
 class BallptrManager
 {
@@ -38,6 +39,7 @@ public:
 	void MutiThreadUpdate( int i );
 	void Update( float time );
 	void SetNumThreads( int i );
+	BallptrVector GetCollision(const Polygon2D& poly);
 #else
 	BallptrManager(int _mNumThreads=1)
 		:mNumThreads(_mNumThreads)

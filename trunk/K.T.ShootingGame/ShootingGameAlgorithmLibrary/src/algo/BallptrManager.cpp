@@ -113,7 +113,8 @@ void BallptrManager::Update( float time )
 		size_t bsize = mBallptrVector.size();
 		for (size_t i=0;i < bsize;i++)
 		{
-			mBallptrVector[i]->Update(time);
+			if (mBallptrVector[i]->mBallStatus == Ball::FLY)
+				mBallptrVector[i]->Update(time);
 			if (mBallptrVector[i]->mBallStatus == Ball::DESTORY)
 			{
 				mDeleteVector.push_back(mBallptrVector[i]);
@@ -123,6 +124,18 @@ void BallptrManager::Update( float time )
 			}
 		}
 	}
+}
+
+BallptrVector BallptrManager::GetCollision( const Polygon2D& poly )
+{
+	BallptrVector res;
+	size_t bsize = mBallptrVector.size();
+	for (size_t i=0;i < bsize;i++)
+	{
+		if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
+			res.push_back(mBallptrVector[i]);
+	}
+	return res;
 }
 
 #else

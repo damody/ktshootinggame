@@ -38,11 +38,10 @@ bool Polygon2D::IsCollision( const Polygon2D& rhs )
 	size_t edgeCountA = m_edges.size();
 	size_t edgeCountB = rhs.m_edges.size();
 	float minIntervalDistance = (float)INT_MAX;
-	Ogre::Vector2 translationAxis;
 	Ogre::Vector2 edge;
 
 	// Loop through all the edges of both polygons
-	for (int edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) {
+	for (size_t edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) {
 		if (edgeIndex < edgeCountA) {
 			edge = m_edges[edgeIndex];
 		} else {
@@ -73,7 +72,7 @@ void Polygon2D::ProjectPolygon( const Ogre::Vector2& axis, const Polygon2D& poly
 	float d = axis.dotProduct(polygon.m_points[0]);
 	*min = d;
 	*max = d;
-	for (int i = 0; i < polygon.m_points.size(); i++) {
+	for (size_t i = 0; i < polygon.m_points.size(); i++) {
 		d = polygon.m_points[i].dotProduct(axis);
 		if (d < *min) {
 			*min = d;
