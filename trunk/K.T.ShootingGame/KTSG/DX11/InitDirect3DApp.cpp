@@ -289,14 +289,28 @@ void InitDirect3DApp::LoadWarShip()
 
 void InitDirect3DApp::LoadEnemyShips()
 {
+	m_EnemyMotherShip.m_texture = g_TextureManager.GetTexture(102);
+	m_EnemyMotherShip.m_angle = 180;
+	m_EnemyMotherShip.m_h = 175;
+	m_EnemyMotherShip.m_w = 300;
+	m_EnemyMotherShip.m_position.x = 500;
+	m_EnemyMotherShip.m_position.y = 800;
+	m_EnemyShips.push_back(m_EnemyMotherShip);
+	
 	EnemyMainPlane ship;
 	ship.m_texture = g_TextureManager.GetTexture(102);
 	ship.m_angle = 180;
-	ship.m_h = 175;
-	ship.m_w = 300;
-	ship.m_position.x = 500;
-	ship.m_position.y = 800;
-	m_EnemyShips.push_back(ship);
+	ship.m_h = 70;
+	ship.m_w = 120;
+	ship.motherShip = &m_EnemyMotherShip;
+
+	for(int i=0;i<3;i++)
+	{
+		ship.motherShipOffset = Ogre::Vector3(150 + (i+1)*100.0f, -(i+1)*100.0f, 0);
+		m_EnemyShips.push_back(ship);
+		ship.motherShipOffset = Ogre::Vector3(-150 - (i+1)*100.0f, -(i+1)*100.0f, 0);
+		m_EnemyShips.push_back(ship);
+	}
 }
 
 void InitDirect3DApp::LoadTowers()
@@ -388,6 +402,7 @@ int InitDirect3DApp::UpdateDeliver( float dt )
 
 int InitDirect3DApp::UpdateEnemy( float dt )
 {
+	m_EnemyMotherShip.Update(dt);
 	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end();it++)
 	{

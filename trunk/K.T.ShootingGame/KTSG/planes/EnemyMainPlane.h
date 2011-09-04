@@ -19,16 +19,25 @@
 #include "algo\nway.h"
 #include "ball\straight.h"
 #include "towers\tower.h"
-#include "MainPlane.h"
 
-class EnemyMainPlane : public MainPlane
+class EnemyMainPlane
 {
 public:
+	DXVertex	m_pic;
+	Texture_Sptr	m_texture;
+	Ogre::Vector3	m_position;
+	Polygon2D	m_Polygon2D;
+
+	float		m_angle;
+	int		m_hp;
+	int		m_w, m_h;
+	Towers		m_Towers;
+
 	Ogre::Vector3	targetPos;
-	float		secPerBullet;
-	int		launchCounts;
+	Ogre::Vector3	motherShipOffset;
+	EnemyMainPlane*	motherShip;
 public:
-	EnemyMainPlane(){}
+	inline EnemyMainPlane(EnemyMainPlane* _motherShip = NULL) : motherShip(_motherShip){}
 	void Update(float dt);
 	int  UpdateTower(float dt);
 protected:
