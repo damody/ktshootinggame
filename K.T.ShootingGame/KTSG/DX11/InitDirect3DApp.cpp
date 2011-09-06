@@ -348,6 +348,7 @@ void InitDirect3DApp::LoadEnemyShips()
 		enemy->m_path.AddPoint(10, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
 		enemy->m_path.AddPoint(12, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
 		enemy->m_path.AddPoint(14, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+
 		m_EnemyShips.push_back(enemy);
 	}
 }
@@ -386,9 +387,9 @@ void InitDirect3DApp::LoadTowers()
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
 	t.m_Trajectory->mPolygon.AddPoint(0,20);
 	//t.m_Trajectory->mPolygon.AddPoint(1,80);
-	t.m_position = Ogre::Vector3(200, 100, 0);
+	t.m_position = Ogre::Vector3(200, 150, 0);
 	ts.push_back(t);
-	t.m_position = Ogre::Vector3(-200, 100, 0);
+	t.m_position = Ogre::Vector3(-200, 150, 0);
 	ts.push_back(t);
 	t.m_position = Ogre::Vector3(0, 300, 0);
 	ts.push_back(t); 
@@ -457,6 +458,15 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 		it != m_EnemyShips.end();it++)
 	{
 		(*it)->Update(dt);
+		Polygon2D poly = (*it)->m_Polygon2D;
+		poly.Offset((*it)->m_position);
+		poly.CheckBuildEdges();
+		BallptrVector ans = g_BallptrManager.GetCollision(poly);
+		for(size_t i=0; i<ans.size(); i++)
+		{
+			ans[i]->mBallStatus = Ball::DESTORY;
+		}
+		
 	}
 	return 0;
 }
