@@ -18,16 +18,8 @@
 
 void EnemyMainPlane::Update(float dt) 
 {
-	if(motherShip)
-	{
-		m_position = motherShip->m_position + GetRotation(motherShipOffset, motherShip->m_angle);
-		m_angle = motherShip->m_angle;
-	}
-	else
-	{
-		Ogre::Vector3 trans = GetRotation(Ogre::Vector3(0, dt*10, 0), m_angle);
-		m_position += trans;
-	}
+	Ogre::Vector3 trans = GetRotation(Ogre::Vector3(0, dt*10, 0), m_angle);
+	m_position += trans;
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }

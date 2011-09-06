@@ -22,7 +22,8 @@ typedef std::vector<Ogre::Vector2> Vector2s;
 class Polygon2D 
 {
 public:
-	Polygon2D():m_angle(0){}
+	Polygon2D(bool computeCentroid = false)
+		:m_computeCentroid(computeCentroid), m_angle(0){}
 	Vector2s& Points()
 	{
 		m_needBuildEdges = true;
@@ -83,8 +84,17 @@ public:
 		}
 	}
 	bool IsCollision(const Polygon2D& rhs);
-	void BuildEdges();
+	void CheckBuildEdges();
+	Ogre::Vector2 Centroid()
+	{
+		bool tmp = m_computeCentroid;
+		m_computeCentroid = true;
+		BuildEdges();
+		m_computeCentroid = tmp;
+		return m_centroid;
+	}
 private:
+	void BuildEdges();
 	// Calculate the distance between [minA, maxA] and [minB, maxB]
 	// The distance will be negative if the intervals overlap
 	inline float IntervalDistance(float minA, float maxA, float minB, float maxB)
@@ -99,6 +109,9 @@ private:
 	void ProjectPolygon(const Ogre::Vector2& axis, const Polygon2D& polygon, float* min, float* max);
 private:
 	Vector2s m_points, m_edges;
+	bool	m_computeCentroid; // true
+	Ogre::Vector2 m_centroid;
+	float	m_radius;
 	bool	m_needBuildEdges;
 	float	m_angle;
 };

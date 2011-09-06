@@ -2,6 +2,7 @@
 #include "InitDirect3DApp.h"
 #include "InputState.h"
 #include "WaveSound.h"
+#include "planes\EnemyMainPlane.h"
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 : D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) 
@@ -153,10 +154,10 @@ void InitDirect3DApp::buildPoint()
 		m_ShipVertex.push_back(it->m_pic);
 	}
 
-	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
+	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
-		m_ShipVertex.push_back(it->m_pic);
+		m_ShipVertex.push_back((*it)->m_pic);
 	}
 	m_vbd.ByteWidth = (UINT)(sizeof(DXVertex)*m_ShipVertex.size());
 	m_vbd.StructureByteStride=sizeof(DXVertex);
@@ -310,28 +311,14 @@ void InitDirect3DApp::LoadWarShip()
 
 void InitDirect3DApp::LoadEnemyShips()
 {
-	m_EnemyMotherShip.m_texture = g_TextureManager.GetTexture(102);
-	m_EnemyMotherShip.m_angle = 180;
-	m_EnemyMotherShip.m_h = 175;
-	m_EnemyMotherShip.m_w = 300;
-	m_EnemyMotherShip.m_position.x = 500;
-	m_EnemyMotherShip.m_position.y = 800;
-	m_EnemyShips.push_back(m_EnemyMotherShip);
-	
-	EnemyMainPlane ship;
-	ship.m_texture = g_TextureManager.GetTexture(102);
-	ship.m_angle = 180;
-	ship.m_h = 70;
-	ship.m_w = 120;
-	ship.motherShip = &m_EnemyMotherShip;
-
-	for(int i=0;i<3;i++)
-	{
-		ship.motherShipOffset = Ogre::Vector3(150 + (i+1)*100.0f, -(i+1)*100.0f, 0);
-		m_EnemyShips.push_back(ship);
-		ship.motherShipOffset = Ogre::Vector3(-150 - (i+1)*100.0f, -(i+1)*100.0f, 0);
-		m_EnemyShips.push_back(ship);
-	}
+	EnemyMainPlane* EnemyMotherShip = new EnemyMainPlane;
+	EnemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
+	EnemyMotherShip->m_angle = 180;
+	EnemyMotherShip->m_h = 175;
+	EnemyMotherShip->m_w = 300;
+	EnemyMotherShip->m_position.x = 500;
+	EnemyMotherShip->m_position.y = 800;
+	m_EnemyShips.push_back(EnemyMotherShip);
 }
 
 void InitDirect3DApp::LoadTowers()
@@ -339,7 +326,7 @@ void InitDirect3DApp::LoadTowers()
 	Tower t;
 	Straight* st = new Straight;
 	Towers ts;
-	st->mVelocity = 100;
+	st->mVelocity = 400;
 	t.m_Behavior = st;
 	t.m_Trajectory = new NWay(5, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
@@ -357,23 +344,23 @@ void InitDirect3DApp::LoadTowers()
 	
 	t.m_ball_texture = g_TextureManager.GetTexture(103);
 	t.m_ball_pic.picpos.x = 1;
-	t.m_ball_pic.picpos.y = 1;
+	t.m_ball_pic.picpos.y = 1;  
 	t.m_ball_pic.picpos.z = 2;
 	t.m_ball_pic.picpos.w = 2;
-	t.m_ball_pic.size.x = 5;
-	t.m_ball_pic.size.y = 80;
-	t.m_atkSpeed = 0.1f;
-	t.m_Trajectory = new NWay(50, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_ball_pic.size.x = 2;
+	t.m_ball_pic.size.y = 20;
+	t.m_atkSpeed = 0.05f;
+	t.m_Trajectory = new NWay(20, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
-	t.m_Trajectory->mPolygon.AddPoint(0,80);
-	t.m_Trajectory->mPolygon.AddPoint(1,80);
+	t.m_Trajectory->mPolygon.AddPoint(0,20);
+	//t.m_Trajectory->mPolygon.AddPoint(1,80);
 	t.m_position = Ogre::Vector3(200, 0, 0);
 	ts.push_back(t);
 	t.m_position = Ogre::Vector3(-200, 0, 0);
 	ts.push_back(t);
 	t.m_position = Ogre::Vector3(0, 150, 0);
-	ts.push_back(t);
+	ts.push_back(t); 
 	//m_warShip.m_Towers = ts;
 
 	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
@@ -382,10 +369,10 @@ void InitDirect3DApp::LoadTowers()
 		it->m_Towers = ts;
 	}
 
-	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
+	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
-		it->m_Towers = ts;
+		(*it)->m_Towers = ts;
 	}
 }
 
@@ -419,7 +406,7 @@ int InitDirect3DApp::UpdateWarShip( float dt )
 
 	Polygon2D poly = m_motherShip.m_Polygon2D;
 	poly.Offset(m_motherShip.m_position);
-	poly.BuildEdges();
+	poly.CheckBuildEdges();
 	BallptrVector ans = g_BallptrManager.GetCollision(poly);
 	for (size_t i=0;i < ans.size();++i)
 	{
@@ -435,11 +422,10 @@ int InitDirect3DApp::UpdateDeliver( float dt )
 
 int InitDirect3DApp::UpdateEnemy( float dt )
 {
-	m_EnemyMotherShip.Update(dt);
-	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
+	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end();it++)
 	{
-		it->Update(dt);
+		(*it)->Update(dt);
 	}
 	return 0;
 }

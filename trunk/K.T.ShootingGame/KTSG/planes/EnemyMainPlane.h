@@ -33,11 +33,9 @@ public:
 	int		m_w, m_h;
 	Towers		m_Towers;
 
-	Ogre::Vector3	targetPos;
-	Ogre::Vector3	motherShipOffset;
-	EnemyMainPlane*	motherShip;
+	Ogre::Vector3	m_targetPos;
 public:
-	inline EnemyMainPlane(EnemyMainPlane* _motherShip = NULL) : motherShip(_motherShip){}
+	inline EnemyMainPlane() {}
 	void Update(float dt);
 	int  UpdateTower(float dt);
 protected:

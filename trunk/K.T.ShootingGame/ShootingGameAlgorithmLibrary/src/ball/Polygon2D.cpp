@@ -17,7 +17,9 @@ void Polygon2D::BuildEdges()
 	Ogre::Vector2* p1;
 	Ogre::Vector2* p2;
 	m_edges.clear();
-	for (size_t i = 0; i < m_points.size(); i++) {
+	
+	for (size_t i = 0; i < m_points.size(); i++) 
+	{
 		p1 = &m_points[i];
 		if (i + 1 >= m_points.size()) {
 			p2 = &m_points[0];
@@ -26,15 +28,26 @@ void Polygon2D::BuildEdges()
 		}
 		m_edges.push_back(*p2 - *p1);
 	}
+	if (m_computeCentroid && !m_points.empty())
+	{
+		m_centroid = Ogre::Vector2::ZERO;
+		for (size_t i = 0; i < m_points.size(); i++) 
+			m_centroid += m_points[i];
+		m_centroid /= (float)m_points.size();
+		m_radius = 0;
+		for (size_t i = 0; i < m_points.size(); i++) 
+		{		
+			float tmp = m_centroid.dotProduct(m_points[i]);
+			if (tmp>m_radius)
+				m_radius = tmp;
+		}
+	}
+	
 }
 
 bool Polygon2D::IsCollision( const Polygon2D& rhs )
 {
-	if (m_needBuildEdges)
-	{
-		BuildEdges();
-		m_needBuildEdges = false;
-	}
+	CheckBuildEdges();
 	size_t edgeCountA = m_edges.size();
 	size_t edgeCountB = rhs.m_edges.size();
 	float minIntervalDistance = (float)INT_MAX;
@@ -81,6 +94,15 @@ void Polygon2D::ProjectPolygon( const Ogre::Vector2& axis, const Polygon2D& poly
 				*max = d;
 			}
 		}
+	}
+}
+
+void Polygon2D::CheckBuildEdges()
+{
+	if (m_needBuildEdges)
+	{
+		BuildEdges();
+		m_needBuildEdges = false;
 	}
 }
 
