@@ -67,9 +67,8 @@ private:
 	LuaCell			m_Lua;
 	DrawVertexGroups	m_DrawVertexGroups;
 	MainPlane		m_motherShip;
-	EnemyMainPlane		m_EnemyMotherShip;
 	std::vector<MainPlane>	m_warShips;
-	std::vector<EnemyMainPlane>	m_EnemyShips;
+	std::vector<EnemyMainPlane*>	m_EnemyShips;
 
 	std::vector<DXVertex>		m_ShipVertex;
 	std::vector<BulletVertex>	m_BVertex;

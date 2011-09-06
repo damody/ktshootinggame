@@ -19,7 +19,7 @@
 #include "ball\ball.h"
 #include "memory\VMemPool.h"
 
-class Bullet : public Ball , public CVMemPool<Bullet,120000>
+class Bullet : public Ball , public CVMemPool<Bullet,200000>
 {
 public:
 	GET_CLASS_SIZE(Behavior)

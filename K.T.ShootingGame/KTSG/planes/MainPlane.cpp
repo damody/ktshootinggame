@@ -80,11 +80,10 @@ void MainPlane::UpdateDataToDraw()
 
 MainPlane::MainPlane()
 {
-	motherShip = NULL;
-
+	m_Polygon2D.AddPoint(-200, 0);
 	m_Polygon2D.AddPoint(-200, -100);
 	m_Polygon2D.AddPoint(0, 150);
-	m_Polygon2D.AddPoint(200, -100);
+	m_Polygon2D.AddPoint(200, 0);
 }
 
 
