@@ -39,7 +39,7 @@ public:
 	void MutiThreadUpdate( int i );
 	void Update( float time );
 	void SetNumThreads( int i );
-	BallptrVector GetCollision(const Polygon2D& poly);
+	BallptrVector GetCollision(const Polygon2D& poly, int collisionMask = 0xffffffff);
 #else
 	BallptrManager(int _mNumThreads=1)
 		:mNumThreads(_mNumThreads)

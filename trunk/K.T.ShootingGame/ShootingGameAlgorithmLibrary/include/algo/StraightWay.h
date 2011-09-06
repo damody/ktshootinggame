@@ -6,7 +6,7 @@
 class StraightWay : public Trajectory
 {
 public:
-	float		mRadiationAngle;
+	float	mRadiationAngle;
 	float	mVelocity;
 	float	mAngle;
 	float	mMaxAngle;

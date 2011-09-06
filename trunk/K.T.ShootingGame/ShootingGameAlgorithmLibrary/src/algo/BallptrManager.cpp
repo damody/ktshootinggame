@@ -126,14 +126,17 @@ void BallptrManager::Update( float time )
 	}
 }
 
-BallptrVector BallptrManager::GetCollision( const Polygon2D& poly )
+BallptrVector BallptrManager::GetCollision( const Polygon2D& poly, int collisionMask )
 {
 	BallptrVector res;
 	size_t bsize = mBallptrVector.size();
 	for (size_t i=0;i < bsize;i++)
 	{
-		if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
-			res.push_back(mBallptrVector[i]);
+		if (mBallptrVector[i]->mCollisionMask&&collisionMask)
+		{
+			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
+				res.push_back(mBallptrVector[i]);
+		}
 	}
 	return res;
 }
