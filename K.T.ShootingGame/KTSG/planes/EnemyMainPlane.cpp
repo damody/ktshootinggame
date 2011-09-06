@@ -18,8 +18,15 @@
 
 void EnemyMainPlane::Update(float dt) 
 {
-	Ogre::Vector3 trans = GetRotation(Ogre::Vector3(0, dt*10, 0), m_angle);
-	m_position += trans;
+// 	Ogre::Vector3 trans = GetRotation(Ogre::Vector3(0, dt*10, 0), m_angle);
+// 	m_position += trans;
+
+	m_position = m_path.GetValue(m_elapsedTime);
+	
+	/*if(m_elapsedTime - UINT(m_elapsedTime) > 0.9)*/
+		//m_path.AddPoint(0.5f, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+
+	m_elapsedTime += dt;
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }

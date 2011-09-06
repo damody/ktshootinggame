@@ -10,12 +10,26 @@
 //
 
 #include "MainPlane.h"
+#include "EnemyMainPlane.h"
 #include "DX11/InputState.h"
 #include "algo/sgmath.h"
 #include "DX11/InitDirect3DApp.h"
 #include "global.h"
 #include "DX11/WaveSound.h"
+#include <algo/nway.h>
+#include <ball/homing.h>
 #include <iostream>
+#include <boost/bind.hpp>
+
+Texture_Sptr texture2;
+BulletVertex ball_pic2;
+Ball* GetBulletBall2()
+{
+	//Bullet* bullet = Bullet::pool.construct(texture);
+	Bullet* bullet = new Bullet(texture2);
+	bullet->m_pic = ball_pic2;
+	return static_cast<Ball*>(bullet);
+}
 
 void MainPlane::Update(float dt) 
 {
@@ -32,6 +46,42 @@ void MainPlane::Update(float dt)
 		if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 140;
 		if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
 		if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
+		if(InputStateS::instance().isKeyDown(KEY_SPACE))
+		{
+			std::vector<EnemyMainPlane*> enemies = InitDirect3DApp::dxAppInstance->GetEnemies();
+			EnemyMainPlane* enemyTemp = enemies.at(0);
+			float distance = m_position.distance(enemyTemp->m_position);
+			for(std::vector<EnemyMainPlane*>::iterator it = enemies.begin()+1;
+				it != enemies.end();
+				it++)
+			{
+				float distanceTemp = m_position.distance((*it)->m_position);
+				if(distanceTemp < distance)
+				{
+					distance = distanceTemp;
+					enemyTemp = *it;
+				}
+			}
+			NWay* nWay = new NWay(1, m_position + GetRotation(Ogre::Vector3(0, 200, 0), m_angle), GetRotation(Ogre::Vector3(0, 1, 0), m_angle));
+			nWay->mPolygon.AddPoint(0, 0);
+			nWay->mPolygon.AddPoint(0, 20);
+		
+			Homing* homing = new Homing;
+			homing->mVelocity = 50;
+			homing->GetEnemyPos = boost::bind(&EnemyMainPlane::GetPos, enemyTemp);
+			nWay->mBehavior = homing;
+			nWay->SetRadiationAngle(180);
+			
+			texture2 = g_TextureManager.GetTexture(103);
+			ball_pic2.picpos.x = 1;
+			ball_pic2.picpos.y = 1;  
+			ball_pic2.picpos.z = 2;
+			ball_pic2.picpos.w = 2;
+			ball_pic2.size.x = 2;
+			ball_pic2.size.y = 20;
+			BallptrVector bv = nWay->NewBallptrVector(GetBulletBall2);
+			g_BallptrManager.AddBallptrs(bv);
+		}
 
 		Ogre::Vector3 trans = GetRotation(temp, m_angle);
 		m_position += trans;
@@ -80,6 +130,7 @@ void MainPlane::UpdateDataToDraw()
 
 MainPlane::MainPlane()
 {
+	motherShip = NULL;
 	m_Polygon2D.AddPoint(-200, 0);
 	m_Polygon2D.AddPoint(-200, -100);
 	m_Polygon2D.AddPoint(0, 150);

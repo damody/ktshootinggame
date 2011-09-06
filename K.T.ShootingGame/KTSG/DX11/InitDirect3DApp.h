@@ -20,7 +20,12 @@ class InitDirect3DApp : public D3DApp
 public:
 	InitDirect3DApp(HINSTANCE hInstance);
 	~InitDirect3DApp();
+	static InitDirect3DApp* dxAppInstance;
 	void initApp();
+	std::vector<EnemyMainPlane*> GetEnemies()
+	{
+		return m_EnemyShips;
+	}
 private:
 		
 	void LoadResource();

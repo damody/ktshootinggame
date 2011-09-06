@@ -3,10 +3,15 @@
 #include "InputState.h"
 #include "WaveSound.h"
 #include "planes\EnemyMainPlane.h"
+#include <stdlib.h>
+#include <time.h>
+
+InitDirect3DApp* InitDirect3DApp::dxAppInstance = NULL;
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
 : D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) 
 {
+	dxAppInstance = this;
 }
 
 InitDirect3DApp::~InitDirect3DApp()
@@ -302,23 +307,49 @@ void InitDirect3DApp::LoadWarShip()
 
 	for(int i=0;i<3;i++)
 	{
-		ship.motherShipOffset = Ogre::Vector3(150 + (i+1)*100.0f, -(i+1)*100.0f, 0);
+		ship.motherShipOffset = Ogre::Vector3(200 + (i+1)*100.0f, -(i+1)*100.0f, 0);
 		m_warShips.push_back(ship);
-		ship.motherShipOffset = Ogre::Vector3(-150 - (i+1)*100.0f, -(i+1)*100.0f, 0);
+		ship.motherShipOffset = Ogre::Vector3(-200 - (i+1)*100.0f, -(i+1)*100.0f, 0);
 		m_warShips.push_back(ship);
 	}
 }
 
 void InitDirect3DApp::LoadEnemyShips()
 {
-	EnemyMainPlane* EnemyMotherShip = new EnemyMainPlane;
-	EnemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
-	EnemyMotherShip->m_angle = 180;
-	EnemyMotherShip->m_h = 175;
-	EnemyMotherShip->m_w = 300;
-	EnemyMotherShip->m_position.x = 500;
-	EnemyMotherShip->m_position.y = 800;
-	m_EnemyShips.push_back(EnemyMotherShip);
+	srand((UINT)time(0));
+
+	EnemyMainPlane* enemyMotherShip = new EnemyMainPlane;
+	enemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
+	enemyMotherShip->m_angle = 180;
+	enemyMotherShip->m_h = 175;
+	enemyMotherShip->m_w = 300;
+	enemyMotherShip->m_position.x = 500;
+	enemyMotherShip->m_position.y = 800;
+	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+	m_EnemyShips.push_back(enemyMotherShip);
+
+	for(int i=0; i< 10; i++)
+	{
+		EnemyMainPlane* enemy = new EnemyMainPlane;
+		enemy->m_texture = g_TextureManager.GetTexture(102);
+		enemy->m_angle = 180;
+		enemy->m_h = 70;
+		enemy->m_w = 120;
+		enemy->m_position.x = rand() % 1440 + 0.0f;
+		enemy->m_position.y = rand() % 900 + 0.0f;
+		enemy->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		enemy->m_path.AddPoint(4, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		enemy->m_path.AddPoint(6, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		enemy->m_path.AddPoint(8, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		enemy->m_path.AddPoint(10, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		enemy->m_path.AddPoint(12, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		enemy->m_path.AddPoint(14, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+		m_EnemyShips.push_back(enemy);
+	}
 }
 
 void InitDirect3DApp::LoadTowers()
@@ -355,25 +386,25 @@ void InitDirect3DApp::LoadTowers()
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
 	t.m_Trajectory->mPolygon.AddPoint(0,20);
 	//t.m_Trajectory->mPolygon.AddPoint(1,80);
-	t.m_position = Ogre::Vector3(200, 0, 0);
+	t.m_position = Ogre::Vector3(200, 100, 0);
 	ts.push_back(t);
-	t.m_position = Ogre::Vector3(-200, 0, 0);
+	t.m_position = Ogre::Vector3(-200, 100, 0);
 	ts.push_back(t);
-	t.m_position = Ogre::Vector3(0, 150, 0);
+	t.m_position = Ogre::Vector3(0, 300, 0);
 	ts.push_back(t); 
-	//m_warShip.m_Towers = ts;
+	m_motherShip.m_Towers = ts;
 
-	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
-		it != m_warShips.end(); it++)
-	{
-		it->m_Towers = ts;
-	}
+// 	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
+// 		it != m_warShips.end(); it++)
+// 	{
+// 		it->m_Towers = ts;
+// 	}
 
-	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
-		it != m_EnemyShips.end(); it++)
-	{
-		(*it)->m_Towers = ts;
-	}
+// 	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
+// 		it != m_EnemyShips.end(); it++)
+// 	{
+// 		(*it)->m_Towers = ts;
+// 	}
 }
 
 int InitDirect3DApp::UpdateInput()

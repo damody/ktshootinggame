@@ -19,6 +19,7 @@
 #include "algo\nway.h"
 #include "ball\straight.h"
 #include "towers\tower.h"
+#include "path/LinearLine.h"
 
 class EnemyMainPlane
 {
@@ -32,12 +33,18 @@ public:
 	int		m_hp;
 	int		m_w, m_h;
 	Towers		m_Towers;
+	LinearLine	m_path;
+	float		m_elapsedTime;
 
 	Ogre::Vector3	m_targetPos;
 public:
-	inline EnemyMainPlane() {}
+	inline EnemyMainPlane() : m_elapsedTime(0) {}
 	void Update(float dt);
 	int  UpdateTower(float dt);
+	Ogre::Vector3 GetPos()
+	{
+		return m_position;
+	}
 protected:
 	void UpdateDataToDraw();
 };
