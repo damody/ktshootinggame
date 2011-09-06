@@ -38,7 +38,7 @@ public:
 
 	Ogre::Vector3	m_targetPos;
 public:
-	inline EnemyMainPlane() : m_elapsedTime(0) {}
+	EnemyMainPlane();
 	void Update(float dt);
 	int  UpdateTower(float dt);
 	Ogre::Vector3 GetPos()

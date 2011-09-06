@@ -80,6 +80,10 @@ void MainPlane::Update(float dt)
 			ball_pic2.size.x = 2;
 			ball_pic2.size.y = 20;
 			BallptrVector bv = nWay->NewBallptrVector(GetBulletBall2);
+			for(size_t i=0; i<bv.size(); i++)
+			{
+				bv[i]->mPolygon2D.Offset(bv[i]->mPosition);
+			}
 			g_BallptrManager.AddBallptrs(bv);
 		}
 
@@ -132,7 +136,7 @@ MainPlane::MainPlane()
 {
 	motherShip = NULL;
 	m_Polygon2D.AddPoint(-200, 0);
-	m_Polygon2D.AddPoint(-200, -100);
+	m_Polygon2D.AddPoint(0, -100);
 	m_Polygon2D.AddPoint(0, 150);
 	m_Polygon2D.AddPoint(200, 0);
 }

@@ -27,6 +27,9 @@ void EnemyMainPlane::Update(float dt)
 		//m_path.AddPoint(0.5f, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
 
 	m_elapsedTime += dt;
+
+	m_Polygon2D.SetAngle(m_angle);
+
 	UpdateTower(dt);
 	UpdateDataToDraw();
 }
@@ -63,6 +66,14 @@ void EnemyMainPlane::UpdateDataToDraw()
 	m_pic.angle = m_angle;
 	m_pic.size.x = (float)m_w;
 	m_pic.size.y = (float)m_h;
+}
+
+EnemyMainPlane::EnemyMainPlane() : m_elapsedTime(0)
+{
+	m_Polygon2D.AddPoint(-60, 0);
+	m_Polygon2D.AddPoint(0, -35);
+	m_Polygon2D.AddPoint(0, 35);
+	m_Polygon2D.AddPoint(60, 0);
 }
 
 
