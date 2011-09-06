@@ -21,7 +21,7 @@
 #include "towers\tower.h"
 #include "path/LinearLine.h"
 
-class EnemyMainPlane
+class EnemyPlane
 {
 public:
 	DXVertex	m_pic;
@@ -38,7 +38,7 @@ public:
 
 	Ogre::Vector3	m_targetPos;
 public:
-	EnemyMainPlane();
+	EnemyPlane();
 	void Update(float dt);
 	int  UpdateTower(float dt);
 	Ogre::Vector3 GetPos()

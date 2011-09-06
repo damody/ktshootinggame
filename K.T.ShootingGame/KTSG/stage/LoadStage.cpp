@@ -12,7 +12,10 @@
 
 #include "LoadStage.h"
 
-void LoadStage::LoadStage() {
 
+
+void LoadStage::LoadNewStage( std::string path, Stage& toStage )
+{
+	m_LuaCell.InputLuaFile(path.c_str());
+	toStage.AddEnmyPlane();
 }
-

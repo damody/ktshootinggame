@@ -12,11 +12,13 @@
 
 #include "Stage.h"
 
-void Stage::AddEnmyPlane() {
+void Stage::AddEnmyPlane()
+{
 
 }
 
-void Stage::GetTimeToGenerateEnmyPlane() {
+void Stage::GetTimeToGenerateEnmyPlane()
+{
 
 }
 
