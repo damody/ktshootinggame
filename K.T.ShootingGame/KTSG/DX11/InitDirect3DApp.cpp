@@ -67,8 +67,8 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetInputLayout(m_PLayout_Warship);
 	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
-	m_PMap_Warship->SetResource(*(m_warShip.m_texture));
-	m_DeviceContext->Draw(1 + (UINT)m_EnemyShips.size(), 0);
+	m_PMap_Warship->SetResource(*(m_motherShip.m_texture));
+	m_DeviceContext->Draw(1 + (UINT)m_warShips.size() + (UINT)m_EnemyShips.size(), 0);
 	UINT stride2 = sizeof(BulletVertex);
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
@@ -145,7 +145,13 @@ void InitDirect3DApp::buildPoint()
 	ReleaseCOM(m_Buffer_Bullets);
 	// set warship
 	m_ShipVertex.clear();
-	m_ShipVertex.push_back(m_warShip.m_pic);
+	m_ShipVertex.push_back(m_motherShip.m_pic);
+
+	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
+		it != m_warShips.end(); it++)
+	{
+		m_ShipVertex.push_back(it->m_pic);
+	}
 
 	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
@@ -279,12 +285,27 @@ void InitDirect3DApp::LoadBlend()
 
 void InitDirect3DApp::LoadWarShip()
 {
-	m_warShip.m_angle = 0;
-	m_warShip.m_h = 350;
-	m_warShip.m_w = 600;
-	m_warShip.m_position.x = 100;
-	m_warShip.m_position.y = 200;
-	m_warShip.m_texture = g_TextureManager.GetTexture(102);
+	m_motherShip.m_angle = 0;
+	m_motherShip.m_h = 350;
+	m_motherShip.m_w = 600;
+	m_motherShip.m_position.x = 100;
+	m_motherShip.m_position.y = 200;
+	m_motherShip.m_texture = g_TextureManager.GetTexture(102);
+
+	MainPlane ship;
+	ship.m_texture = g_TextureManager.GetTexture(102);
+	ship.m_angle = 180;
+	ship.m_h = 70;
+	ship.m_w = 120;
+	ship.motherShip = &m_motherShip;
+
+	for(int i=0;i<3;i++)
+	{
+		ship.motherShipOffset = Ogre::Vector3(150 + (i+1)*100.0f, -(i+1)*100.0f, 0);
+		m_warShips.push_back(ship);
+		ship.motherShipOffset = Ogre::Vector3(-150 - (i+1)*100.0f, -(i+1)*100.0f, 0);
+		m_warShips.push_back(ship);
+	}
 }
 
 void InitDirect3DApp::LoadEnemyShips()
@@ -355,6 +376,12 @@ void InitDirect3DApp::LoadTowers()
 	ts.push_back(t);
 	//m_warShip.m_Towers = ts;
 
+	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
+		it != m_warShips.end(); it++)
+	{
+		it->m_Towers = ts;
+	}
+
 	for(std::vector<EnemyMainPlane>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
@@ -383,9 +410,15 @@ int InitDirect3DApp::UpdateInput()
 
 int InitDirect3DApp::UpdateWarShip( float dt )
 {
-	m_warShip.Update(dt);
-	Polygon2D poly = m_warShip.m_Polygon2D;
-	poly.Offset(m_warShip.m_position);
+	m_motherShip.Update(dt);
+	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
+		it != m_warShips.end(); it++)
+	{
+		it->Update(dt);
+	}
+
+	Polygon2D poly = m_motherShip.m_Polygon2D;
+	poly.Offset(m_motherShip.m_position);
 	poly.BuildEdges();
 	BallptrVector ans = g_BallptrManager.GetCollision(poly);
 	for (size_t i=0;i < ans.size();++i)

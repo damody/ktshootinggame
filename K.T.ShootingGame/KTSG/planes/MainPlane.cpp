@@ -19,15 +19,24 @@
 
 void MainPlane::Update(float dt) 
 {
-	Ogre::Vector3 temp = Ogre::Vector3::ZERO;
-	if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 140;
-	if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 140;
-	if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
-	if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
+	if(motherShip)
+	{
+		m_position = motherShip->m_position + GetRotation(motherShipOffset, motherShip->m_angle);
+		m_angle = motherShip->m_angle;
+		m_Polygon2D.SetAngle(m_angle);
+	}
+	else
+	{
+		Ogre::Vector3 temp = Ogre::Vector3::ZERO;
+		if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 140;
+		if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 140;
+		if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
+		if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
 
-	Ogre::Vector3 trans = GetRotation(temp, m_angle);
-	m_position += trans;
-	m_Polygon2D.SetAngle(m_angle);
+		Ogre::Vector3 trans = GetRotation(temp, m_angle);
+		m_position += trans;
+		m_Polygon2D.SetAngle(m_angle);
+	}
 
 	static float startvalue = 0;
 	startvalue += dt;
@@ -71,6 +80,8 @@ void MainPlane::UpdateDataToDraw()
 
 MainPlane::MainPlane()
 {
+	motherShip = NULL;
+
 	m_Polygon2D.AddPoint(-200, -100);
 	m_Polygon2D.AddPoint(0, 150);
 	m_Polygon2D.AddPoint(200, -100);
