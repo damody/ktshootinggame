@@ -2,12 +2,13 @@
 #include "ball.h"
 #include "behavior.h"
 #include "math/OgreVector3.h"
+#include <boost/function.hpp>
 
 class Homing : public Behavior
 {	
 public:
 	float	mVelocity;
-	Ogre::Vector3	(*GetEnemyPos)();
+	boost::function<Ogre::Vector3()> GetEnemyPos;
 	GET_CLASS_SIZE(Homing)
 	inline Homing()
 	{m_typehash = strhasher("Homing");}
