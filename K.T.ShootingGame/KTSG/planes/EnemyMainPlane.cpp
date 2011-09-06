@@ -68,7 +68,7 @@ void EnemyMainPlane::UpdateDataToDraw()
 	m_pic.size.y = (float)m_h;
 }
 
-EnemyMainPlane::EnemyMainPlane() : m_elapsedTime(0)
+EnemyMainPlane::EnemyMainPlane() : m_elapsedTime(0), m_hp(1)
 {
 	m_Polygon2D.AddPoint(-60, 0);
 	m_Polygon2D.AddPoint(0, -35);

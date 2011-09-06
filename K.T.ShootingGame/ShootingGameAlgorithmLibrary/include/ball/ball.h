@@ -25,13 +25,14 @@ public:
 	float		mTimeRate;
 	Behavior*	mpBehavior;
 	BallStatus	mBallStatus;
+	int		mCollisionMask;
 public:
 	VIRTUAL_GET_CLASS_SIZE(Behavior)
-	inline Ball():mTimeRate(1)
+	inline Ball():mTimeRate(1), mCollisionMask(1)
 	{
 	}
 	inline Ball(const Ogre::Vector3 pos, const Ogre::Vector3 dir, Behavior* behavior = NULL)
-		:mTimeRate(1), mPosition(pos), mDirection(dir), 
+		:mTimeRate(1), mPosition(pos), mDirection(dir), mCollisionMask(1),
 		//mUp(Ogre::Vector3::NEGATIVE_UNIT_Z), 
 		mpBehavior(behavior), mBallStatus(FLY)
 	{
@@ -39,7 +40,7 @@ public:
 	inline Ball(const Ogre::Vector3 pos, float angle, Behavior* behavior = NULL)
 		:mTimeRate(1), mPosition(pos), mDirection(GetRotation(pos, angle)), 
 		//mUp(Ogre::Vector3::NEGATIVE_UNIT_Z), 
-		mpBehavior(behavior), mBallStatus(FLY)
+		mpBehavior(behavior), mBallStatus(FLY), mCollisionMask(1)
 	{
 	}
 	virtual int Update(float elapsedtime);
