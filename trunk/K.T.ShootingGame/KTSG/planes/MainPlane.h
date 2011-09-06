@@ -36,6 +36,9 @@ public:
 	int		m_hp;
 	int		m_w, m_h;
 	Towers		m_Towers;
+
+	Ogre::Vector3	motherShipOffset;
+	MainPlane*	motherShip;
 public:
 	MainPlane();
 	void Update(float dt);
