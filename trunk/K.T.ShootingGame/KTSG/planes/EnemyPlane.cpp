@@ -9,14 +9,14 @@
 //
 //
 
-#include "EnemyMainPlane.h"
+#include "EnemyPlane.h"
 #include "DX11/InputState.h"
 #include "algo/sgmath.h"
 #include "DX11/InitDirect3DApp.h"
 #include "global.h"
 #include "DX11/WaveSound.h"
 
-void EnemyMainPlane::Update(float dt) 
+void EnemyPlane::Update(float dt) 
 {
 // 	Ogre::Vector3 trans = GetRotation(Ogre::Vector3(0, dt*10, 0), m_angle);
 // 	m_position += trans;
@@ -34,7 +34,7 @@ void EnemyMainPlane::Update(float dt)
 	UpdateDataToDraw();
 }
 
-int EnemyMainPlane::UpdateTower(float dt)
+int EnemyPlane::UpdateTower(float dt)
 {
 	for (Towers::iterator it = m_Towers.begin();
 		it != m_Towers.end();++it)
@@ -58,7 +58,7 @@ int EnemyMainPlane::UpdateTower(float dt)
 	return 0;
 }
 
-void EnemyMainPlane::UpdateDataToDraw()
+void EnemyPlane::UpdateDataToDraw()
 {
 	m_pic.position.x = m_position.x;
 	m_pic.position.y = m_position.y;
@@ -68,7 +68,7 @@ void EnemyMainPlane::UpdateDataToDraw()
 	m_pic.size.y = (float)m_h;
 }
 
-EnemyMainPlane::EnemyMainPlane() : m_elapsedTime(0), m_hp(1)
+EnemyPlane::EnemyPlane() : m_elapsedTime(0), m_hp(1)
 {
 	m_Polygon2D.AddPoint(-60, 0);
 	m_Polygon2D.AddPoint(0, -35);

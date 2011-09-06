@@ -10,7 +10,7 @@
 //
 
 #include "MainPlane.h"
-#include "EnemyMainPlane.h"
+#include "EnemyPlane.h"
 #include "DX11/InputState.h"
 #include "algo/sgmath.h"
 #include "DX11/InitDirect3DApp.h"
@@ -48,10 +48,10 @@ void MainPlane::Update(float dt)
 		if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
 		if(InputStateS::instance().isKeyDown(KEY_SPACE))
 		{
-			std::vector<EnemyMainPlane*> enemies = InitDirect3DApp::dxAppInstance->GetEnemies();
-			EnemyMainPlane* enemyTemp = enemies.at(0);
+			std::vector<EnemyPlane*> enemies = InitDirect3DApp::dxAppInstance->GetEnemies();
+			EnemyPlane* enemyTemp = enemies.at(0);
 			float distance = m_position.distance(enemyTemp->m_position);
-			for(std::vector<EnemyMainPlane*>::iterator it = enemies.begin()+1;
+			for(std::vector<EnemyPlane*>::iterator it = enemies.begin()+1;
 				it != enemies.end();
 				it++)
 			{
@@ -68,7 +68,7 @@ void MainPlane::Update(float dt)
 		
 			Homing* homing = new Homing;
 			homing->mVelocity = 50;
-			homing->GetEnemyPos = boost::bind(&EnemyMainPlane::GetPos, enemyTemp);
+			homing->GetEnemyPos = boost::bind(&EnemyPlane::GetPos, enemyTemp);
 			nWay->mBehavior = homing;
 			nWay->SetRadiationAngle(180);
 			

@@ -16,14 +16,8 @@ struct TrajectoryFrame
 	friend bool operator < (const TrajectoryFrame& lhs, const float rhs);
 	friend bool operator < (const float lhs, const TrajectoryFrame& rhs);
 };
-bool operator < (const TrajectoryFrame& lhs, const float rhs) 
-{
-	return lhs.mStartTime < rhs;
-}
-bool operator < (const float lhs, const TrajectoryFrame& rhs) 
-{
-	return lhs < rhs.mStartTime;
-}
+bool operator < (const TrajectoryFrame& lhs, const float rhs);
+bool operator < (const float lhs, const TrajectoryFrame& rhs);
 typedef std::vector<TrajectoryFrame> TrajectoryFrames;
   
 class TrajectoryAnimator

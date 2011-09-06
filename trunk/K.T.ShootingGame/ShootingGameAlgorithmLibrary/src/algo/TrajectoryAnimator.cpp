@@ -59,3 +59,13 @@ void TrajectoryAnimator::Update(float dt)
 		}
 	}
 }
+
+bool operator<( const TrajectoryFrame& lhs, const float rhs )
+{
+	return lhs.mStartTime < rhs;
+}
+
+bool operator<( const float lhs, const TrajectoryFrame& rhs )
+{
+	return lhs < rhs.mStartTime;
+}

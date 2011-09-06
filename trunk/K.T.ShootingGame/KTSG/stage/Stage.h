@@ -12,9 +12,22 @@
 
 #if !defined(_STAGE_H)
 #define _STAGE_H
+#include "towers/tower.h"
+#include "planes/EnemyPlane.h"
+#include "bullets/bullet.h"
+#include "algo/nway.h"
+#include "algo/RandomWay.h"
+#include "algo/StraightWay.h"
+#include "algo/SwirlWay.h"
+#include "algo/TrajectoryAnimator.h"
+#include "ball/straight.h"
+#include "ball/split.h"
+#include "ball/homing.h"
+#include "ball/gravity.h"
+#include "ball/delay.h"
 
-
-class Stage {
+class Stage
+{
 public:
 	void AddEnmyPlane();
 	void GetTimeToGenerateEnmyPlane();

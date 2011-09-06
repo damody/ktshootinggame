@@ -2,7 +2,7 @@
 #include "InitDirect3DApp.h"
 #include "InputState.h"
 #include "WaveSound.h"
-#include "planes\EnemyMainPlane.h"
+#include "planes\EnemyPlane.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -159,7 +159,7 @@ void InitDirect3DApp::buildPoint()
 		m_ShipVertex.push_back(it->m_pic);
 	}
 
-	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
+	for(std::vector<EnemyPlane*>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end(); it++)
 	{
 		m_ShipVertex.push_back((*it)->m_pic);
@@ -318,7 +318,7 @@ void InitDirect3DApp::LoadEnemyShips()
 {
 	srand((UINT)time(0));
 
-	EnemyMainPlane* enemyMotherShip = new EnemyMainPlane;
+	EnemyPlane* enemyMotherShip = new EnemyPlane;
 	enemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
 	enemyMotherShip->m_angle = 180;
 	enemyMotherShip->m_h = 175;
@@ -334,7 +334,7 @@ void InitDirect3DApp::LoadEnemyShips()
 
 	for(int i=0; i< 10; i++)
 	{
-		EnemyMainPlane* enemy = new EnemyMainPlane;
+		EnemyPlane* enemy = new EnemyPlane;
 		enemy->m_texture = g_TextureManager.GetTexture(102);
 		enemy->m_angle = 180;
 		enemy->m_h = 70;
@@ -454,7 +454,7 @@ int InitDirect3DApp::UpdateDeliver( float dt )
 
 int InitDirect3DApp::UpdateEnemy( float dt )
 {
-	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
+	for(std::vector<EnemyPlane*>::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end();it++)
 	{
 		(*it)->Update(dt);

@@ -491,7 +491,7 @@
 				Name="planes"
 				>
 				<File
-					RelativePath=".\planes\EnemyMainPlane.cpp"
+					RelativePath=".\planes\EnemyPlane.cpp"
 					>
 				</File>
 				<File
@@ -540,6 +540,18 @@
 				</File>
 				<File
 					RelativePath=".\path\PathInterpolater.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="stage"
+				>
+				<File
+					RelativePath=".\stage\LoadStage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\stage\Stage.cpp"
 					>
 				</File>
 			</Filter>
@@ -641,7 +653,7 @@
 				Name="planes"
 				>
 				<File
-					RelativePath=".\planes\EnemyMainPlane.h"
+					RelativePath=".\planes\EnemyPlane.h"
 					>
 				</File>
 				<File
@@ -690,6 +702,18 @@
 				</File>
 				<File
 					RelativePath=".\path\PathInterpolater.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="stage"
+				>
+				<File
+					RelativePath=".\stage\LoadStage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\stage\Stage.h"
 					>
 				</File>
 			</Filter>

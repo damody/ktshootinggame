@@ -13,7 +13,7 @@
 #include "planes/MainPlane.h"
 #include "bullets/bullet.h"
 #include "towers/tower.h"
-#include "planes/EnemyMainPlane.h"
+#include "planes/EnemyPlane.h"
 
 class InitDirect3DApp : public D3DApp
 {
@@ -22,7 +22,7 @@ public:
 	~InitDirect3DApp();
 	static InitDirect3DApp* dxAppInstance;
 	void initApp();
-	std::vector<EnemyMainPlane*> GetEnemies()
+	std::vector<EnemyPlane*> GetEnemies()
 	{
 		return m_EnemyShips;
 	}
@@ -73,7 +73,7 @@ private:
 	DrawVertexGroups	m_DrawVertexGroups;
 	MainPlane		m_motherShip;
 	std::vector<MainPlane>	m_warShips;
-	std::vector<EnemyMainPlane*>	m_EnemyShips;
+	std::vector<EnemyPlane*>	m_EnemyShips;
 
 	std::vector<DXVertex>		m_ShipVertex;
 	std::vector<BulletVertex>	m_BVertex;

@@ -11,8 +11,7 @@ public:
 	float mElapsedTime;
 	float mLaunchTime;
 	float mVelocity;
-
-	SwirlWay(int _mNumPerCircle, int _mCircles, float _mSecPerCircle, Ogre::Vector3 _mPosition)
+	SwirlWay(int _mNumPerCircle=1, int _mCircles=1, float _mSecPerCircle=1, Ogre::Vector3 _mPosition = Ogre::Vector3::ZERO)
 		:Trajectory(_mNumPerCircle, _mPosition, Ogre::Vector3(0,0,0)), mSecPerCircle(_mSecPerCircle), mCircles(_mCircles)
 	{}
 	virtual ~SwirlWay()

@@ -12,7 +12,7 @@ public:
 	float	mMaxAngle;
 	float	mOAngle;
 
-	StraightWay(int _mNumTrajectory, Ogre::Vector3 _mPosition, Ogre::Vector3 _mDirection, float _angle = 90.0f)
+	StraightWay(int _mNumTrajectory=1, Ogre::Vector3 _mPosition = Ogre::Vector3::ZERO, Ogre::Vector3 _mDirection = Ogre::Vector3::ZERO, float _angle = 90.0f)
 		:Trajectory(_mNumTrajectory, _mPosition, _mDirection), mRadiationAngle(_angle)
 	{}
 	virtual ~StraightWay()
