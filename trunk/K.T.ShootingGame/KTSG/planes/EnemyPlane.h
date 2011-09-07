@@ -26,7 +26,7 @@ class EnemyPlane
 public:
 	DXVertex	m_pic;
 	Texture_Sptr	m_texture;
-	Ogre::Vector3	m_position;
+	Ogre::Vector3	m_position, m_lastpos;
 	Polygon2D	m_Polygon2D;
 
 	float		m_angle;

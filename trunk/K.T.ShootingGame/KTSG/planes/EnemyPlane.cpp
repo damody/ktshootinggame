@@ -19,10 +19,12 @@
 void EnemyPlane::Update(float dt) 
 {
 	m_position = m_path->GetValue(m_elapsedTime);
+	m_angle = GetAngle(m_position.x-m_lastpos.x, m_position.y-m_lastpos.y).valueDegrees();
 	m_elapsedTime += dt;
 	m_Polygon2D.SetAngle(m_angle);
 	UpdateTower(dt);
 	UpdateDataToDraw();
+	m_lastpos = m_position;
 }
 
 int EnemyPlane::UpdateTower(float dt)
