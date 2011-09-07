@@ -181,8 +181,6 @@ void InitDirect3DApp::buildPointFX()
 	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_Effect_Collion));
 
 	m_PTech_Collion = m_Effect_Collion->GetTechniqueByName("PointTech");
-	m_Collion_Width = m_Effect_Collion->GetVariableByName("width")->AsScalar();
-	m_Collion_Height =m_Effect_Collion->GetVariableByName("height")->AsScalar();
 	m_PMap_Collion1 =m_Effect_Collion->GetVariableByName("gMap1")->AsShaderResource();
 	m_PMap_Collion2 =m_Effect_Collion->GetVariableByName("gMap2")->AsShaderResource();
 
