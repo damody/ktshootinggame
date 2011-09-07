@@ -11,8 +11,7 @@
 
 
 #include "LoadStage.h"
-
-
+#include "global.h"
 
 void LoadStage::LoadNewStage( std::string path, Stage& toStage )
 {
@@ -22,7 +21,59 @@ void LoadStage::LoadNewStage( std::string path, Stage& toStage )
 		if (m_Lua.CheckNotNil("stage/%d/time", i))
 		{
 			float time = (float)m_Lua.getLua<double>("stage/%d/time", i);
-			
+			Towers towers;
+			for (int j=1;;++j)
+			{
+				Tower tower;
+				float tower_x = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/x", i, j);
+				float tower_y = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/y", i, j);
+				tower.m_position.x = tower_x;
+				tower.m_position.y = tower_y;
+				tower.m_atk = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/atk", i, j);
+				tower.m_atkSpeed = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/atkspeed", i, j);
+				tower.m_ball_texture = g_TextureManager.GetTexture(m_Lua.getLua<int>("stage/%d/plane/tower/%d/ballpic", i, j));
+				Trajectory* tjy;
+				int tjytype = TrajectoryFactory::Generate(
+					m_Lua.getLua<const char*>("stage/%d/plane/tower/%d/trajectory/type", i, j), tjy);
+				tjy->mNumTrajectory = m_Lua.getLua<int>("stage/%d/plane/tower/%d/trajectory/num", i, j);
+				switch (tjytype)
+				{
+				case TrajectoryFactory::NWAY:
+					((NWay*)tjy)->SetRadiationAngle((float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/trajectory/RadiationAngle", i, j));
+					break;
+				case TrajectoryFactory::RANDOM_WAY:
+					((RandomWay*)tjy)->SetRadiationAngle((float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/trajectory/RadiationAngle", i, j));
+					break;
+				case TrajectoryFactory::STRAIGHT_WAY:
+					break;
+				case TrajectoryFactory::SWIR_WAY:
+					break;
+				}
+				tower.m_Trajectory = tjy;
+				Behavior* bvr;
+				int bvrtype = BehaviorFactory::Generate(
+					m_Lua.getLua<const char*>("stage/%d/plane/tower/%d/behavior/type", i, j), bvr);
+				Polygon2D poly;
+				for (int k=1;;++k)
+				{
+					float x = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/behavior/polygon/%d/x", i, j, k);
+					float y = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/behavior/polygon/%d/y", i, j, k);
+				}
+				switch (tjytype)
+				{
+				case BehaviorFactory::STRAIGHT:
+					((Straight*)bvr)->mVelocity = (float)m_Lua.getLua<double>("stage/%d/plane/tower/%d/behavior/velocity", i, j);
+					break;
+				case BehaviorFactory::GRAVITY:
+					break;
+				case BehaviorFactory::HOMING:
+					break;
+				case BehaviorFactory::SPLIT:
+					break;
+				}
+				tower.m_Behavior = bvr;
+				towers.push_back(tower);
+			}
 			toStage.AddEnmyPlane();
 		}
 		else
