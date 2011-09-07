@@ -5,6 +5,7 @@
 #include "planes\EnemyPlane.h"
 #include <stdlib.h>
 #include <time.h>
+#include "stage/LoadStage.h"
 
 InitDirect3DApp* InitDirect3DApp::dxAppInstance = NULL;
 
@@ -24,6 +25,7 @@ void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
 	LoadResource();
+	LoadAllStage();
 	LoadBlend();
 	LoadWarShip();
 	LoadEnemyShips();
@@ -382,7 +384,7 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.size.x = 2;
 	t.m_ball_pic.size.y = 20;
 	t.m_atkSpeed = 0.05f;
-	t.m_Trajectory = new NWay(20, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory = new NWay(100, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
 	t.m_Trajectory->mPolygon.AddPoint(0,20);
@@ -394,18 +396,6 @@ void InitDirect3DApp::LoadTowers()
 	t.m_position = Ogre::Vector3(0, 300, 0);
 	ts.push_back(t); 
 	m_motherShip.m_Towers = ts;
-
-// 	for(std::vector<MainPlane>::iterator it = m_warShips.begin();
-// 		it != m_warShips.end(); it++)
-// 	{
-// 		it->m_Towers = ts;
-// 	}
-
-// 	for(std::vector<EnemyMainPlane*>::iterator it = m_EnemyShips.begin();
-// 		it != m_EnemyShips.end(); it++)
-// 	{
-// 		(*it)->m_Towers = ts;
-// 	}
 }
 
 int InitDirect3DApp::UpdateInput()
@@ -515,4 +505,8 @@ void InitDirect3DApp::PrintInfo()
 		frameCnt = 0;
 		t_base  += 1.0f;
 	}
+}
+
+void InitDirect3DApp::LoadAllStage()
+{
 }

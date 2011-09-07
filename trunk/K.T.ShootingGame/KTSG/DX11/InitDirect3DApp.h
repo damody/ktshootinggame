@@ -47,6 +47,7 @@ private:
 	int  UpdateBullectCollision();
 	int  UpdateUI();
 	void PrintInfo();
+	void LoadAllStage();
 private:
 	ID3DX11EffectShaderResourceVariable*  m_PMap_Warship;
 	ID3DX11EffectShaderResourceVariable*  m_PMap_Bullets;
