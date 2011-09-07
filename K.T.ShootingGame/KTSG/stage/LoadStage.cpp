@@ -16,6 +16,17 @@
 
 void LoadStage::LoadNewStage( std::string path, Stage& toStage )
 {
-	m_LuaCell.InputLuaFile(path.c_str());
-	toStage.AddEnmyPlane();
+	m_Lua.InputLuaFile(path.c_str());
+	for (int i=1;;++i)
+	{
+		if (m_Lua.CheckNotNil("stage/%d/time", i))
+		{
+			float time = (float)m_Lua.getLua<double>("stage/%d/time", i);
+			
+			toStage.AddEnmyPlane();
+		}
+		else
+			break;
+	}
+	
 }
