@@ -105,6 +105,7 @@ public:
 	void CloseAllUI();
 	int GetCurrencyUI();		//return a UI's id that is open
 	void SetStatic(int id, const char* text);
+	void SetStatic(int id, const wchar_t* text);
 	int GetComboBoxSel(int id);
 	int GetSliderNum(int id);
 	void ChengeCmdState(int id);
