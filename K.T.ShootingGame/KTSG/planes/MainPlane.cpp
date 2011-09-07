@@ -74,7 +74,7 @@ void MainPlane::Update(float dt)
 			
 			texture2 = g_TextureManager.GetTexture(103);
 			ball_pic2.picpos.x = 1;
-			ball_pic2.picpos.y = 1;  
+			ball_pic2.picpos.y = 1;
 			ball_pic2.picpos.z = 2;
 			ball_pic2.picpos.w = 2;
 			ball_pic2.size.x = 2;

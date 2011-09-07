@@ -18,7 +18,7 @@ Ogre::Vector3 BsplineCurve::GetValue(float time)
 	if (m_points.empty())
 		return Ogre::Vector3::ZERO;
 	int index[4] = {0};
-	const size_t size = m_points.size();
+	const int size = (int)m_points.size();
 	if (size == 1)
 		return m_points[0].pos;
 	else if (m_points[0].time > time)
@@ -56,6 +56,6 @@ Ogre::Vector3 BsplineCurve::GetValue(float time)
 		m_points[index[2]].pos,
 		m_points[index[3]].pos,
 		time);
-	return out1;
+	return out1+m_position;
 }
 

@@ -19,7 +19,7 @@ Ogre::Vector3 BezierCurve::GetValue(float time)
 	if (m_points.empty())
 		return Ogre::Vector3::ZERO;
 	int index[4] = {0};
-	const size_t size = m_points.size();
+	const int size = (int)m_points.size();
 	if (size == 1)
 		return m_points[0].pos;
 	else if (m_points[0].time > time)
@@ -54,19 +54,11 @@ Ogre::Vector3 BezierCurve::GetValue(float time)
 		if (index[j] >= size)
 			index[j] = size-1;
 	}
-	{
-		static int ii[4];
-		if (memcmp(index, ii, sizeof(ii))!=0)
-		{
-			memcpy(ii, index, sizeof(ii));
-			printf("%d \t%d \t%d \t%d\n", ii[0], ii[1], ii[2], ii[3]);
-		}
-	}
 	Ogre::Vector3 out1 = CalcBezierCurvePos(m_points[index[0]].pos,
 		m_points[index[1]].pos,
 		m_points[index[2]].pos,
 		m_points[index[3]].pos,
 		time);
-	return out1;
+	return out1+m_position;
 }
 

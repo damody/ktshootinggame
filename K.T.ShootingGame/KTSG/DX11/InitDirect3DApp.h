@@ -14,6 +14,7 @@
 #include "bullets/bullet.h"
 #include "towers/tower.h"
 #include "planes/EnemyPlane.h"
+#include "stage/Stage.h"
 
 class InitDirect3DApp : public D3DApp
 {
@@ -90,12 +91,12 @@ private:
 	DrawVertexGroups	m_DrawVertexGroups;
 	MainPlane		m_motherShip;
 	std::vector<MainPlane>	m_warShips;
-	std::vector<EnemyPlane*>	m_EnemyShips;
+	EnemyPlaneptrs		m_EnemyShips;
 
 	std::vector<DXVertex>		m_ShipVertex;
 	std::vector<BulletVertex>	m_BVertex;
 	D3D11_BUFFER_DESC	m_vbd;
-
+	Stage			m_Stage;
 	//control key array
 	std::vector<int>	m_CtrKey;
 };
