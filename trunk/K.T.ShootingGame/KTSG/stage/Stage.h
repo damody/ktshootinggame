@@ -32,6 +32,9 @@
 
 struct PlanesFrame
 {
+	PlanesFrame(){}
+	PlanesFrame(float _time, EnemyPlane* _plane)
+		:time(_time), plane(_plane){}
 	float time;
 	EnemyPlane* plane;
 	bool operator < (const PlanesFrame& pf)
@@ -40,14 +43,19 @@ struct PlanesFrame
 	}
 };
 
+typedef std::vector<EnemyPlane*> EnemyPlaneptrs;
+
 class Stage
 {
 public:
-	
-	void AddEnmyPlane();
-	void GetTimeToGenerateEnmyPlane();
+	Stage():elpsedtime(0), lastindex(0){}
+	void AddEnmyPlane(float time, EnemyPlane* plane);
+	void Sort();
+	EnemyPlaneptrs GetTimeToGenerateEnmyPlane(float dt);
 private:
 	std::vector<PlanesFrame>	m_EnemyShips;
+	int lastindex;
+	float	elpsedtime;
 };
 
 #endif  //_STAGE_H

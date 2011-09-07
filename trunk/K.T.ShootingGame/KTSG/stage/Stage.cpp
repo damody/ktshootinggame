@@ -12,13 +12,34 @@
 
 #include "Stage.h"
 
-void Stage::AddEnmyPlane()
+void Stage::AddEnmyPlane( float time, EnemyPlane* plane )
 {
-
+	m_EnemyShips.push_back(PlanesFrame(time, plane));
 }
 
-void Stage::GetTimeToGenerateEnmyPlane()
+void Stage::Sort()
 {
-
+	std::sort(m_EnemyShips.begin(), m_EnemyShips.end());
+	lastindex=0;
 }
+
+EnemyPlaneptrs Stage::GetTimeToGenerateEnmyPlane( float dt )
+{
+	EnemyPlaneptrs eps;
+	elpsedtime += dt;
+	for (;;++lastindex)
+	{
+		if (lastindex < m_EnemyShips.size())
+		{
+			if (m_EnemyShips[lastindex].time <= elpsedtime)
+				eps.push_back(m_EnemyShips[lastindex].plane);
+			else
+				break;
+		}
+		else
+			break;
+	}
+	return eps;
+}
+
 

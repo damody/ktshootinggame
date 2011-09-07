@@ -18,7 +18,7 @@ Ogre::Vector3 LinearLine::GetValue(float time)
 	if (m_points.empty())
 		return Ogre::Vector3::ZERO;
 	int index[2] = {0};
-	const size_t size = m_points.size();
+	const int size = (int)m_points.size();
 	if (size == 1)
 		return m_points[0].pos;
 	else if (m_points[0].time > time)
@@ -44,6 +44,6 @@ Ogre::Vector3 LinearLine::GetValue(float time)
 	Ogre::Vector3 out1 = CalcStraightPos(m_points[index[0]].pos,
 		m_points[index[1]].pos,
 		time);
-	return out1;
+	return out1+m_position;
 }
 

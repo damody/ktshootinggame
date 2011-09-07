@@ -49,30 +49,6 @@ void InitDirect3DApp::initApp()
 	m_CtrKey[5] = DEFAULT_CTRL_KEY_TIMECHENGE ;
 }
 
-void InitDirect3DApp::UpdateScene(float dt)
-{
-	m_DXUT_UI->UpdataUI(dt);
-	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
-	for (int i=0; i<cmdstate.size(); i++)
-	{
-		if (cmdstate[i].id == 3)
-			exit(0);
-	}
-	m_DXUT_UI->ClearCmdState();
-
-	m_SwapChain->Present(0, 0);
-	D3DApp::DrawScene(); // clear window
-	PrintInfo();
-	UpdateInput();
-	UpdateWarShip(dt);
-	UpdateDeliver(dt);
-	UpdateEnemy(dt);
-	UpdateBullectMove(dt);
-	UpdateBullectCollision();
-	UpdateUI();
-	buildPoint();
-}
-
 void InitDirect3DApp::OnResize()
 {
 	D3DApp::OnResize();
@@ -83,6 +59,12 @@ void InitDirect3DApp::OnResize()
 		m_Bullets_Width->SetFloat((float)mClientWidth);
 		m_Bullets_Height->SetFloat((float)mClientHeight);
 	}
+}
+
+void InitDirect3DApp::LoadAllStage()
+{
+	LoadStage ls;
+	ls.LoadNewStage("stage1.lua", m_Stage);
 }
 
 void InitDirect3DApp::DrawScene()
@@ -115,9 +97,6 @@ void InitDirect3DApp::DrawScene()
 		m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 		m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
 	}
-	
-	
-	
 }
 
 void InitDirect3DApp::buildPointFX()
@@ -197,6 +176,30 @@ void InitDirect3DApp::buildPointFX()
 	m_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_vbd.CPUAccessFlags = 0;
 	m_vbd.MiscFlags = 0;
+}
+
+void InitDirect3DApp::UpdateScene(float dt)
+{
+	m_DXUT_UI->UpdataUI(dt);
+	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
+	for (int i=0; i<cmdstate.size(); i++)
+	{
+		if (cmdstate[i].id == 3)
+			exit(0);
+	}
+	m_DXUT_UI->ClearCmdState();
+
+	m_SwapChain->Present(0, 0);
+	D3DApp::DrawScene(); // clear window
+	PrintInfo();
+	UpdateInput();
+	UpdateWarShip(dt);
+	UpdateDeliver(dt);
+	UpdateEnemy(dt);
+	UpdateBullectMove(dt);
+	UpdateBullectCollision();
+	UpdateUI();
+	buildPoint();
 }
 
 void InitDirect3DApp::buildPoint()
@@ -370,41 +373,19 @@ void InitDirect3DApp::LoadWarShip()
 
 void InitDirect3DApp::LoadEnemyShips()
 {
-	srand((UINT)time(0));
-
-	EnemyPlane* enemyMotherShip = new EnemyPlane;
-	enemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
-	enemyMotherShip->m_angle = 180;
-	enemyMotherShip->m_h = 175;
-	enemyMotherShip->m_w = 300;
-	enemyMotherShip->m_position.x = 500;
-	enemyMotherShip->m_position.y = 800;
-	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-	m_EnemyShips.push_back(enemyMotherShip);
-
-	for(int i=0; i< 10; i++)
-	{
-		EnemyPlane* enemy = new EnemyPlane;
-		enemy->m_texture = g_TextureManager.GetTexture(102);
-		enemy->m_angle = 180;
-		enemy->m_h = 70;
-		enemy->m_w = 120;
-		enemy->m_position.x = rand() % 1440 + 0.0f;
-		enemy->m_position.y = rand() % 900 + 0.0f;
-		enemy->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-		enemy->m_path.AddPoint(4, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-		enemy->m_path.AddPoint(6, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-		enemy->m_path.AddPoint(8, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-		enemy->m_path.AddPoint(10, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-		enemy->m_path.AddPoint(12, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-		enemy->m_path.AddPoint(14, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-
-		m_EnemyShips.push_back(enemy);
-	}
+// 	srand((UINT)time(0));
+// 	EnemyPlane* enemyMotherShip = new EnemyPlane;
+// 	enemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
+// 	enemyMotherShip->m_angle = 180;
+// 	enemyMotherShip->m_h = 175;
+// 	enemyMotherShip->m_w = 300;
+// 	enemyMotherShip->m_position.x = 500;
+// 	enemyMotherShip->m_position.y = 800;
+// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
+// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
 }
 
 void InitDirect3DApp::LoadTowers()
@@ -477,7 +458,6 @@ int InitDirect3DApp::UpdateWarShip( float dt )
 	{
 		it->Update(dt);
 	}
-
 	Polygon2D poly = m_motherShip.m_Polygon2D;
 	poly.Offset(m_motherShip.m_position);
 	poly.CheckBuildEdges();
@@ -496,18 +476,28 @@ int InitDirect3DApp::UpdateDeliver( float dt )
 
 int InitDirect3DApp::UpdateEnemy( float dt )
 {
-	for(std::vector<EnemyPlane*>::iterator it = m_EnemyShips.begin();
+	EnemyPlaneptrs eps = m_Stage.GetTimeToGenerateEnmyPlane(dt);
+	if (!eps.empty())
+	{
+		for(EnemyPlaneptrs::iterator it = eps.begin();
+			it != eps.end();it++)
+		{
+			m_EnemyShips.push_back(*it);
+		}
+		//std::copy(eps.begin(), eps.end(), m_EnemyShips.end());
+	}
+	for(EnemyPlaneptrs::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end();it++)
 	{
 		(*it)->Update(dt);
 		Polygon2D poly = (*it)->m_Polygon2D;
 		poly.Offset((*it)->m_position);
 		poly.CheckBuildEdges();
-		BallptrVector ans = g_BallptrManager.GetCollision(poly);
-		for(size_t i=0; i<ans.size(); i++)
-		{
-			ans[i]->mBallStatus = Ball::DESTORY;
-		}
+// 		BallptrVector ans = g_BallptrManager.GetCollision(poly);
+// 		for(size_t i=0; i<ans.size(); i++)
+// 		{
+// 			ans[i]->mBallStatus = Ball::DESTORY;
+// 		}
 		
 	}
 	return 0;
@@ -559,14 +549,10 @@ void InitDirect3DApp::PrintInfo()
 	}
 }
 
-void InitDirect3DApp::LoadAllStage()
-{
-}
 
 void InitDirect3DApp::InitTexture()
 {
 	ID3D11Texture2D* tex1, *tex2, *tesres;
-	
 	// Create the depth/stencil buffer and view.
 	D3D11_TEXTURE2D_DESC depthStencilDesc0;
 	depthStencilDesc0.Width     = mClientWidth;

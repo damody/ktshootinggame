@@ -15,6 +15,6 @@
 Ogre::Vector3 MathFunctionCurve::GetValue(float time)
 {
 	CheckSort();
-	return Ogre::Vector3::ZERO;
+	return m_position;
 }
 

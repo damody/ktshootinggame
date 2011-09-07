@@ -93,6 +93,11 @@ public:
 		m_computeCentroid = tmp;
 		return m_centroid;
 	}
+	void Clear()
+	{
+		m_points.clear();
+		m_edges.clear();
+	}
 private:
 	void BuildEdges();
 	// Calculate the distance between [minA, maxA] and [minB, maxB]

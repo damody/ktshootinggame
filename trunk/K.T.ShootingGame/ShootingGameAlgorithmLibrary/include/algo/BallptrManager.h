@@ -50,6 +50,7 @@ public:
 #endif	
 	void AddBallptr( Ball* b )
 	{
+		assert(!b->mPolygon2D.Points().empty());
 		mBallptrVector.push_back(b);
 	}
 	void AddBallptrs( const BallptrVector& bv )
@@ -57,6 +58,7 @@ public:
 		for (BallptrVector::const_iterator it = bv.begin();
 			it != bv.end(); ++it)
 		{
+			assert(!(*it)->mPolygon2D.Points().empty());
 			mBallptrVector.push_back(*it);
 		}
 	}
