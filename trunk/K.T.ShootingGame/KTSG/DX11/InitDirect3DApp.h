@@ -47,6 +47,7 @@ private:
 	int  UpdateBullectMove(float dt);
 	int  UpdateBullectCollision();
 	int  UpdateUI();
+	void SetCtrlKey();
 	void PrintInfo();
 	void LoadAllStage();
 private:
@@ -97,6 +98,8 @@ private:
 	std::vector<BulletVertex>	m_BVertex;
 	D3D11_BUFFER_DESC	m_vbd;
 	Stage			m_Stage;
+	int			m_SettingKeyID;		//目前要設定的按鍵的id
+	int			m_SettingKeyTextID;	//目前要設定的按鍵的text物件的id
 	//control key array
 	std::vector<int>	m_CtrKey;
 };

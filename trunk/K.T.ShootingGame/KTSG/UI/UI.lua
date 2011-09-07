@@ -35,29 +35,29 @@ ui1={	--main menu
 		cmd2={cid=2, ctext="Option", ctype=1, cpx=590, cpy=600, cw=260, ch=80},
 		cmd3={cid=3, ctext="Exit", ctype=1, cpx=590, cpy=750, cw=260, ch=80}
 }
-
+textch = 80;
 ui2={	--option menu
 		cmdnum=15,
 		cmd1={cid=4, ctext="volume", ctype=2, cpx=300, cpy=200, cw=100, ch = 50},
-		cmd2={cid=5, ctext="", ctype=4, cpx=400, cpy=200, cw=640, ch = 50, cmin=0, cmax=100, cval=50},
+		cmd2={cid=5, ctext="", ctype=4, cpx=400, cpy=200, cw=640, ch = 50, cmin=0, cmax=7000, cval=5000},
 
-		cmd3={cid=6, ctext="Up", ctype=2, cpx=350, cpy=300, cw=80, ch=50},
-		cmd4={cid=7, ctext="Up", ctype=1, cpx=480, cpy=300, cw=80, ch=50},
+		cmd3={cid=6, ctext="Up", ctype=2, cpx=350, cpy=300, cw=80, ch=textch},
+		cmd4={cid=7, ctext="num3", ctype=1, cpx=400, cpy=300, cw=120, ch=50},
 
-		cmd5={cid=8, ctext="Down", ctype=2, cpx=350, cpy=400, cw=80, ch=50},
-		cmd6={cid=9, ctext="Down", ctype=1, cpx=480, cpy=400, cw=80, ch=50},
+		cmd5={cid=8, ctext="Down", ctype=2, cpx=350, cpy=400, cw=80, ch=textch},
+		cmd6={cid=9, ctext="Down", ctype=1, cpx=400, cpy=400, cw=120, ch=50},
 
-		cmd7={cid=10, ctext="Skill", ctype=2, cpx=350, cpy=500, cw=80, ch=50},
-		cmd8={cid=11, ctext="Skill", ctype=1, cpx=480, cpy=500, cw=80, ch=50},
+		cmd7={cid=10, ctext="Skill", ctype=2, cpx=350, cpy=500, cw=80, ch=textch},
+		cmd8={cid=11, ctext="Skill", ctype=1, cpx=400, cpy=500, cw=120, ch=50},
 
-		cmd9={cid=12, ctext="Left", ctype=2, cpx=950, cpy=300, cw=80, ch=50},
-		cmd10={cid=13, ctext="Left", ctype=1, cpx=1080, cpy=300, cw=80, ch=50},
+		cmd9={cid=12, ctext="Left", ctype=2, cpx=950, cpy=300, cw=80, ch=textch},
+		cmd10={cid=13, ctext="Left", ctype=1, cpx=1000, cpy=300, cw=120, ch=50},
 
-		cmd11={cid=14, ctext="Right", ctype=2, cpx=950, cpy=400, cw=80, ch=50},
-		cmd12={cid=15, ctext="Right", ctype=1, cpx=1080, cpy=400, cw=80, ch=50},
+		cmd11={cid=14, ctext="Right", ctype=2, cpx=950, cpy=400, cw=80, ch=textch},
+		cmd12={cid=15, ctext="Right", ctype=1, cpx=1000, cpy=400, cw=120, ch=50},
 
-		cmd13={cid=16, ctext="time", ctype=2, cpx=950, cpy=500, cw=80, ch=50},
-		cmd14={cid=17, ctext="time", ctype=1, cpx=1080, cpy=500, cw=80, ch=50},
+		cmd13={cid=16, ctext="time", ctype=2, cpx=950, cpy=500, cw=80, ch=textch},
+		cmd14={cid=17, ctext="time", ctype=1, cpx=1000, cpy=500, cw=120, ch=50},
 
 		cmd15={cid=18, ctext="Exit", ctype=1, cpx=50, cpy=100, cw=120, ch=70}
 }

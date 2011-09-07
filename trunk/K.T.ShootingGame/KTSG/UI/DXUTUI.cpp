@@ -242,6 +242,20 @@ void DXUTUI::SetStatic( int id, const char* text )
 	delete[] wtext;
 }
 
+void DXUTUI::SetStatic( int id, const wchar_t* text )
+{
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		if (m_DialogSet[i].CmdIdIsExist(id))
+		{
+			if (!m_DialogSet[i].GetIsOpen())
+				return;
+			m_DialogSet[i].GetDialog()->GetStatic(id)->SetText(text);
+			break;
+		}
+	}
+}
+
 
 int DXUTUI::GetComboBoxSel( int id )
 {
