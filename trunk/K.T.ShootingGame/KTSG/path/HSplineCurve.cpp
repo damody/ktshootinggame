@@ -12,7 +12,7 @@
 
 #include "HSplineCurve.h"
 
-Ogre::Vector3 HSplineCurve::GetValue(float time)
+Ogre::Vector3 HsplineCurve::GetValue(float time)
 {
 	CheckSort();
 	if (m_points.empty())

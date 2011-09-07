@@ -713,6 +713,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\stage\ObjectFactory.h"
+					>
+				</File>
+				<File
 					RelativePath=".\stage\Stage.h"
 					>
 				</File>

@@ -20,6 +20,7 @@ end
 
 path1=
 {
+	type="beziercurve",
 	offset={x=0,y=0},
 	{time=count(),x=100,y=2000},
 	{time=count(),x=100,y=1900},
@@ -37,7 +38,7 @@ path1=
 
 straight1=
 {
-	kind="straight",
+	type="straight",
 	velocity=200,
 	polygon=
 	{
@@ -48,7 +49,7 @@ straight1=
 
 nway1=
 {
-	kind="NWay",
+	type="nway",
 	num=3,
 	RadiationAngle=40,
 }
@@ -59,29 +60,27 @@ tower1=
 	y=0,
 	trajectory=nway1,
 	Behavior=straight1,
-	kind="ray",
+	type="ray",
 	atk=50,
 	atkspeed=0.3,
 	ballpic=103
 }
 
+
 plane1 =
 {
-	path = path1;
+	path = path1,
 	tower=
 	{
 		tower1
-	}
+	},
 }
 
 stage =
 {
 	{
-	name="stage 1",
-		{
-			time=3.5,
-			plane=plane1,
-		}
+		time=3.5,
+		plane=plane1
 	}
 }
 

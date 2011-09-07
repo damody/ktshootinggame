@@ -15,7 +15,7 @@
 
 #include "PathInterpolater.h"
 
-class HSplineCurve : public PathInterpolater
+class HsplineCurve : public PathInterpolater
 {
 public:
 	Ogre::Vector3 GetValue(float time);

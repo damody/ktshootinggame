@@ -25,12 +25,29 @@
 #include "ball/homing.h"
 #include "ball/gravity.h"
 #include "ball/delay.h"
+#include "path/BezierCurve.h"
+#include "path/BsplineCurve.h"
+#include "path/HSplineCurve.h"
+#include "path/LinearLine.h"
+
+struct PlanesFrame
+{
+	float time;
+	EnemyPlane* plane;
+	bool operator < (const PlanesFrame& pf)
+	{
+		return time < pf.time;
+	}
+};
 
 class Stage
 {
 public:
+	
 	void AddEnmyPlane();
 	void GetTimeToGenerateEnmyPlane();
+private:
+	std::vector<PlanesFrame>	m_EnemyShips;
 };
 
 #endif  //_STAGE_H
