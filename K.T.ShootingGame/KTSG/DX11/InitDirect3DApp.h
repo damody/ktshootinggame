@@ -27,7 +27,7 @@ public:
 		return m_EnemyShips;
 	}
 private:
-		
+	void InitTexture();
 	void LoadResource();
 	void LoadBlend();
 	void LoadWarShip();
@@ -49,21 +49,37 @@ private:
 	void PrintInfo();
 	void LoadAllStage();
 private:
+	ID3D11ShaderResourceView* SRVView1;
+	ID3D11RenderTargetView* RTVView1;
+
+	ID3D11ShaderResourceView* SRVView2;
+	ID3D11RenderTargetView* RTVView2;
+	ID3D11ShaderResourceView* SRVViewRes;
+	ID3D11RenderTargetView* RTVViewRes;
+
 	ID3DX11EffectShaderResourceVariable*  m_PMap_Warship;
 	ID3DX11EffectShaderResourceVariable*  m_PMap_Bullets;
+	ID3DX11EffectShaderResourceVariable*  m_PMap_Collion1;
+	ID3DX11EffectShaderResourceVariable*  m_PMap_Collion2;
 
 	ID3D11Buffer* m_Buffer_WarShip;
 	ID3D11Buffer* m_Buffer_Bullets;
+	ID3D11Buffer* m_Buffer_Collion;
 	ID3DX11Effect* m_Effect_Warship;
 	ID3DX11Effect* m_Effect_Bullets;
+	ID3DX11Effect* m_Effect_Collion;
 	ID3DX11EffectTechnique* m_PTech_Warship;
 	ID3DX11EffectTechnique* m_PTech_Bullets;
+	ID3DX11EffectTechnique* m_PTech_Collion;
 	ID3D11InputLayout* m_PLayout_Warship;
 	ID3D11InputLayout* m_PLayout_Bullets;
+	ID3D11InputLayout* m_PLayout_Collion;
 	ID3DX11EffectScalarVariable* m_Warship_Width;
 	ID3DX11EffectScalarVariable* m_Warship_Height;
 	ID3DX11EffectScalarVariable* m_Bullets_Width;
 	ID3DX11EffectScalarVariable* m_Bullets_Height;
+	ID3DX11EffectScalarVariable* m_Collion_Width;
+	ID3DX11EffectScalarVariable* m_Collion_Height;
 
 	ID3D11BlendState*	m_pBlendState_ADD;
 	ID3D11BlendState*	m_pBlendState_BLEND;

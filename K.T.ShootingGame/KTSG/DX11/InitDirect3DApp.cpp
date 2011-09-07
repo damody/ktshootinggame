@@ -24,6 +24,7 @@ InitDirect3DApp::~InitDirect3DApp()
 void InitDirect3DApp::initApp()
 {
 	D3DApp::initApp();
+	InitTexture();
 	LoadResource();
 	LoadAllStage();
 	LoadBlend();
@@ -69,10 +70,18 @@ void InitDirect3DApp::OnResize()
 
 void InitDirect3DApp::DrawScene()
 {
+	// clear color
+	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, m_ClearColor);
+	// we don't need depth
+	//m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_DeviceContext->ClearRenderTargetView(RTVView1, m_ClearColor);
+	m_DeviceContext->ClearRenderTargetView(RTVView2, m_ClearColor);
+	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 	UINT stride = sizeof(DXVertex);
 	UINT offset = 0;
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Warship);
+	//m_DeviceContext->OMSetRenderTargets(1,&RTVView2,m_DepthStencilView2); // draw all ship
 	m_PTech_Warship->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_WarShip, &stride, &offset);
 	m_PMap_Warship->SetResource(*(m_motherShip.m_texture));
@@ -81,6 +90,7 @@ void InitDirect3DApp::DrawScene()
 	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_DeviceContext->IASetInputLayout(m_PLayout_Bullets);
 	m_DeviceContext->IASetVertexBuffers(0, 1, &m_Buffer_Bullets, &stride2, &offset);
+	//m_DeviceContext->OMSetRenderTargets(1,&RTVView1,m_DepthStencilView2); // draw all bullet
 	for (DrawVertexGroups::iterator it = m_DrawVertexGroups.begin();
 		it != m_DrawVertexGroups.end();++it)
 	{
@@ -88,6 +98,9 @@ void InitDirect3DApp::DrawScene()
 		m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
 		m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
 	}
+	
+	
+	
 }
 
 void InitDirect3DApp::buildPointFX()
@@ -140,11 +153,33 @@ void InitDirect3DApp::buildPointFX()
 	HR(m_d3dDevice->CreateInputLayout(VertexDesc_BulletVertex, 4, PassDesc2.pIAInputSignature,
 		PassDesc2.IAInputSignatureSize, &m_PLayout_Bullets));
 
+	hr=D3DX11CompileFromFile(_T("screen.fx"), NULL, NULL, NULL, 
+		"fx_5_0", D3D10_SHADER_ENABLE_STRICTNESS|D3D10_SHADER_DEBUG, NULL, NULL, &pCode, &pError, NULL );
+	if(FAILED(hr))
+	{
+		if( pError )
+		{
+			MessageBoxA(0, (char*)pError->GetBufferPointer(), 0, 0);
+			ReleaseCOM(pError);
+		}
+		DXTrace(__FILE__, __LINE__, hr, _T("D3DX11CreateEffectFromFile"), TRUE);
+	} 
+	HR(D3DX11CreateEffectFromMemory( pCode->GetBufferPointer(), pCode->GetBufferSize(), NULL, m_d3dDevice, &m_Effect_Collion));
+
+	m_PTech_Collion = m_Effect_Collion->GetTechniqueByName("PointTech");
+	m_Collion_Width = m_Effect_Collion->GetVariableByName("width")->AsScalar();
+	m_Collion_Height =m_Effect_Collion->GetVariableByName("height")->AsScalar();
+	m_PMap_Collion1 =m_Effect_Collion->GetVariableByName("gMap1")->AsShaderResource();
+	m_PMap_Collion2 =m_Effect_Collion->GetVariableByName("gMap2")->AsShaderResource();
+
+	m_PTech_Collion->GetPassByIndex(0)->GetDesc(&PassDesc2);
+	HR(m_d3dDevice->CreateInputLayout(VertexDesc_SVertex, 2, PassDesc2.pIAInputSignature,
+		PassDesc2.IAInputSignatureSize, &m_PLayout_Collion));
+
 	m_vbd.Usage = D3D11_USAGE_IMMUTABLE;
 	m_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_vbd.CPUAccessFlags = 0;
 	m_vbd.MiscFlags = 0;
-	m_vbd.StructureByteStride=sizeof(DXVertex);
 }
 
 void InitDirect3DApp::buildPoint()
@@ -509,4 +544,61 @@ void InitDirect3DApp::PrintInfo()
 
 void InitDirect3DApp::LoadAllStage()
 {
+}
+
+void InitDirect3DApp::InitTexture()
+{
+	ID3D11Texture2D* tex1, *tex2, *tesres;
+	
+	// Create the depth/stencil buffer and view.
+	D3D11_TEXTURE2D_DESC depthStencilDesc0;
+	depthStencilDesc0.Width     = mClientWidth;
+	depthStencilDesc0.Height    = mClientHeight;
+	depthStencilDesc0.MipLevels = 1;
+	depthStencilDesc0.ArraySize = 1;
+	depthStencilDesc0.Format    = DXGI_FORMAT_R8G8B8A8_UNORM;
+	depthStencilDesc0.SampleDesc.Count   = 1; // multisampling must match
+	depthStencilDesc0.SampleDesc.Quality = 0; // swap chain values.
+	depthStencilDesc0.Usage          = D3D11_USAGE_DEFAULT;
+	depthStencilDesc0.BindFlags      = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	depthStencilDesc0.CPUAccessFlags = 0; 
+	depthStencilDesc0.MiscFlags      = 0;
+	HR(m_d3dDevice->CreateTexture2D(&depthStencilDesc0, 0, &tex1));
+	HR(m_d3dDevice->CreateShaderResourceView(tex1, 0, &SRVView1));
+	HR(m_d3dDevice->CreateRenderTargetView(tex1, 0, &RTVView1));
+
+	HR(m_d3dDevice->CreateTexture2D(&depthStencilDesc0, 0, &tex2));
+	HR(m_d3dDevice->CreateShaderResourceView(tex2, 0, &SRVView2));
+	HR(m_d3dDevice->CreateRenderTargetView(tex2, 0, &RTVView2));
+
+	HR(m_d3dDevice->CreateTexture2D(&depthStencilDesc0, 0, &tesres));
+	HR(m_d3dDevice->CreateShaderResourceView(tesres, 0, &SRVViewRes));
+	HR(m_d3dDevice->CreateRenderTargetView(tesres, 0, &RTVViewRes));
+
+	Screen_Vertex svQuad[4];
+	svQuad[0].pos = D3DXVECTOR4( -1.0f, 1.0f, 0.5f, 1.0f );
+	svQuad[0].tex = D3DXVECTOR2( 0.0f, 0.0f );
+	svQuad[1].pos = D3DXVECTOR4( 1.0f, 1.0f, 0.5f, 1.0f );
+	svQuad[1].tex = D3DXVECTOR2( 1.0f, 0.0f );
+	svQuad[2].pos = D3DXVECTOR4( -1.0f, -1.0f, 0.5f, 1.0f );
+	svQuad[2].tex = D3DXVECTOR2( 0.0f, 1.0f );
+	svQuad[3].pos = D3DXVECTOR4( 1.0f, -1.0f, 0.5f, 1.0f );
+	svQuad[3].tex = D3DXVECTOR2( 1.0f, 1.0f );
+
+	ID3D11Texture2D* tex12;
+
+	D3D11_TEXTURE2D_DESC depthStencilDesc1;
+	depthStencilDesc1.Width     = mClientWidth;
+	depthStencilDesc1.Height    = mClientHeight;
+	depthStencilDesc1.MipLevels = 1;
+	depthStencilDesc1.ArraySize = 1;
+	depthStencilDesc1.Format    = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc1.SampleDesc.Count   = 1; // multisampling must match
+	depthStencilDesc1.SampleDesc.Quality = 0; // swap chain values.
+	depthStencilDesc1.Usage          = D3D11_USAGE_DEFAULT;
+	depthStencilDesc1.BindFlags      = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc1.CPUAccessFlags = 0; 
+	depthStencilDesc1.MiscFlags      = 0;
+	HR(m_d3dDevice->CreateTexture2D(&depthStencilDesc1, 0, &tex12));
+	HR(m_d3dDevice->CreateDepthStencilView(tex12, 0, &m_DepthStencilView2));
 }

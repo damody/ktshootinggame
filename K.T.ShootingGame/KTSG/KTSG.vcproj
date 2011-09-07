@@ -733,6 +733,10 @@
 				RelativePath=".\shader\point.fx"
 				>
 			</File>
+			<File
+				RelativePath=".\screen.fx"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="UI"
