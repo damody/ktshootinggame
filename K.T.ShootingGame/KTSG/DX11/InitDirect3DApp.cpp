@@ -38,11 +38,28 @@ void InitDirect3DApp::initApp()
 	m_DeviceContext->OMSetBlendState(m_pBlendState_BLEND, BlendFactor, 0xffffffff);
 	//m_DeviceContext->OMSetDepthStencilState(m_pDepthStencil_ZWriteOFF, 0);
 	buildPoint();
+
+	//init control key
+	m_CtrKey.resize(CTRL_KEY_NUM);
+	m_CtrKey[0] = DEFAULT_CTRL_KEY_UP;
+	m_CtrKey[1] = DEFAULT_CTRL_KEY_LEFT ;
+	m_CtrKey[2] = DEFAULT_CTRL_KEY_RIGHT ;
+	m_CtrKey[3] = DEFAULT_CTRL_KEY_DOWN ;
+	m_CtrKey[4] = DEFAULT_CTRL_KEY_SKILL ;
+	m_CtrKey[5] = DEFAULT_CTRL_KEY_TIMECHENGE ;
 }
 
 void InitDirect3DApp::UpdateScene(float dt)
 {
 	m_DXUT_UI->UpdataUI(dt);
+	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
+	for (int i=0; i<cmdstate.size(); i++)
+	{
+		if (cmdstate[i].id == 3)
+			exit(0);
+	}
+	m_DXUT_UI->ClearCmdState();
+
 	m_SwapChain->Present(0, 0);
 	D3DApp::DrawScene(); // clear window
 	PrintInfo();

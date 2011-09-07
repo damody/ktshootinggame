@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 
 #include "../Lua/LuaCell.h"
 #include "dxut/DXUT.h"
@@ -17,14 +18,17 @@
 
 enum CommandType
 {
-	COMMAND_BUTTON=1,
+	COMMAND_NULL=0,
+	COMMAND_BUTTON,
 	COMMAND_TEXT,
-	COMMAND_COMBO_BOX
+	COMMAND_COMBO_BOX,
+	COMMAND_SLIDER
 };
 
 struct CmdState
 {
 	int id;
+	CommandType type;
 	int state;		//-1=no event
 };
 // 		--		cmd1={cid=id編號(數字), ctext=控制項的字, ctype=控制項類型(數字), cpx=控制項x座標, cpy=控制項y座標, 
@@ -40,17 +44,30 @@ struct KTSGCommand
 
 class UIDialog
 {
-public:
-	int id;
-	bool isopen;
-	UIDialog(){m_uidig=NULL; isopen=true;}
-	~UIDialog(){if (m_uidig) delete m_uidig;}
+private:
+	bool m_isopen;
+	int m_id;
 	std::vector<KTSGCommand>	m_comset;
 	CDXUTDialog*	m_uidig;
+public:
+	UIDialog(){m_uidig=NULL; m_isopen=true;}
+	~UIDialog(){if (m_uidig) delete m_uidig;}
+
 	void init(){m_uidig = new CDXUTDialog;}
+
+	void SetID(int id){m_id = id;}
+	void SetCmd(int no, int id, const char* text, CommandType type, float px, float py, int w, int h);	//'no' is number of cmd in this dialog
+
+	int GetID(){return m_id;}
+	CDXUTDialog* GetDialog(){return m_uidig;}
+	CommandType GetCmdType(int id);
+	bool GetIsOpen(){return m_isopen;}
+	bool CmdIdIsExist(int id);
+
+	void ResizeCmdState(int num){m_comset.resize(num);}
 	void close();
 	void open();
-	void updata(float dt);
+	void Updata(float dt);
 };
 
 class DXUTUI
@@ -59,7 +76,7 @@ protected:
 	LuaCell		m_Luacell;
 public:
 	int	m_NextUIid;
-	std::vector<CmdState>*		m_CmdStateSet;
+	std::vector<CmdState>		m_CmdStateSet;
 	std::vector<UIDialog>		m_DialogSet;
 	CDXUTDialogResourceManager	m_DialogResourceManager;    // Manager for shared resources of dialogs
 	CD3DSettingsDlg			m_D3DSettingsDlg;           // Device settings dialog
@@ -67,11 +84,10 @@ public:
 	//CDXUTTextHelper*            m_pTxtHelper;
 
 
-
-	DXUTUI(void);
+	DXUTUI();
 	~DXUTUI(void);
 
-	//init fun
+	//init fun, must call when app start
 	void SetWindow(HWND hWndFocus, bool bHandleMessages = TRUE);
 	void CreateDevice(int winWidth, int winHeight);
 	ID3D11Device* GetDevice(){ return DXUTGetD3D11Device();}
@@ -81,10 +97,19 @@ public:
 
 	void UpdataUI(float dt);
 	void MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void UpdataCmdState();
 
 	void LoadUI(const char* path);
 	void OpenUI(int id);
 	void CloseUI(int id);
+	void CloseAllUI();
+	int GetCurrencyUI();		//return a UI's id that is open
+	void SetStatic(int id, const char* text);
+	int GetComboBoxSel(int id);
+	int GetSliderNum(int id);
+	void ChengeCmdState(int id);
+	void ClearCmdState();
+	std::vector<CmdState> GetCmdState(){return m_CmdStateSet;}
 
 	void AddNewUI(const char* path);
 	void AddNewUI(const wchar_t* path);

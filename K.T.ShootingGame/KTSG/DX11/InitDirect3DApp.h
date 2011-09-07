@@ -95,6 +95,9 @@ private:
 	std::vector<DXVertex>		m_ShipVertex;
 	std::vector<BulletVertex>	m_BVertex;
 	D3D11_BUFFER_DESC	m_vbd;
+
+	//control key array
+	std::vector<int>	m_CtrKey;
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC

@@ -17,25 +17,27 @@ HRESULT CALLBACK KTSGOnD3D11ResizedSwapChain( ID3D11Device* pd3dDevice, IDXGISwa
 	g_ktsg_ui->m_D3DSettingsDlg.OnD3D11ResizedSwapChain( pd3dDevice, pBackBufferSurfaceDesc ) ;
 	return true;
 }
-DXUTUI::DXUTUI(void)
+
+
+DXUTUI::DXUTUI()
 {
-	m_CmdStateSet = NULL;
+	m_CmdStateSet.clear();
 	g_ktsg_ui = this;
 	m_NextUIid = 1;
+	m_CmdStateSet.clear();
 
 	// Disable gamma correction on this sample
 	DXUTSetIsInGammaCorrectMode( false );
 	DXUTSetCallbackD3D11SwapChainResized( KTSGOnD3D11ResizedSwapChain );
 	DXUTSetCallbackD3D11DeviceAcceptable( KTSGIsD3D11DeviceAcceptable );
-// 	//DXUTSetCallbackDeviceChanging( ModifyDeviceSettings );
-// 	//DXUTSetCallbackMsgProc( MsgProc );
-// 	DXUTSetCallbackKeyboard( KTSGOnKeyboard );
-// //	DXUTSetCallbackFrameMove( OnFrameMove );
-
-// 	DXUTSetCallbackD3D11DeviceCreated( OnD3D11CreateDevice );
-// 	DXUTSetCallbackD3D11FrameRender( OnD3D11FrameRender );
-// 	DXUTSetCallbackD3D11SwapChainReleasing( OnD3D11ReleasingSwapChain );
-// 	DXUTSetCallbackD3D11DeviceDestroyed( OnD3D11DestroyDevice );
+	// 	//DXUTSetCallbackDeviceChanging( ModifyDeviceSettings );
+	// 	//DXUTSetCallbackMsgProc( MsgProc );
+	// 	DXUTSetCallbackKeyboard( KTSGOnKeyboard );
+	//	DXUTSetCallbackFrameMove( OnFrameMove );
+	// 	DXUTSetCallbackD3D11DeviceCreated( OnD3D11CreateDevice );
+	// 	DXUTSetCallbackD3D11FrameRender( OnD3D11FrameRender );
+	// 	DXUTSetCallbackD3D11SwapChainReleasing( OnD3D11ReleasingSwapChain );
+	// 	DXUTSetCallbackD3D11DeviceDestroyed( OnD3D11DestroyDevice );
 
 	DXUTInit( true, true );                 // Use this line instead to try to create a hardware device
 
@@ -73,7 +75,7 @@ void DXUTUI::UpdataUI(float dt)
 	//DXUTRender3DEnvironment();
 	DXUT_BeginPerfEvent( DXUT_PERFEVENTCOLOR, L"HUD / Stats" );
 	for (int i=0; i<m_DialogSet.size(); i++)
-		m_DialogSet[i].updata(dt);
+		m_DialogSet[i].Updata(dt);
 	DXUT_EndPerfEvent();
 }
 
@@ -82,7 +84,7 @@ void DXUTUI::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	m_DialogResourceManager.MsgProc(hWnd, uMsg, wParam, lParam);
 	m_D3DSettingsDlg.MsgProc(hWnd, uMsg, wParam, lParam);
 	for (int i=0; i<m_DialogSet.size(); i++)
-		m_DialogSet[i].m_uidig->MsgProc(hWnd, uMsg, wParam, lParam);
+		m_DialogSet[i].GetDialog()->MsgProc(hWnd, uMsg, wParam, lParam);
 }
 
 // void DXUTUI::AddNewUI( const char* path )
@@ -106,7 +108,6 @@ void DXUTUI::LoadUI( const char* path )
 	int cw,ch;
 	wchar_t* wtext = new wchar_t[128];
 	CDXUTComboBox *combo;
-	CmdState newstate;
 
 	m_Luacell.InputLuaFile(path);
 	ui_num = m_Luacell.getLua<int>("uinum");
@@ -123,50 +124,45 @@ void DXUTUI::LoadUI( const char* path )
 		if (cmd_num<0)
 			cmd_num = 0;
 		m_DialogSet[i].init();
-		m_DialogSet[i].m_uidig->Init( &m_DialogResourceManager );
-		m_DialogSet[i].m_uidig->SetCallback( KTSGOnGUIEvent ); 
-		m_DialogSet[i].m_comset.resize(cmd_num);
+		m_DialogSet[i].GetDialog()->Init( &m_DialogResourceManager );
+		m_DialogSet[i].GetDialog()->SetCallback( KTSGOnGUIEvent ); 
+		m_DialogSet[i].ResizeCmdState(cmd_num);
 		for (int j=0; j<cmd_num; j++)
 		{
 			sprintf_s(luar, 128, "ui%d/cmd%d/cid", i+1, j+1);
 			cid = m_Luacell.getLua<int>(luar);
-			m_DialogSet[i].m_comset[j].id = cid;
 
 			sprintf_s(luar, 128, "ui%d/cmd%d/ctext", i+1, j+1);
 			ctext = m_Luacell.getLua<const char*>(luar);
-			strcpy_s(m_DialogSet[i].m_comset[j].text, 128, ctext);
 
 			sprintf_s(luar, 128, "ui%d/cmd%d/ctype", i+1, j+1);
 			ctype = m_Luacell.getLua<int>(luar);
-			m_DialogSet[i].m_comset[j].type = (CommandType)ctype;
 
 			sprintf_s(luar, 128, "ui%d/cmd%d/cpx", i+1, j+1);
 			cpx = (float)m_Luacell.getLua<double>(luar);
-			m_DialogSet[i].m_comset[j].px = cpx;
 
 			sprintf_s(luar, 128, "ui%d/cmd%d/cpy", i+1, j+1);
 			cpy = (float)m_Luacell.getLua<double>(luar);
-			m_DialogSet[i].m_comset[j].py = cpy;
 
 			sprintf_s(luar, 128, "ui%d/cmd%d/cw", i+1, j+1);
 			cw = m_Luacell.getLua<int>(luar);
-			m_DialogSet[i].m_comset[j].w = cw;
 
 			sprintf_s(luar, 128, "ui%d/cmd%d/ch", i+1, j+1);
 			ch = m_Luacell.getLua<int>(luar);
-			m_DialogSet[i].m_comset[j].h = ch;
+
+			m_DialogSet[i].SetCmd(j, cid, ctext, (CommandType)ctype, cpx, cpy, cw, ch);
 
 			ConvStr::CharToWchar(wtext, ctext);
 			switch(ctype)
 			{
 			case COMMAND_BUTTON:
-				m_DialogSet[i].m_uidig->AddButton(cid, wtext, cpx, cpy, cw, ch);
+				m_DialogSet[i].GetDialog()->AddButton(cid, wtext, cpx, cpy, cw, ch);
 				break;
 			case COMMAND_TEXT:
-				m_DialogSet[i].m_uidig->AddStatic(cid, wtext, cpx, cpy, cw, ch);
+				m_DialogSet[i].GetDialog()->AddStatic(cid, wtext, cpx, cpy, cw, ch);
 				break;
 			case COMMAND_COMBO_BOX:
-				m_DialogSet[i].m_uidig->AddComboBox(cid, cpx,cpy, cw, ch, 0, true, &combo);
+				m_DialogSet[i].GetDialog()->AddComboBox(cid, cpx,cpy, cw, ch, 0, true, &combo);
 				sprintf_s(luar, 128, "ui%d/cmd%d/itemnum", i+1, j+1);
 				combo_num = m_Luacell.getLua<int>(luar);
 				
@@ -183,13 +179,24 @@ void DXUTUI::LoadUI( const char* path )
 					combo->SetSelectedByIndex( 0 );
 				}
 				break;
+			case COMMAND_SLIDER:
+				int cmax, cmin, cval;
+				sprintf_s(luar, 128, "ui%d/cmd%d/cmin", i+1, j+1);
+				cmin = m_Luacell.getLua<int>(luar);
+				sprintf_s(luar, 128, "ui%d/cmd%d/cmax", i+1, j+1);
+				cmax = m_Luacell.getLua<int>(luar);
+				sprintf_s(luar, 128, "ui%d/cmd%d/cval", i+1, j+1);
+				cval = m_Luacell.getLua<int>(luar);
+
+				m_DialogSet[i].GetDialog()->AddSlider(cid, cpx, cpy, cw, ch, cmin, cmax, cval);
+				break;
 			}
 		}
-		m_DialogSet[i].id = m_NextUIid;
-		m_NextUIid++;
+		m_DialogSet[i].SetID(i+1);
+		m_NextUIid = i+2;
 		m_DialogSet[i].close();
 	}
-	OpenUI(1);
+	OpenUI(2);
 	delete []wtext;
 }
 
@@ -197,7 +204,7 @@ void DXUTUI::OpenUI( int id )
 {
 	for (int i=0; i<m_DialogSet.size(); i++)
 	{
-		if (m_DialogSet[i].id==id)
+		if (m_DialogSet[i].GetID()==id)
 		{
 			m_DialogSet[i].open();
 			return;
@@ -209,12 +216,112 @@ void DXUTUI::CloseUI( int id )
 {
 	for (int i=0; i<m_DialogSet.size(); i++)
 	{
-		if (m_DialogSet[i].id==id)
+		if (m_DialogSet[i].GetID()==id)
 		{
 			m_DialogSet[i].close();
 			return;
 		}
 	}
+}
+
+void DXUTUI::SetStatic( int id, const char* text )
+{
+	wchar_t* wtext;
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		if (m_DialogSet[i].CmdIdIsExist(id))
+		{
+			if (!m_DialogSet[i].GetIsOpen())
+				return;
+			wtext = new wchar_t[128];
+			ConvStr::CharToWchar(wtext, text);
+			m_DialogSet[i].GetDialog()->GetStatic(id)->SetText(wtext);
+			break;
+		}
+	}
+	delete[] wtext;
+}
+
+
+int DXUTUI::GetComboBoxSel( int id )
+{
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		if (m_DialogSet[i].CmdIdIsExist(id))
+		{
+			return m_DialogSet[i].GetDialog()->GetComboBox(id)->GetSelectedIndex();	
+		}
+	}
+	return -1;
+}
+
+void DXUTUI::UpdataCmdState()
+{
+	for (int i=0; i<m_CmdStateSet.size(); i++)
+	{
+		if (m_CmdStateSet[i].type == COMMAND_BUTTON)
+			m_CmdStateSet[i].state = -1;
+	}
+}
+
+void DXUTUI::ChengeCmdState( int id )
+{
+	CmdState newstate;
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		if (m_DialogSet[i].CmdIdIsExist(id))
+		{
+			if (!m_DialogSet[i].GetIsOpen())
+				return;
+			newstate.id = id;
+			newstate.type = m_DialogSet[i].GetCmdType(id);
+			switch(newstate.type)
+			{
+			case COMMAND_BUTTON:
+				newstate.state = 1;
+				break;
+			case COMMAND_COMBO_BOX:
+				newstate.state = GetComboBoxSel(id);
+				break;
+			}
+			m_CmdStateSet.push_back(newstate);
+			break;
+		}
+	}
+}
+
+void DXUTUI::ClearCmdState()
+{
+	m_CmdStateSet.clear();
+}
+
+void DXUTUI::CloseAllUI()
+{
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		m_DialogSet[i].close();
+	}
+}
+
+int DXUTUI::GetCurrencyUI()
+{
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		if (m_DialogSet[i].GetIsOpen())
+			return i;
+	}
+}
+
+int DXUTUI::GetSliderNum( int id )
+{
+	for (int i=0; i<m_DialogSet.size(); i++)
+	{
+		if (m_DialogSet[i].CmdIdIsExist(id))
+		{
+			return m_DialogSet[i].GetDialog()->GetSlider(id)->GetValue();
+		}
+	}
+	return -1;
 }
 
 bool CALLBACK KTSGIsD3D11DeviceAcceptable( const CD3D11EnumAdapterInfo *AdapterInfo, UINT Output, const CD3D11EnumDeviceInfo *DeviceInfo, DXGI_FORMAT BackBufferFormat, bool bWindowed, void* pUserContext )
@@ -224,23 +331,54 @@ bool CALLBACK KTSGIsD3D11DeviceAcceptable( const CD3D11EnumAdapterInfo *AdapterI
 
 void CALLBACK KTSGOnGUIEvent( UINT nEvent, int nControlID, CDXUTControl* pControl, void* pUserContext )
 {
-
+	g_ktsg_ui->ChengeCmdState(nControlID);
 }
 
 void UIDialog::close()
 {
 	m_uidig->SetVisible(false);
-	isopen = false;
+	m_isopen = false;
 }
 
 void UIDialog::open()
 {
 	m_uidig->SetVisible(true);
-	isopen = true;
+	m_isopen = true;
 }
 
-void UIDialog::updata(float dt)
+void UIDialog::Updata(float dt)
 {
-	if (isopen)
+	if (m_isopen)
 		m_uidig->OnRender(dt);
+}
+
+bool UIDialog::CmdIdIsExist( int id )
+{
+	for (int i=0; i<m_comset.size(); i++)
+	{
+		if (id == m_comset[i].id)
+			return true;
+	}
+	return false;
+}
+
+CommandType UIDialog::GetCmdType( int id )
+{
+	for (int i=0; i<m_comset.size(); i++)
+	{
+		if (m_comset[i].id == id)
+			return m_comset[i].type;
+	}
+	return COMMAND_NULL;
+}
+
+void UIDialog::SetCmd( int no, int id, const char* text, CommandType type, float px, float py, int w, int h )
+{
+	m_comset[no].id = id;
+	strcpy_s(m_comset[no].text, 128, text);
+	m_comset[no].type = (CommandType)type;
+	m_comset[no].px = px;
+	m_comset[no].py = py;
+	m_comset[no].w = w;
+	m_comset[no].h = h;
 }
