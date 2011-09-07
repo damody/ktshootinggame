@@ -40,6 +40,7 @@ protected:
 	ID3D11Device*    m_d3dDevice;
 	IDXGISwapChain*  m_SwapChain;
 	ID3D11Texture2D* m_DepthStencilBuffer;
+	ID3D11DepthStencilView* m_DepthStencilView2;
 	ID3D11RenderTargetView* m_RenderTargetView;
 	ID3D11DepthStencilView* m_DepthStencilView;
 	D3D_FEATURE_LEVEL  m_FeatureLevelsSupported;
