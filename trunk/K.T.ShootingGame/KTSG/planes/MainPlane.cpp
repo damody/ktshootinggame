@@ -42,10 +42,10 @@ void MainPlane::Update(float dt)
 	else
 	{
 		Ogre::Vector3 temp = Ogre::Vector3::ZERO;
-		if(InputStateS::instance().isKeyPress(KEY_UP))		temp.y = dt * 140;
-		if(InputStateS::instance().isKeyPress(KEY_DOWN))	temp.y = -dt * 140;
-		if(InputStateS::instance().isKeyPress(KEY_RIGHT))	m_angle += dt * 30;
-		if(InputStateS::instance().isKeyPress(KEY_LEFT))	m_angle -= dt * 30;
+		if(InputStateS::instance().isKeyPress( m_CtrlKey[0]))	temp.y = dt * 140;		//KEY_UP
+		if(InputStateS::instance().isKeyPress( m_CtrlKey[1]))	temp.y = -dt * 140;		//KEY_DOWN
+		if(InputStateS::instance().isKeyPress( m_CtrlKey[3]))	m_angle += dt * 30;		//KEY_RIGHT
+		if(InputStateS::instance().isKeyPress( m_CtrlKey[2]))	m_angle -= dt * 30;		//KEY_LEFT
 		if(InputStateS::instance().isKeyDown(KEY_SPACE))
 		{
 			std::vector<EnemyPlane*> enemies = InitDirect3DApp::dxAppInstance->GetEnemies();
@@ -139,6 +139,44 @@ MainPlane::MainPlane()
 	m_Polygon2D.AddPoint(0, -100);
 	m_Polygon2D.AddPoint(0, 150);
 	m_Polygon2D.AddPoint(200, 0);
+
+	m_Gold = 1000;
+
+	m_CtrlKey.resize(CTRL_KEY_NUM);
+	m_CtrlKey[0] = DEFAULT_CTRL_KEY_UP;
+	m_CtrlKey[1] = DEFAULT_CTRL_KEY_DOWN ;
+	m_CtrlKey[2] = DEFAULT_CTRL_KEY_LEFT ;
+	m_CtrlKey[3] = DEFAULT_CTRL_KEY_RIGHT ;
+	m_CtrlKey[4] = DEFAULT_CTRL_KEY_SKILL ;
+	m_CtrlKey[5] = DEFAULT_CTRL_KEY_TIMECHENGE ;
+}
+
+
+void MainPlane::BuyTower( int id, Tower::tower_type type, int cost/*=0*/ )
+{
+	if(cost>m_Gold)
+		return;
+	if (m_Towers[id].m_type!=Tower::tower_type::NOTHING)
+		return;
+	m_Gold-=cost;
+	Ogre::Vector3 pos = m_Towers[id].m_position;
+	m_Towers[id] = m_TowerFac.NewTower(type);
+	m_Towers[id].m_position = pos;
+}
+
+void MainPlane::SellTower( int id )
+{
+	m_Towers[id].m_type = Tower::tower_type::NOTHING;
+}
+
+void MainPlane::TowerLvUp( int id, int cost /*= 0*/ )
+{
+	if(cost>m_Gold)
+		return;
+	if (m_Towers[id].m_type!=Tower::tower_type::NOTHING)
+		return;
+	m_Gold-=cost;
+	m_TowerFac.TowerLvUp(m_Towers[id]);
 }
 
 

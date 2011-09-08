@@ -19,10 +19,12 @@
 #include "algo\nway.h"
 #include "ball\straight.h"
 #include "towers\tower.h"
+#include "towers\towerFactory.h"
 #include "path\LinearLine.h"
 #include "path\BezierCurve.h"
 #include "path\BsplineCurve.h"
 #include "path\HSplineCurve.h"
+
 
 class MainPlane
 {
@@ -36,13 +38,23 @@ public:
 	int		m_hp;
 	int		m_w, m_h;
 	Towers		m_Towers;
+	int		m_Gold;			//持有金錢
 
 	Ogre::Vector3	motherShipOffset;
 	MainPlane*	motherShip;
+	towerFactory	m_TowerFac;
+
+	std::vector<int>	m_CtrlKey;
 public:
 	MainPlane();
 	void Update(float dt);
 	int  UpdateTower(float dt);
+	void BuyTower(int id, Tower::tower_type type, int cost=0);		//購位置為id的塔
+	void SellTower(int id);							//販賣位置為id的塔
+	void TowerLvUp(int id,	int cost = 0);					//位置為id的塔升一級
+	void InitTowerFactory(){m_TowerFac.Init();}
+
+
 protected:
 	void UpdateDataToDraw();
 };

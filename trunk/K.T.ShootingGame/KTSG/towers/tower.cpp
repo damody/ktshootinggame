@@ -16,6 +16,8 @@ Ball* GetBulletBall()
 BallptrVector Tower::Update(float dt)
 {
 	BallptrVector bv;
+	if (m_type == NOTHING)
+		return bv;
 	m_elapsedTime += dt;
 	m_Trajectory->Direction() = GetRotation(Ogre::Vector3::UNIT_X, m_angle);
 	if (m_elapsedTime >= m_atkSpeed)
