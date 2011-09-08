@@ -11,7 +11,7 @@
 InitDirect3DApp* InitDirect3DApp::dxAppInstance = NULL;
 
 InitDirect3DApp::InitDirect3DApp(HINSTANCE hInstance)
-: D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) , m_SettingKeyID(-1)
+: D3DApp(hInstance), m_Warship_Width(0), m_Warship_Height(0), m_Buffer_WarShip(0), m_Buffer_Bullets(0) , m_SettingKeyID(-1), m_LastGameProcess(1), m_GameProcess(1), m_Last2GameProcess(1)
 {
 	dxAppInstance = this;
 }
@@ -41,13 +41,13 @@ void InitDirect3DApp::initApp()
 	buildPoint();
 
 	//init control key
-	m_CtrKey.resize(CTRL_KEY_NUM);
-	m_CtrKey[0] = DEFAULT_CTRL_KEY_UP;
-	m_CtrKey[1] = DEFAULT_CTRL_KEY_LEFT ;
-	m_CtrKey[2] = DEFAULT_CTRL_KEY_RIGHT ;
-	m_CtrKey[3] = DEFAULT_CTRL_KEY_DOWN ;
-	m_CtrKey[4] = DEFAULT_CTRL_KEY_SKILL ;
-	m_CtrKey[5] = DEFAULT_CTRL_KEY_TIMECHENGE ;
+	m_CtrlKey.resize(CTRL_KEY_NUM);
+	m_CtrlKey[0] = DEFAULT_CTRL_KEY_UP;
+	m_CtrlKey[1] = DEFAULT_CTRL_KEY_DOWN ;
+	m_CtrlKey[2] = DEFAULT_CTRL_KEY_LEFT ;
+	m_CtrlKey[3] = DEFAULT_CTRL_KEY_RIGHT ;
+	m_CtrlKey[4] = DEFAULT_CTRL_KEY_SKILL ;
+	m_CtrlKey[5] = DEFAULT_CTRL_KEY_TIMECHENGE ;
 }
 
 
@@ -111,9 +111,12 @@ void InitDirect3DApp::DrawScene()
 	for (DrawVertexGroups::iterator it = m_DrawVertexGroups.begin();
 		it != m_DrawVertexGroups.end();++it)
 	{
-		m_PMap_Bullets->SetResource(*(it->texture));
-		m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
-		m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
+		if (it->texture.get())
+		{
+			m_PMap_Bullets->SetResource(*(it->texture));
+			m_PTech_Bullets->GetPassByIndex(0)->Apply(0, m_DeviceContext);
+			m_DeviceContext->Draw(it->VertexCount, it->StartVertexLocation);
+		}
 	}
 }
 
@@ -345,7 +348,7 @@ void InitDirect3DApp::LoadWarShip()
 	m_motherShip.m_angle = 0;
 	m_motherShip.m_h = 350;
 	m_motherShip.m_w = 600;
-	m_motherShip.m_position.x = 100;
+	m_motherShip.m_position.x = 500;
 	m_motherShip.m_position.y = 200;
 	m_motherShip.m_texture = g_TextureManager.GetTexture(102);
 
@@ -356,13 +359,13 @@ void InitDirect3DApp::LoadWarShip()
 	ship.m_w = 120;
 	ship.motherShip = &m_motherShip;
 
-	for(int i=0;i<3;i++)
-	{
-		ship.motherShipOffset = Ogre::Vector3(200 + (i+1)*100.0f, -(i+1)*100.0f, 0);
-		m_warShips.push_back(ship);
-		ship.motherShipOffset = Ogre::Vector3(-200 - (i+1)*100.0f, -(i+1)*100.0f, 0);
-		m_warShips.push_back(ship);
-	}
+// 	for(int i=0;i<3;i++)
+// 	{
+// 		ship.motherShipOffset = Ogre::Vector3(200 + (i+1)*100.0f, -(i+1)*100.0f, 0);
+// 		m_warShips.push_back(ship);
+// 		ship.motherShipOffset = Ogre::Vector3(-200 - (i+1)*100.0f, -(i+1)*100.0f, 0);
+// 		m_warShips.push_back(ship);
+// 	}
 }
 
 void InitDirect3DApp::LoadEnemyShips()
@@ -411,18 +414,42 @@ void InitDirect3DApp::LoadTowers()
 	t.m_ball_pic.size.x = 2;
 	t.m_ball_pic.size.y = 20;
 	t.m_atkSpeed = 0.05f;
-	t.m_Trajectory = new NWay(100, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory = new NWay(10, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
 	t.m_Trajectory->mPolygon.AddPoint(0,20);
 	//t.m_Trajectory->mPolygon.AddPoint(1,80);
-	t.m_position = Ogre::Vector3(200, 150, 0);
-	ts.push_back(t);
-	t.m_position = Ogre::Vector3(-200, 150, 0);
-	ts.push_back(t);
-	t.m_position = Ogre::Vector3(0, 300, 0);
-	ts.push_back(t); 
+
+	m_Lua.InputLuaFile("tower.lua");
+	float tx,ty;
+	char s[64];
+	t.m_hp = 10000;
+	t.m_type = Tower::MACHINE_GUN;
+	t.m_level = 1;
+	t.m_atk = 1.0f/100;
+	for (int i=0; i<13; i++)
+	{
+		if (i==3)
+			t.m_type = Tower::NOTHING;
+		sprintf_s(s, 64, "TowerPos/Tpos%d/px", i+1);
+		tx = m_Lua.getLua<double>(s);
+		sprintf_s(s, 64, "TowerPos/Tpos%d/py", i+1);
+		ty = m_Lua.getLua<double>(s);
+		t.m_position = Ogre::Vector3(tx, ty, 0);
+		ts.push_back(t);
+	}
+
+// 	t.m_position = Ogre::Vector3(-200, 150, 0);
+// 	t.m_hp = 20000;
+// 	t.m_type = Tower::MACHINE_GUN;
+// 	ts.push_back(t);
+// 
+// 	t.m_position = Ogre::Vector3(0, 300, 0);
+// 	t.m_hp = 30000;
+// 	t.m_type = Tower::MISSILE;
+// 	ts.push_back(t); 
 	m_motherShip.m_Towers = ts;
+	m_motherShip.InitTowerFactory();
 }
 
 int InitDirect3DApp::UpdateInput()
@@ -458,7 +485,7 @@ int InitDirect3DApp::UpdateWarShip( float dt )
 	BallptrVector ans = g_BallptrManager.GetCollision(poly);
 	for (size_t i=0;i < ans.size();++i)
 	{
-		ans[i]->mBallStatus = Ball::DESTORY;
+		//ans[i]->mBallStatus = Ball::DESTORY;
 	}
 	return 0;
 }
@@ -520,56 +547,20 @@ int InitDirect3DApp::UpdateBullectCollision()
 
 int InitDirect3DApp::UpdateUI()
 {
-	int val;
-	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
-
-	if (m_SettingKeyID>=0)
-		SetCtrlKey();		//砞﹚北龄矪瞶ㄧ计
-	
-
-	for (int i=0; i<cmdstate.size(); i++)
+	switch(m_GameProcess)
 	{
-		switch(cmdstate[i].id)
-		{
-////////////////////////////////////main menu/////////////////////////////////////////////
-		case IDC_MAIN_MENU_STARTGAME:
-			break;
-		case IDC_MAIN_MENU_OPTION:
-			break;
-		case IDC_MAIN_MENU_EXIT:
-			break;
-		case IDC_OPTION_MENU_VOLUME:
-			val = m_DXUT_UI->GetSliderNum(cmdstate[i].id)-7000;
-			WavSoundS::instance().SetVolume(val);
-			break;
-		case IDC_OPTION_MENU_KEY_UP:
-			m_SettingKeyID = 0;
-			m_SettingKeyTextID = IDC_OPTION_MENU_KEY_UP-1;
-			break;
-		case IDC_OPTION_MENU_KEY_DOWN:
-			m_SettingKeyID = 1;
-			m_SettingKeyTextID = IDC_OPTION_MENU_KEY_DOWN-1;
-			break;
-		case IDC_OPTIOT_MENU_KEY_LEFT:
-			m_SettingKeyID = 2;
-			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_LEFT-1;
-			break;
-		case IDC_OPTIOT_MENU_KEY_RIGHT:
-			m_SettingKeyID = 3;
-			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_RIGHT-1;
-			break;
-		case IDC_OPTIOT_MENU_KEY_SKILL:
-			m_SettingKeyID = 4;
-			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_SKILL-1;
-			break;
-		case IDC_OPTIOT_MENU_KEY_TIME:
-			m_SettingKeyID = 5;
-			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_TIME-1;
-			break;
-		case IDC_OPTIOT_MENU_KEY_EXIT:
-			break;
-
-		}
+	case UI_PAGE_MAIN_MENU:
+		DealMainMenu();
+		break;
+	case UI_PAGE_OPTION:
+		DealOptionPage();
+		break;
+	case UI_PAGE_TOWER_SETTING:
+		DealTowerSettingPage();
+		break;
+	case UI_PAGE_GAME_PLAY:
+		DealGamePlayPage();
+		break;
 	}
 	m_DXUT_UI->ClearCmdState();
 	return 0;
@@ -656,157 +647,157 @@ void InitDirect3DApp::SetCtrlKey()
 {
 	if (InputStateS::instance().isKeyPress(KEY_A))
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_A;
+		m_CtrlKey[m_SettingKeyID] = KEY_A;
 		m_SettingKeyID=-1;
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "A");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_B))
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_B;
+		m_CtrlKey[m_SettingKeyID] = KEY_B;
 		m_SettingKeyID=-1;
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "B");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_C))
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_C;
+		m_CtrlKey[m_SettingKeyID] = KEY_C;
 		m_SettingKeyID=-1;
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "C");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_D))
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_D;
+		m_CtrlKey[m_SettingKeyID] = KEY_D;
 		m_SettingKeyID=-1;
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "D");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_E))
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_E;
+		m_CtrlKey[m_SettingKeyID] = KEY_E;
 		m_SettingKeyID=-1;
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "E");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_F)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_F; 
+		m_CtrlKey[m_SettingKeyID] = KEY_F; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "F");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_G)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_G; 
+		m_CtrlKey[m_SettingKeyID] = KEY_G; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "G");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_H)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_H; 
+		m_CtrlKey[m_SettingKeyID] = KEY_H; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "H");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_I)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_I; 
+		m_CtrlKey[m_SettingKeyID] = KEY_I; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "I");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_J)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_J; 
+		m_CtrlKey[m_SettingKeyID] = KEY_J; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "J");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_K)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_K; 
+		m_CtrlKey[m_SettingKeyID] = KEY_K; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "K");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_L)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_L; 
+		m_CtrlKey[m_SettingKeyID] = KEY_L; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "L");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_M)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_M; 
+		m_CtrlKey[m_SettingKeyID] = KEY_M; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "M");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_N)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_N; 
+		m_CtrlKey[m_SettingKeyID] = KEY_N; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "N");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_O)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_O; 
+		m_CtrlKey[m_SettingKeyID] = KEY_O; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "O");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_P)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_P; 
+		m_CtrlKey[m_SettingKeyID] = KEY_P; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "P");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_Q)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_Q; 
+		m_CtrlKey[m_SettingKeyID] = KEY_Q; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Q");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_R)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_R; 
+		m_CtrlKey[m_SettingKeyID] = KEY_R; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "R");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_S)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_S; 
+		m_CtrlKey[m_SettingKeyID] = KEY_S; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "S");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_T)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_T; 
+		m_CtrlKey[m_SettingKeyID] = KEY_T; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "T");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_U)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_U; 
+		m_CtrlKey[m_SettingKeyID] = KEY_U; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "U");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_V)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_V; 
+		m_CtrlKey[m_SettingKeyID] = KEY_V; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "V");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_W)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_W; 
+		m_CtrlKey[m_SettingKeyID] = KEY_W; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "W");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_X)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_X; 
+		m_CtrlKey[m_SettingKeyID] = KEY_X; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "X");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_Y)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_Y; 
+		m_CtrlKey[m_SettingKeyID] = KEY_Y; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Y");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_Z)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_Z; 
+		m_CtrlKey[m_SettingKeyID] = KEY_Z; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Z");
 	}
@@ -814,61 +805,61 @@ void InitDirect3DApp::SetCtrlKey()
 	//===============================================================================0~9===================================================================
 	else if (InputStateS::instance().isKeyPress(KEY_0)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_0; 
+		m_CtrlKey[m_SettingKeyID] = KEY_0; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "0");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_1)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_1; 
+		m_CtrlKey[m_SettingKeyID] = KEY_1; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "1");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_2)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_2; 
+		m_CtrlKey[m_SettingKeyID] = KEY_2; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "2");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_3)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_3; 
+		m_CtrlKey[m_SettingKeyID] = KEY_3; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "3");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_4)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_4; 
+		m_CtrlKey[m_SettingKeyID] = KEY_4; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "4");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_5)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_5; 
+		m_CtrlKey[m_SettingKeyID] = KEY_5; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "5");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_6)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_6; 
+		m_CtrlKey[m_SettingKeyID] = KEY_6; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "6");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_7)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_7; 
+		m_CtrlKey[m_SettingKeyID] = KEY_7; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "7");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_8)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_8; 
+		m_CtrlKey[m_SettingKeyID] = KEY_8; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "8");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_9)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_9; 
+		m_CtrlKey[m_SettingKeyID] = KEY_9; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "9");
 	}
@@ -876,61 +867,61 @@ void InitDirect3DApp::SetCtrlKey()
 	//===============================================================================numpad===================================================================
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD0)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD0; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD0; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num0");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD1)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD1; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD1; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num1");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD2)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD2; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD2; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num2");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD3)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD3; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD3; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num3");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD4)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD4; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD4; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num4");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD5)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD5; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD5; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num5");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD6)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD6; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD6; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num6");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD7)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD7; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD7; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num7");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD8)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD8; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD8; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num8");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_NUMPAD9)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_NUMPAD9; 
+		m_CtrlKey[m_SettingKeyID] = KEY_NUMPAD9; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "num9");
 	}
@@ -938,26 +929,234 @@ void InitDirect3DApp::SetCtrlKey()
 	//===============================================================================よ龄===================================================================
 	else if (InputStateS::instance().isKeyPress(KEY_UP)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_UP; 
+		m_CtrlKey[m_SettingKeyID] = KEY_UP; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Up");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_DOWN)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_DOWN; 
+		m_CtrlKey[m_SettingKeyID] = KEY_DOWN; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Down");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_LEFT)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_LEFT; 
+		m_CtrlKey[m_SettingKeyID] = KEY_LEFT; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Left");
 	}
 	else if (InputStateS::instance().isKeyPress(KEY_RIGHT)) 
 	{
-		m_CtrKey[m_SettingKeyID] = KEY_RIGHT; 
+		m_CtrlKey[m_SettingKeyID] = KEY_RIGHT; 
 		m_SettingKeyID=-1; 
 		m_DXUT_UI->SetStatic(m_SettingKeyTextID, "Right");
+	}
+	if (m_SettingKeyID==-1)
+		m_motherShip.m_CtrlKey = m_CtrlKey;
+}
+
+void InitDirect3DApp::DealMainMenu()
+{
+	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
+
+	for (int i=0; i<cmdstate.size(); i++)
+	{
+		switch(cmdstate[i].id)
+		{
+		case IDC_MAIN_MENU_STARTGAME:
+			ChangeUI(UI_PAGE_GAME_PLAY);
+			break;
+		case IDC_MAIN_MENU_OPTION:
+			ChangeUI(UI_PAGE_OPTION);
+			break;
+		case IDC_MAIN_MENU_EXIT:
+			exit(0);
+			break;
+		}
+	}
+}
+
+void InitDirect3DApp::DealOptionPage()
+{
+	int val;
+	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
+
+	if (m_SettingKeyID>=0)
+		SetCtrlKey();		//砞﹚北龄矪瞶ㄧ计
+
+	for (int i=0; i<cmdstate.size(); i++)
+	{
+		switch(cmdstate[i].id)
+		{
+		case IDC_OPTION_MENU_VOLUME:
+			val = m_DXUT_UI->GetSliderNum(cmdstate[i].id)-7000;
+			WavSoundS::instance().SetVolume(val);
+			break;
+		case IDC_OPTION_MENU_KEY_UP:
+			m_SettingKeyID = 0;
+			m_SettingKeyTextID = IDC_OPTION_MENU_KEY_UP-1;
+			break;
+		case IDC_OPTION_MENU_KEY_DOWN:
+			m_SettingKeyID = 1;
+			m_SettingKeyTextID = IDC_OPTION_MENU_KEY_DOWN-1;
+			break;
+		case IDC_OPTIOT_MENU_KEY_LEFT:
+			m_SettingKeyID = 2;
+			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_LEFT-1;
+			break;
+		case IDC_OPTIOT_MENU_KEY_RIGHT:
+			m_SettingKeyID = 3;
+			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_RIGHT-1;
+			break;
+		case IDC_OPTIOT_MENU_KEY_SKILL:
+			m_SettingKeyID = 4;
+			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_SKILL-1;
+			break;
+		case IDC_OPTIOT_MENU_KEY_TIME:
+			m_SettingKeyID = 5;
+			m_SettingKeyTextID = IDC_OPTIOT_MENU_KEY_TIME-1;
+			break;
+		case IDC_OPTIOT_MENU_KEY_EXIT:
+			GoBackUI();
+			break;
+		}
+	}
+}
+
+void InitDirect3DApp::DealTowerSettingPage()
+{
+	int tid, tlv, thp;
+	float tatk,tatkspeed;
+	Tower::tower_type ttype;
+	char s[36];
+	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
+	for (int i=0; i<cmdstate.size(); i++)
+	{
+		switch(cmdstate[i].id)
+		{
+		case IDC_TOWER_SETTING_TOWERCOMBO:
+			ReflashTowerState();
+			break;
+		case IDC_TOWER_SETTING_LVUP:
+			tid = m_DXUT_UI->GetComboBoxSel(IDC_TOWER_SETTING_TOWERCOMBO);
+			m_motherShip.TowerLvUp(tid);
+			ReflashTowerState();
+			break;
+		case IDC_TOWER_SETTING_SELL:
+			tid = m_DXUT_UI->GetComboBoxSel(IDC_TOWER_SETTING_TOWERCOMBO);
+			m_motherShip.SellTower(tid);
+			ReflashTowerState();
+			break;
+		case IDC_TOWER_SETTING_TOWERSEL:
+			break;
+		case IDC_TOWER_SETTING_BUY:
+			tid = m_DXUT_UI->GetComboBoxSel(IDC_TOWER_SETTING_TOWERCOMBO);
+			ttype = (Tower::tower_type)(m_DXUT_UI->GetComboBoxSel(IDC_TOWER_SETTING_TOWERSEL)+1);
+			m_motherShip.BuyTower(tid, ttype);
+			ReflashTowerState();
+			break;
+		case IDC_TOWER_SETTING_OPTION:
+			ChangeUI(UI_PAGE_OPTION);
+			break;
+		case IDC_TOWER_SETTING_BACK:
+			GoBackUI();
+			break;
+		case IDC_TOWER_SETTING_EXIT:
+			exit(0);
+			break;
+		}
+	}
+}
+
+void InitDirect3DApp::DealGamePlayPage()
+{
+	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
+	for (int i=0; i<cmdstate.size(); i++)
+	{
+		switch(cmdstate[i].id)
+		{
+		case IDC_PLAY_PAGE_MENU:
+			ChangeUI(UI_PAGE_TOWER_SETTING);
+			break;
+		}
+	}
+
+	int hp;
+	char c[36];
+	for (int i=0; i<m_motherShip.m_Towers.size(); i++)
+	{
+		hp = m_motherShip.m_Towers[i].m_hp;
+		sprintf_s(c, 36, "hp:%d", hp);
+		m_DXUT_UI->SetStatic(IDC_PLAY_PAGE_TEXT_T1HP+i*2, c);
+	}
+}
+
+void InitDirect3DApp::ChangeUI( int i )
+{
+	if (i!=m_GameProcess)
+	{
+		m_Last2GameProcess = m_LastGameProcess;
+		m_LastGameProcess = m_GameProcess;
+		m_GameProcess=i;
+		m_DXUT_UI->CloseAllUI();
+		m_DXUT_UI->OpenUI(i);
+	}
+}
+
+void InitDirect3DApp::GoBackUI()
+{
+	if (m_LastGameProcess!=m_GameProcess)
+	{
+		m_GameProcess=m_LastGameProcess;
+		m_LastGameProcess=m_Last2GameProcess;
+		m_DXUT_UI->CloseAllUI();
+		m_DXUT_UI->OpenUI(m_GameProcess);
+	}
+}
+
+void InitDirect3DApp::ReflashTowerState()
+{
+	int tid, tlv, thp;
+	float tatk,tatkspeed;
+	Tower::tower_type ttype;
+	char s[36];
+
+	tid = m_DXUT_UI->GetComboBoxSel(IDC_TOWER_SETTING_TOWERCOMBO);
+	ttype = m_motherShip.m_Towers[tid].m_type;
+	tlv = m_motherShip.m_Towers[tid].m_level;
+	thp = m_motherShip.m_Towers[tid].m_hp;
+	tatk = m_motherShip.m_Towers[tid].m_atk;
+	tatkspeed = m_motherShip.m_Towers[tid].m_atkSpeed;
+	switch(ttype)
+	{
+	case Tower::RAY:
+		sprintf_s(s, 36, "Type:Laser");
+		break;
+	case Tower::MACHINE_GUN:
+		sprintf_s(s, 36, "Type:Machine gun");
+		break;
+	case Tower::MISSILE:
+		sprintf_s(s, 36, "Type:Missile");
+		break;
+	}
+	if (ttype == Tower::NOTHING)
+	{
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_TYPE, "Type:--");
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_HP, "Hp:--");
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_LV, "Lv:--");
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_ATK, "Atk:--");
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_ATKSP, "Atk speed:--");
+	}
+	else
+	{
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_TYPE, s);
+		sprintf_s(s, 36, "Hp:%d", thp);
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_HP, s);
+		sprintf_s(s, 36, "Lv:%d", tlv);
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_LV, s);
+		sprintf_s(s, 36, "Atk:%f", tatk);
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_ATK, s);
+		sprintf_s(s, 36, "Atk speed:%f", tatkspeed);
+		m_DXUT_UI->SetStatic(IDC_TOWER_SETTING_TEXT_ATKSP, s);
 	}
 }

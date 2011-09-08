@@ -50,6 +50,15 @@ private:
 	void SetCtrlKey();
 	void PrintInfo();
 	void LoadAllStage();
+
+	//UI處理
+	void DealMainMenu();
+	void DealOptionPage();
+	void DealTowerSettingPage();
+	void DealGamePlayPage();
+	void ChangeUI(int i);
+	void GoBackUI();
+	void ReflashTowerState();
 private:
 	ID3D11ShaderResourceView* SRVView1;
 	ID3D11RenderTargetView* RTVView1;
@@ -100,8 +109,12 @@ private:
 	Stage			m_Stage;
 	int			m_SettingKeyID;		//目前要設定的按鍵的id
 	int			m_SettingKeyTextID;	//目前要設定的按鍵的text物件的id
-	//control key array
-	std::vector<int>	m_CtrKey;
+
+	int			m_GameProcess;		//遊戲流程,表示目前執行的畫面
+	int			m_LastGameProcess;	//前一個遊戲流程
+	int			m_Last2GameProcess;	//前前一個遊戲流程
+
+	std::vector<int>	m_CtrlKey;		//control key array
 };
 
 struct CD3D11_BLEND_DESCX : public D3D11_BLEND_DESC

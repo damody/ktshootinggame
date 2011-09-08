@@ -196,7 +196,7 @@ void DXUTUI::LoadUI( const char* path )
 		m_NextUIid = i+2;
 		m_DialogSet[i].close();
 	}
-	OpenUI(2);
+	OpenUI(1);
 	delete []wtext;
 }
 
@@ -227,30 +227,31 @@ void DXUTUI::CloseUI( int id )
 void DXUTUI::SetStatic( int id, const char* text )
 {
 	wchar_t* wtext;
-	for (int i=0; i<m_DialogSet.size(); i++)
-	{
-		if (m_DialogSet[i].CmdIdIsExist(id))
-		{
-			if (!m_DialogSet[i].GetIsOpen())
-				return;
-			wtext = new wchar_t[128];
-			ConvStr::CharToWchar(wtext, text);
-			m_DialogSet[i].GetDialog()->GetStatic(id)->SetText(wtext);
-			break;
-		}
-	}
+	wtext = new wchar_t[128];
+	ConvStr::CharToWchar(wtext, text);
+	SetStatic(id, wtext);
 	delete[] wtext;
 }
 
 void DXUTUI::SetStatic( int id, const wchar_t* text )
 {
+	CommandType type;
 	for (int i=0; i<m_DialogSet.size(); i++)
 	{
-		if (m_DialogSet[i].CmdIdIsExist(id))
+		type = m_DialogSet[i].CmdIdIsExist(id);
+		if (type!=COMMAND_NULL)
 		{
 			if (!m_DialogSet[i].GetIsOpen())
 				return;
-			m_DialogSet[i].GetDialog()->GetStatic(id)->SetText(text);
+			switch(type)
+			{
+			case COMMAND_BUTTON:
+				m_DialogSet[i].GetDialog()->GetButton(id)->SetText(text);
+				break;
+			case COMMAND_TEXT:
+				m_DialogSet[i].GetDialog()->GetStatic(id)->SetText(text);
+				break;
+			}
 			break;
 		}
 	}
@@ -261,7 +262,7 @@ int DXUTUI::GetComboBoxSel( int id )
 {
 	for (int i=0; i<m_DialogSet.size(); i++)
 	{
-		if (m_DialogSet[i].CmdIdIsExist(id))
+		if (m_DialogSet[i].CmdIdIsExist(id)!=COMMAND_NULL)
 		{
 			return m_DialogSet[i].GetDialog()->GetComboBox(id)->GetSelectedIndex();	
 		}
@@ -283,7 +284,7 @@ void DXUTUI::ChengeCmdState( int id )
 	CmdState newstate;
 	for (int i=0; i<m_DialogSet.size(); i++)
 	{
-		if (m_DialogSet[i].CmdIdIsExist(id))
+		if (m_DialogSet[i].CmdIdIsExist(id)!=COMMAND_NULL)
 		{
 			if (!m_DialogSet[i].GetIsOpen())
 				return;
@@ -330,7 +331,7 @@ int DXUTUI::GetSliderNum( int id )
 {
 	for (int i=0; i<m_DialogSet.size(); i++)
 	{
-		if (m_DialogSet[i].CmdIdIsExist(id))
+		if (m_DialogSet[i].CmdIdIsExist(id)!=COMMAND_NULL)
 		{
 			return m_DialogSet[i].GetDialog()->GetSlider(id)->GetValue();
 		}
@@ -366,14 +367,14 @@ void UIDialog::Updata(float dt)
 		m_uidig->OnRender(dt);
 }
 
-bool UIDialog::CmdIdIsExist( int id )
+CommandType UIDialog::CmdIdIsExist( int id )
 {
 	for (int i=0; i<m_comset.size(); i++)
 	{
 		if (id == m_comset[i].id)
-			return true;
+			return m_comset[i].type;
 	}
-	return false;
+	return COMMAND_NULL;
 }
 
 CommandType UIDialog::GetCmdType( int id )

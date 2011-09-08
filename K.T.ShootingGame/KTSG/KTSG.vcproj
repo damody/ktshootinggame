@@ -506,6 +506,10 @@
 					RelativePath=".\towers\tower.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\towers\towerFactory.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="bullets"
@@ -666,6 +670,10 @@
 				>
 				<File
 					RelativePath=".\towers\tower.h"
+					>
+				</File>
+				<File
+					RelativePath=".\towers\towerFactory.h"
 					>
 				</File>
 			</Filter>

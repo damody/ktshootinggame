@@ -62,7 +62,7 @@ public:
 	CDXUTDialog* GetDialog(){return m_uidig;}
 	CommandType GetCmdType(int id);
 	bool GetIsOpen(){return m_isopen;}
-	bool CmdIdIsExist(int id);
+	CommandType CmdIdIsExist(int id);
 
 	void ResizeCmdState(int num){m_comset.resize(num);}
 	void close();

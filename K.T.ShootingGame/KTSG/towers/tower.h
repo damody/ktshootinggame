@@ -25,7 +25,9 @@ public:
 	enum tower_type
 	{
 		NOTHING,
-		RAY		// 雷射
+		RAY,		// 雷射
+		MACHINE_GUN,	// 機槍
+		MISSILE		// 飛彈
 	};
 	DXVertex	m_pic;		// 要畫的圖
 	Texture_Sptr	m_texture;	// 材質
