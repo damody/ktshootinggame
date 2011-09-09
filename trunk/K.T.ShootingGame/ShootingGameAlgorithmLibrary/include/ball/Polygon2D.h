@@ -22,7 +22,7 @@ typedef std::vector<Ogre::Vector2> Vector2s;
 class Polygon2D 
 {
 public:
-	Polygon2D(bool computeCentroid = false)
+	Polygon2D(bool computeCentroid = true)
 		:m_computeCentroid(computeCentroid), m_angle(0){}
 	Vector2s& Points()
 	{
@@ -85,19 +85,13 @@ public:
 	}
 	bool IsCollision(const Polygon2D& rhs);
 	void CheckBuildEdges();
-	Ogre::Vector2 Centroid()
-	{
-		bool tmp = m_computeCentroid;
-		m_computeCentroid = true;
-		BuildEdges();
-		m_computeCentroid = tmp;
-		return m_centroid;
-	}
 	void Clear()
 	{
 		m_points.clear();
 		m_edges.clear();
 	}
+	Ogre::Vector2 m_centroid;
+	float	m_radius;
 private:
 	void BuildEdges();
 	// Calculate the distance between [minA, maxA] and [minB, maxB]
@@ -115,8 +109,6 @@ private:
 private:
 	Vector2s m_points, m_edges;
 	bool	m_computeCentroid; // true
-	Ogre::Vector2 m_centroid;
-	float	m_radius;
 	bool	m_needBuildEdges;
 	float	m_angle;
 };

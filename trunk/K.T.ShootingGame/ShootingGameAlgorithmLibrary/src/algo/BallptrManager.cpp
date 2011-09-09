@@ -1,6 +1,5 @@
 #include "BallptrManager.h"
 
-#if (SGA_USE_MUTITHREAD > 0)
 BallptrManager::BallptrManager( int _mNumThreads /*= 1 */ ) :mNumThreads(_mNumThreads), mOver(false)
 {
 	memset(mThreadsWork, 0, sizeof(mThreadsWork));
@@ -13,6 +12,7 @@ BallptrManager::BallptrManager( int _mNumThreads /*= 1 */ ) :mNumThreads(_mNumTh
 				boost::bind(&BallptrManager::MutiThreadUpdate, boost::ref(*this), i));
 		}
 	}
+	dataPts = annAllocPts(200000, 2);
 }
 
 BallptrManager::~BallptrManager()
@@ -79,6 +79,7 @@ void BallptrManager::MutiThreadUpdate( int i )
 
 void BallptrManager::Update( float time )
 {
+	mKdtreeBuild = false;
 	if (mNumThreads>1)
 	{
 		for (int i=0;i<mNumThreads;i++)
@@ -126,37 +127,44 @@ void BallptrManager::Update( float time )
 	}
 }
 
-BallptrVector BallptrManager::GetCollision( const Polygon2D& poly, int collisionMask )
+BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
 {
 	BallptrVector res;
+	if (mBallptrVector.empty())
+		return res;
+	poly.CheckBuildEdges();
+// 	int findnum = mBallptrVector.size();
+// 	ids.resize(findnum);
+// 	dists.resize(findnum);
+// 	findnum = mkdTree->annkFRSearch((float*)(&poly.m_centroid), poly.m_radius, findnum, &ids[0], &dists[0]);
+// 	for (size_t i=0;i < findnum;i++)
+// 	{
+// 		if (mBallptrVector[ids[i]]->mCollisionMask&&collisionMask)
+// 		{
+// 			if (mBallptrVector[ids[i]]->mPolygon2D.IsCollision(poly))
+// 				res.push_back(mBallptrVector[ids[i]]);
+// 		}
+// 	}
 	size_t bsize = mBallptrVector.size();
 	for (size_t i=0;i < bsize;i++)
 	{
-		if (mBallptrVector[i]->mCollisionMask&&collisionMask)
-		{
-			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
-				res.push_back(mBallptrVector[i]);
-		}
+		if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
+			res.push_back(mBallptrVector[i]);
 	}
 	return res;
 }
 
-#else
-
-void BallptrManager::Update( float time )
+void BallptrManager::BuildKdtree()
 {
+	std::vector<float*> BallCentroid;
+	if (mBallptrVector.empty())
+		return ;
 	size_t bsize = mBallptrVector.size();
 	for (size_t i=0;i < bsize;i++)
 	{
-		mBallptrVector[i]->Update(time);
-		if (mBallptrVector[i]->mBallStatus == Ball::DESTORY)
-		{
-			mDeleteVector.push_back(mBallptrVector[i]);
-			mBallptrVector.erase(mBallptrVector.begin()+i);
-			i--;
-			bsize--;
-		}
+		mBallptrVector[i]->mPolygon2D.CheckBuildEdges();
+		dataPts[i][0] = mBallptrVector[i]->mPolygon2D.m_centroid.x;
+		dataPts[i][1] = mBallptrVector[i]->mPolygon2D.m_centroid.y;
 	}
+	mkdTree = ANNkd_tree_Sptr(new ANNkd_tree(dataPts, bsize, 2));
 }
-
-#endif

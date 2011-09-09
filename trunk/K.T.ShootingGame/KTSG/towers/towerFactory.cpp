@@ -54,69 +54,32 @@ void towerFactory::Init()
 
 	for (int i=1; i<=m_TowerTypeNum; i++)
 	{
-		sprintf_s(s, 64, "Towers/tower%d/pic", i);
-		nt.m_texture = g_TextureManager.GetTexture(m_LuaCell.getLua<int>(s));
-
-		sprintf_s(s, 64, "Towers/tower%d/type", i);
-		nt.m_type = (Tower::tower_type)m_LuaCell.getLua<int>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/type", i);
-		nt.m_hp = (Tower::tower_type)m_LuaCell.getLua<int>("Towers/tower%d/type", i);
+		nt.m_texture = g_TextureManager.GetTexture(m_LuaCell.getLua<int>("Towers/tower%d/pic", i));
+		nt.m_type = (Tower::tower_type)m_LuaCell.getLua<int>("Towers/tower%d/type", i);
+		nt.m_hp = m_LuaCell.getLua<int>("Towers/tower%d/hp", i);
 		nt.m_maxhp = nt.m_hp;
-
-		sprintf_s(s, 64, "Towers/tower%d/atk", i);
-		nt.m_atk = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/atkspeed", i);
-		nt.m_atkSpeed = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/atkspeed", i);
-		nt.m_atkSpeed = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/RotateSpeed", i);
-		nt.m_rotateSpeed = m_LuaCell.getLua<double>(s);
-
+		nt.m_atk = (float)m_LuaCell.getLua<double>("Towers/tower%d/atk", i);
+		nt.m_atkSpeed = (float)m_LuaCell.getLua<double>("Towers/tower%d/atkspeed", i);
+		nt.m_atkSpeed = (float)m_LuaCell.getLua<double>("Towers/tower%d/atkspeed", i);
+		nt.m_rotateSpeed = (float)m_LuaCell.getLua<double>("Towers/tower%d/RotateSpeed", i);
 		nt.m_ball_texture = g_TextureManager.GetTexture(m_LuaCell.getLua<int>("Towers/tower%d/ballpic", i));
-
 		st = new Straight;
-		sprintf_s(s, 64, "Towers/tower%d/ballspeed", i);
-		st->mVelocity = m_LuaCell.getLua<int>(s);
+		st->mVelocity = m_LuaCell.getLua<int>("Towers/tower%d/ballspeed", i);
 		nt.m_Behavior = st;
 		nt.m_Trajectory = new NWay(1, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 		nt.m_Trajectory->SetBehavior(nt.m_Behavior);
 		nt.m_Trajectory->mPolygon.AddPoint(0,0);
 		nt.m_Trajectory->mPolygon.AddPoint(0,20);
-
-		sprintf_s(s, 64, "Towers/tower%d/picpos/x", i);
-		nt.m_ball_pic.picpos.x = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/picpos/x", i);
-		nt.m_ball_pic.picpos.y = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/picpos/y", i);
-		nt.m_ball_pic.picpos.z = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/picpos/z", i);
-		nt.m_ball_pic.picpos.w = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/size/x", i);
-		nt.m_ball_pic.size.x = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "Towers/tower%d/size/y", i);
-		nt.m_ball_pic.size.y = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "TowerLvUp/tower%d/hp", i);
-		ntgu.Hp = m_LuaCell.getLua<int>(s);
-
-		sprintf_s(s, 64, "TowerLvUp/tower%d/atk", i);
-		ntgu.Atk = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "TowerLvUp/tower%d/atksp", i);
-		ntgu.AtkSpeed = m_LuaCell.getLua<double>(s);
-
-		sprintf_s(s, 64, "TowerLvUp/tower%d/rotatespeed", i);
-		ntgu.RotateSpeed = m_LuaCell.getLua<double>(s);
-
+		nt.m_ball_pic.picpos.x = (float)m_LuaCell.getLua<double>("Towers/tower%d/picpos/x", i);
+		nt.m_ball_pic.picpos.y = (float)m_LuaCell.getLua<double>("Towers/tower%d/picpos/x", i);
+		nt.m_ball_pic.picpos.z = (float)m_LuaCell.getLua<double>("Towers/tower%d/picpos/y", i);
+		nt.m_ball_pic.picpos.w = (float)m_LuaCell.getLua<double>("Towers/tower%d/picpos/z", i);
+		nt.m_ball_pic.size.x = (float)m_LuaCell.getLua<double>("Towers/tower%d/size/x", i);
+		nt.m_ball_pic.size.y = (float)m_LuaCell.getLua<double>("Towers/tower%d/size/y", i);
+		ntgu.Hp = m_LuaCell.getLua<int>("TowerLvUp/tower%d/hp", i);
+		ntgu.Atk = (float)m_LuaCell.getLua<double>("TowerLvUp/tower%d/atk", i);
+		ntgu.AtkSpeed = (float)m_LuaCell.getLua<double>("TowerLvUp/tower%d/atksp", i);
+		ntgu.RotateSpeed = (float)m_LuaCell.getLua<double>("TowerLvUp/tower%d/rotatespeed", i);
 
 		m_TowerSet.push_back(nt);
 		m_TowerGrowTable.push_back(ntgu);

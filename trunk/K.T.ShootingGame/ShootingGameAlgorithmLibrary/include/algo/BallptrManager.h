@@ -3,15 +3,18 @@
 #include "common/shared_ptr.h"
 #include "Trajectory.h"
 #include "ball/Polygon2D.h"
+#include <ANN/ANN.h>
+SHARE_PTR(ANNkd_tree)
 
 class BallptrManager
 {
 public:
 	BallptrVector	mBallptrVector;
 	BallptrVector	mDeleteVector;
+	ANNkd_tree_Sptr mkdTree;
 private:
 	int		mNumThreads;
-#if (SGA_USE_MUTITHREAD > 0)
+	bool		mKdtreeBuild;
 	boost::thread_group mThreadgroup;
 	struct work
 	{
@@ -29,25 +32,19 @@ private:
 		bool	work_done;
 	};
 	SHARE_PTR(work_info)
-		work_info* mThreadsWork[SGA_MAX_THREADS];
+	work_info* mThreadsWork[SGA_MAX_THREADS];
 	bool mOver;
-#endif	
+	ANNpointArray	dataPts;
+	std::vector<int> ids;
+	std::vector<float> dists;
 public:
-#if (SGA_USE_MUTITHREAD > 0)
 	BallptrManager( int _mNumThreads = 1 );
 	~BallptrManager();
 	void MutiThreadUpdate( int i );
 	void Update( float time );
 	void SetNumThreads( int i );
-	BallptrVector GetCollision(const Polygon2D& poly, int collisionMask = 0xffffffff);
-#else
-	BallptrManager(int _mNumThreads=1)
-		:mNumThreads(_mNumThreads)
-	{}
-	void Update( float time );
-	void SetNumThreads( int i )
-	{}
-#endif	
+	void BuildKdtree();
+	BallptrVector GetCollision( Polygon2D& poly, int collisionMask = 0xffffffff);
 	void AddBallptr( Ball* b )
 	{
 		assert(!b->mPolygon2D.Points().empty());

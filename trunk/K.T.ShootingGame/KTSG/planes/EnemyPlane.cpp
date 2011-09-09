@@ -44,7 +44,7 @@ int EnemyPlane::UpdateTower(float dt)
 				size_t size = (**bvit).mPolygon2D.Points().size();
 				(**bvit).mPolygon2D.Offset((**bvit).mPosition);
 			}
-			g_BallptrManager.AddBallptrs(bv);
+			g_EnemyBallptrManager.AddBallptrs(bv);
 			WavSoundS::instance().PlayDup(18);
 		}
 	}

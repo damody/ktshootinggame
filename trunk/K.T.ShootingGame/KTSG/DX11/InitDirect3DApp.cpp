@@ -254,6 +254,36 @@ void InitDirect3DApp::buildPoint()
 		// save finally dvg
 		dvg.VertexCount = vertexCount;
 		m_DrawVertexGroups.push_back(dvg);
+
+		// save enemy ball
+		if (!g_EnemyBallptrManager.mBallptrVector.empty())
+		{
+			dvg.texture = ((Bullet*)*(g_EnemyBallptrManager.mBallptrVector.begin()))->m_texture;
+			dvg.StartVertexLocation = count;
+			// save all vertex points
+			BallptrVector& vec = g_EnemyBallptrManager.mBallptrVector;
+			vertexCount = 0;
+			for (BallptrVector::iterator it = vec.begin();
+			     it != vec.end(); ++it)
+			{
+				if (((Bullet*)(*it))->m_texture != dvg.texture)
+				{
+					dvg.VertexCount = vertexCount;
+					m_DrawVertexGroups.push_back(dvg);
+					vertexCount = 0;
+					// save next info
+					dvg.StartVertexLocation = count;
+					dvg.texture = ((Bullet*)(*it))->m_texture;
+				}
+				++vertexCount;
+				++count;
+				m_BVertex.push_back(((Bullet*)(*it))->m_pic);
+			}
+			// save finally dvg
+			dvg.VertexCount = vertexCount;
+			m_DrawVertexGroups.push_back(dvg);
+		}
+
 		// save other info
 		m_vbd.ByteWidth = (UINT)(sizeof(BulletVertex)*m_BVertex.size());
 		m_vbd.StructureByteStride=sizeof(BulletVertex);
@@ -358,31 +388,10 @@ void InitDirect3DApp::LoadWarShip()
 	ship.m_h = 70;
 	ship.m_w = 120;
 	ship.motherShip = &m_motherShip;
-
-// 	for(int i=0;i<3;i++)
-// 	{
-// 		ship.motherShipOffset = Ogre::Vector3(200 + (i+1)*100.0f, -(i+1)*100.0f, 0);
-// 		m_warShips.push_back(ship);
-// 		ship.motherShipOffset = Ogre::Vector3(-200 - (i+1)*100.0f, -(i+1)*100.0f, 0);
-// 		m_warShips.push_back(ship);
-// 	}
 }
 
 void InitDirect3DApp::LoadEnemyShips()
 {
-// 	srand((UINT)time(0));
-// 	EnemyPlane* enemyMotherShip = new EnemyPlane;
-// 	enemyMotherShip->m_texture = g_TextureManager.GetTexture(102);
-// 	enemyMotherShip->m_angle = 180;
-// 	enemyMotherShip->m_h = 175;
-// 	enemyMotherShip->m_w = 300;
-// 	enemyMotherShip->m_position.x = 500;
-// 	enemyMotherShip->m_position.y = 800;
-// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
-// 	enemyMotherShip->m_path.AddPoint(2, Ogre::Vector3(rand() % 1440 + 0.0f, rand() % 900 + 0.0f, 0));
 }
 
 void InitDirect3DApp::LoadTowers()
@@ -438,16 +447,6 @@ void InitDirect3DApp::LoadTowers()
 		t.m_position = Ogre::Vector3(tx, ty, 0);
 		ts.push_back(t);
 	}
-
-// 	t.m_position = Ogre::Vector3(-200, 150, 0);
-// 	t.m_hp = 20000;
-// 	t.m_type = Tower::MACHINE_GUN;
-// 	ts.push_back(t);
-// 
-// 	t.m_position = Ogre::Vector3(0, 300, 0);
-// 	t.m_hp = 30000;
-// 	t.m_type = Tower::MISSILE;
-// 	ts.push_back(t); 
 	m_motherShip.m_Towers = ts;
 	m_motherShip.InitTowerFactory();
 }
@@ -479,14 +478,6 @@ int InitDirect3DApp::UpdateWarShip( float dt )
 	{
 		it->Update(dt);
 	}
-	Polygon2D poly = m_motherShip.m_Polygon2D;
-	poly.Offset(m_motherShip.m_position);
-	poly.CheckBuildEdges();
-	BallptrVector ans = g_BallptrManager.GetCollision(poly);
-	for (size_t i=0;i < ans.size();++i)
-	{
-		//ans[i]->mBallStatus = Ball::DESTORY;
-	}
 	return 0;
 }
 
@@ -513,13 +504,6 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 		(*it)->Update(dt);
 		Polygon2D poly = (*it)->m_Polygon2D;
 		poly.Offset((*it)->m_position);
-		poly.CheckBuildEdges();
-// 		BallptrVector ans = g_BallptrManager.GetCollision(poly);
-// 		for(size_t i=0; i<ans.size(); i++)
-// 		{
-// 			ans[i]->mBallStatus = Ball::DESTORY;
-// 		}
-		
 	}
 	return 0;
 }
@@ -530,18 +514,30 @@ int InitDirect3DApp::UpdateBullectMove( float dt )
 	g_BallptrManager.Update(dt);
 	// free delete ball
 	BallptrVector& bv = g_BallptrManager.mDeleteVector;
-	for (BallptrVector::iterator it = bv.begin();
-		it != bv.end();++it)
-	{
+	for (BallptrVector::iterator it = bv.begin();it != bv.end();++it)
 		delete *it;
-	}
 	bv.clear();
 	std::sort(g_BallptrManager.mBallptrVector.begin(), g_BallptrManager.mBallptrVector.end(), CompareBullet);
+	// update enemy ball
+	g_EnemyBallptrManager.Update(dt);
+	BallptrVector& bv2 = g_EnemyBallptrManager.mDeleteVector;
+	for (BallptrVector::iterator it = bv2.begin();it != bv2.end();++it)
+		delete *it;
+	bv2.clear();
+	std::sort(g_EnemyBallptrManager.mBallptrVector.begin(), g_EnemyBallptrManager.mBallptrVector.end(), CompareBullet);
 	return 0;
 }
 
 int InitDirect3DApp::UpdateBullectCollision()
 {
+	g_EnemyBallptrManager.BuildKdtree();
+	Polygon2D poly = m_motherShip.m_Polygon2D;
+	poly.Offset(m_motherShip.m_position);
+	BallptrVector ans = g_EnemyBallptrManager.GetCollision(poly);
+	for (size_t i=0;i < ans.size();++i)
+	{
+		ans[i]->mBallStatus = Ball::DESTORY;
+	}
 	return 0;
 }
 
@@ -578,7 +574,8 @@ void InitDirect3DApp::PrintInfo()
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
-		std::wcout << L"FPS: " << fps << L" Balls: " << g_BallptrManager.mBallptrVector.size() << L"\n";
+		std::wcout << L"FPS: " << fps << L" Balls: " << g_BallptrManager.mBallptrVector.size()
+			 << "\t"<< g_EnemyBallptrManager.mBallptrVector.size() << L"\n";
 		std::wcout << m_FrameStats;
 		// Reset for next average.
 		frameCnt = 0;

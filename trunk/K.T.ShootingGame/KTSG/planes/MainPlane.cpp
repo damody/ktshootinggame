@@ -136,7 +136,6 @@ MainPlane::MainPlane()
 {
 	motherShip = NULL;
 	m_Polygon2D.AddPoint(-200, 0);
-	m_Polygon2D.AddPoint(0, -100);
 	m_Polygon2D.AddPoint(0, 150);
 	m_Polygon2D.AddPoint(200, 0);
 
@@ -156,7 +155,7 @@ void MainPlane::BuyTower( int id, Tower::tower_type type, int cost/*=0*/ )
 {
 	if(cost>m_Gold)
 		return;
-	if (m_Towers[id].m_type!=Tower::tower_type::NOTHING)
+	if (m_Towers[id].m_type!=Tower::NOTHING)
 		return;
 	m_Gold-=cost;
 	Ogre::Vector3 pos = m_Towers[id].m_position;
@@ -166,14 +165,14 @@ void MainPlane::BuyTower( int id, Tower::tower_type type, int cost/*=0*/ )
 
 void MainPlane::SellTower( int id )
 {
-	m_Towers[id].m_type = Tower::tower_type::NOTHING;
+	m_Towers[id].m_type = Tower::NOTHING;
 }
 
 void MainPlane::TowerLvUp( int id, int cost /*= 0*/ )
 {
 	if(cost>m_Gold)
 		return;
-	if (m_Towers[id].m_type!=Tower::tower_type::NOTHING)
+	if (m_Towers[id].m_type!=Tower::NOTHING)
 		return;
 	m_Gold-=cost;
 	m_TowerFac.TowerLvUp(m_Towers[id]);
