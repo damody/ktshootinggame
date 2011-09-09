@@ -64,6 +64,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ANNd.lib"
 				OutputFile="SGALd.lib"
 			/>
 			<Tool
@@ -128,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="SGALd64.lib"
+				OutputFile="SGALd64.lib  ANNd64.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -192,6 +193,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ANN.lib"
 				OutputFile="SGAL.lib"
 			/>
 			<Tool
@@ -257,7 +259,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="SGAL64.lib"
+				OutputFile="SGAL64.lib  ANN64.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

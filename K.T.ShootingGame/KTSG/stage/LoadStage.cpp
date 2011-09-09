@@ -37,8 +37,8 @@ void LoadStage::LoadNewStage( std::string path, Stage& toStage )
 		eplane->m_Polygon2D=poly;
 		PathInterpolater* pathInter;
 		int pathtype = PathFactory::Generate(m_Lua.getLua<const char*>("stage/%d/plane/path/type", i), pathInter);
-		pathInter->m_position.x = (float)m_Lua.getLua<double>("stage/%d/plane/path/x", i);
-		pathInter->m_position.y = (float)m_Lua.getLua<double>("stage/%d/plane/path/y", i);
+		pathInter->m_position.x = (float)m_Lua.getLua<double>("stage/%d/plane/path/offset/x", i);
+		pathInter->m_position.y = (float)m_Lua.getLua<double>("stage/%d/plane/path/offset/y", i);
 		for (int j=1;;++j)
 		{
 			if (!m_Lua.CheckNotNil("stage/%d/plane/path/%d/time", i, j))
