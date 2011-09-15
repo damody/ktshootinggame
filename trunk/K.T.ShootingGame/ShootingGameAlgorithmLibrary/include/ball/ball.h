@@ -57,5 +57,4 @@ typedef Ball* (*NewBallFunction)();
 typedef std::vector<Ball> BallVector;
 typedef std::list<Ball> BallList;
 typedef std::vector<Ball*> BallptrVector;
-extern boost::object_pool<Ball> pool_Ball;
 

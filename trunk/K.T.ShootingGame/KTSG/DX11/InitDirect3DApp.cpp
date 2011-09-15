@@ -263,7 +263,7 @@ void InitDirect3DApp::buildPoint()
 		poly.Offset(m_motherShip.m_position);
 		pic.size.x = 30;
 		pic.size.y = 30;
-		pic.angle = m_motherShip.m_Polygon2D.m_angle;
+		pic.angle = m_motherShip.m_Polygon2D.GetAngle();
 		pic.position.x = poly.Points()[0].x;
 		pic.position.y = poly.Points()[0].y;
 		m_BVertex.push_back(pic);
@@ -537,7 +537,7 @@ int InitDirect3DApp::UpdateBullectMove( float dt )
 	g_EnemyBallptrManager.Update(dt);
 	BallptrVector& bv2 = g_EnemyBallptrManager.mDeleteVector;
 	for (BallptrVector::iterator it = bv2.begin();it != bv2.end();++it)
-		delete *it;
+		delete *it;  
 	bv2.clear();
 	g_EnemyBallptrManager.Sort(CompareBullet);
 	return 0;

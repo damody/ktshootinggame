@@ -35,7 +35,7 @@ private:
 	SHARE_PTR(work_info)
 		work_info* mThreadsWork[SGA_MAX_THREADS];
 	bool mOver;
-	axis_binds mXbinds, mYbinds;
+	Axis_binds mXbinds, mYbinds;
 public:
 	BallptrManager( int _mNumThreads = 1 );
 	~BallptrManager();
@@ -51,8 +51,7 @@ public:
 	{
 		assert(!b->mPolygon2D.Points().empty());
 		mBallptrVector.push_back(b);
-		mXbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.x), mBallptrVector.back()));
-		mYbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.y), mBallptrVector.back()));
+		mXbinds.push_back(Axis_bind(mBallptrVector.back()));
 	}
 	void AddBallptrs( const BallptrVector& bv )
 	{
@@ -61,8 +60,7 @@ public:
 		{
 			assert(!(*it)->mPolygon2D.Points().empty());
 			mBallptrVector.push_back(*it);
-			mXbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.x), mBallptrVector.back()));
-			mYbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.y), mBallptrVector.back()));
+			mXbinds.push_back(Axis_bind(mBallptrVector.back()));
 		}
 	}
 };

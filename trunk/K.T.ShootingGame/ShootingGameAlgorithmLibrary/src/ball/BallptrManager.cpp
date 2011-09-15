@@ -168,8 +168,7 @@ const BallptrVector& BallptrManager::Ballptrs()
 
 void BallptrManager::SortCollision()
 {
-	std::sort(mXbinds.begin(), mXbinds.end());
-	std::sort(mYbinds.begin(), mYbinds.end());
+	std::sort(mXbinds.begin(), mXbinds.end(), Compare_axis_x);
 }
 
 
@@ -178,34 +177,35 @@ BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
 	BallptrVector res;
 	if (mBallptrVector.empty())
 		return res;
-	poly.CheckBuildEdges();
+	poly.CheckBuildEdges(); // important
+	
 	AABB2D aabb(poly);
-	axis_binds::iterator x_index_max, x_index_min, y_index_max, y_index_min;
- 	x_index_max = std::lower_bound(mXbinds.begin(), mXbinds.end(), aabb.m_max.x);
-	x_index_min = std::upper_bound(mXbinds.begin(), mXbinds.end(), aabb.m_min.x);
-// 	y_index_max = std::lower_bound(mYbinds.begin(), mYbinds.end(), aabb.m_max.y);
-// 	y_index_min = std::upper_bound(mYbinds.begin(), mYbinds.end(), aabb.m_min.y);
-	axis_binds tmpbinds;
-	tmpbinds.clear();
-	if (x_index_max != mXbinds.end())
+	aabb.Big(50);
+	Axis_binds::iterator x_index_max, x_index_min, y_index_max, y_index_min;
+ 	x_index_max = std::upper_bound(mXbinds.begin(), mXbinds.end(), Axis_bind(&aabb.m_max.x), Compare_axis_x);
+	x_index_min = std::lower_bound(mXbinds.begin(), mXbinds.end(), Axis_bind(&aabb.m_min.x), Compare_axis_x);
+	if (x_index_max-x_index_min > 0)
 	{
-		std::copy(x_index_min, x_index_max, std::back_inserter(tmpbinds));
-		std::sort(tmpbinds.begin(), tmpbinds.end());
-		y_index_max = std::lower_bound(tmpbinds.begin(), tmpbinds.end(), aabb.m_max.y);
-		y_index_min = std::upper_bound(tmpbinds.begin(), tmpbinds.end(), aabb.m_min.y);
-		for (;y_index_min != y_index_max;y_index_min++)
+		mYbinds.clear();
+		std::copy(x_index_min, x_index_max, std::back_inserter(mYbinds));
+		std::sort(mYbinds.begin(), mYbinds.end(), Compare_axis_y);
+		y_index_max = std::upper_bound(mYbinds.begin(), mYbinds.end(), Axis_bind(&aabb.m_max.y), Compare_axis_y);
+		y_index_min = std::lower_bound(mYbinds.begin(), mYbinds.end(), Axis_bind(&aabb.m_min.y), Compare_axis_y);
+		for (Axis_binds::iterator it = y_index_min;it != y_index_max;it++)
 		{
-			if (y_index_min->ball->mCollisionMask & collisionMask)
-				if (y_index_min->ball->mPolygon2D.IsCollision(poly))
-					res.push_back(y_index_min->ball);
+			if (it->ball->mCollisionMask & collisionMask)
+				if (it->ball->mPolygon2D.IsCollision(poly))
+					res.push_back(it->ball);
 		}
 	}
-// 	size_t bsize = mBallptrVector.size();
-// 	for (size_t i=0;i < bsize;i++)
-// 	{
-// 		if (mBallptrVector[i]->mCollisionMask & collisionMask)
-// 			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
-// 				res.push_back(mBallptrVector[i]);
-// 	}
+	/*
+	size_t bsize = mBallptrVector.size();
+	for (size_t i=0;i < bsize;i++)
+	{
+		if (mBallptrVector[i]->mCollisionMask & collisionMask)
+			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
+				res.push_back(mBallptrVector[i]);
+	}
 	return res;
+	*/
 }

@@ -39,11 +39,14 @@ public:
 	void Offset(const Ogre::Vector2& v);
 	void Offset(const Ogre::Vector3& v);
 	void SetAngle(float angle);
+	float GetAngle()
+	{
+		return m_angle;
+	}
 	void Rotation(float angle, const Ogre::Vector2& middle = Ogre::Vector2::ZERO);
 	bool IsCollision(const Polygon2D& rhs);
 	void CheckBuildEdges();
 	void Clear();
-	float	m_angle;
 private:
 	void BuildEdges();
 	// Calculate the distance between [minA, maxA] and [minB, maxB]
@@ -59,6 +62,7 @@ private:
 	// Calculate the projection of a polygon on an axis and returns it as a [min, max] interval
 	void ProjectPolygon(const Ogre::Vector2& axis, const Polygon2D& polygon, float* min, float* max);
 private:
+	float	m_angle;
 	Vector2s m_points, m_edges;
 	bool	m_needBuildEdges;
 	
