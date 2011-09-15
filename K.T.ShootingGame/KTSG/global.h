@@ -1,5 +1,5 @@
 #pragma once
-#include "algo/BallptrManager.h"
+#include "ball/BallptrManager.h"
 #include "DX11/TextureManager.h"
 #include <d3d11.h>
 extern TextureManager g_TextureManager;

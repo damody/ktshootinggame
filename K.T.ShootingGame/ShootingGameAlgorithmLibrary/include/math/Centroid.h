@@ -1,0 +1,27 @@
+#pragma once
+#include "math\OgreVector2.h"
+#include "math\Polygon2D.h"
+
+class Centroid 
+{
+public:
+	Centroid(){}
+	Centroid(const Polygon2D& poly)
+	{
+		m_centroid = Ogre::Vector2::ZERO;
+		int psize = poly.const_Points().size();
+		for (size_t i = 0; i < psize; i++) 
+			m_centroid += poly.const_Points()[i];
+		m_centroid /= (float)psize;
+		m_radius = 0;
+		for (size_t i = 0; i < psize; i++) 
+		{		
+			float tmp = m_centroid.dotProduct(poly.const_Points()[i]);
+			if (tmp>m_radius)
+				m_radius = tmp;
+		}
+	}
+	Ogre::Vector2 m_centroid;
+	float	m_radius;
+};
+

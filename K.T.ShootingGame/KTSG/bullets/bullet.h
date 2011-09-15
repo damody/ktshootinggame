@@ -12,7 +12,7 @@
 
 #if !defined(_BULLET_H)
 #define _BULLET_H
-#include "algo\BallptrManager.h"
+#include "ball\BallptrManager.h"
 #include "math\OgreVector3.h"
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"

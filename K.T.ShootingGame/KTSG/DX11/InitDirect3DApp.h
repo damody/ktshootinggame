@@ -1,6 +1,6 @@
 #pragma once
 #include "d3dApp.h"
-#include "algo/BallptrManager.h"
+#include "ball/BallptrManager.h"
 #include "algo/nway.h"
 #include "algo/RandomWay.h"
 #include "ball/straight.h"

@@ -14,7 +14,7 @@
 #include "ball\Ball.h"
 #include "algo\Trajectory.h"
 #include "ball\behavior.h"
-#include "ball\Polygon2D.h"
+#include "math\Polygon2D.h"
 
 class Tower 
 {

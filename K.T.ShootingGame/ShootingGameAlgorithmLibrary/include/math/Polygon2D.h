@@ -18,102 +18,31 @@
 #include "algo\sgmath.h"
 #include <vector>
 
-class AABB2D
-{
-public:
-	void AddPoint(const Ogre::Vector2& p)
-	{
-		if (p.x > m_max.x)
-			m_max.x = p.x;
-		else if (p.x < m_min.x)
-			m_min.x = p.x;
-		if (p.y > m_max.y)
-			m_max.y = p.y;
-		else if (p.y < m_min.y)
-			m_min.y = p.y;
-	}
-	AABB2D(){}
-	AABB2D(const Ogre::Vector2& orgin)
-		:m_min(orgin), m_max(orgin)
-	{}
-	Ogre::Vector2 m_min, m_max;
-};
-
 typedef std::vector<Ogre::Vector2> Vector2s;
 class Polygon2D 
 {
 public:
-	Polygon2D(bool computeCentroid = false, bool computeAABB = true)
-		:m_computeCentroid(computeCentroid), m_computeAABB(computeAABB), m_angle(0){}
+	Polygon2D()
+		:m_angle(0){}
 	Vector2s& Points()
 	{
 		m_needBuildEdges = true;
 		return m_points;
 	}
-	void AddPoint(float x, float y)
+	const Vector2s& const_Points() const
 	{
-		m_needBuildEdges = true;
-		m_points.push_back(Ogre::Vector2(x, y));
+		return m_points;
 	}
-	void AddPoint(const Ogre::Vector2& p)
-	{
-		m_needBuildEdges = true;
-		m_points.push_back(p);
-	}
-	void Offset(float x, float y)
-	{
-		for (Vector2s::iterator it = m_points.begin();
-			it != m_points.end();++it)
-		{
-			it->x += x;
-			it->y += y;
-		}
-	}
-	void Offset(const Ogre::Vector2& v)
-	{
-		for (Vector2s::iterator it = m_points.begin();
-			it != m_points.end();++it)
-		{
-			*it += v;
-		}
-	}
-	void Offset(const Ogre::Vector3& v)
-	{
-		for (Vector2s::iterator it = m_points.begin();
-			it != m_points.end();++it)
-		{
-			it->x += v.x;
-			it->y += v.y;
-		}
-	}
-	void SetAngle(float angle)
-	{
-		for (Vector2s::iterator it = m_points.begin();
-			it != m_points.end();++it)
-		{
-			*it = GetRotation(*it, angle-m_angle, Ogre::Vector2::ZERO);
-		}
-		m_angle = angle;
-	}
-	void Rotation(float angle, const Ogre::Vector2& middle = Ogre::Vector2::ZERO)
-	{
-		m_angle = angle;
-		for (Vector2s::iterator it = m_points.begin();
-			it != m_points.end();++it)
-		{
-			*it = GetRotation(*it, angle, middle);
-		}
-	}
+	void AddPoint(float x, float y);
+	void AddPoint(const Ogre::Vector2& p);
+	void Offset(float x, float y);
+	void Offset(const Ogre::Vector2& v);
+	void Offset(const Ogre::Vector3& v);
+	void SetAngle(float angle);
+	void Rotation(float angle, const Ogre::Vector2& middle = Ogre::Vector2::ZERO);
 	bool IsCollision(const Polygon2D& rhs);
 	void CheckBuildEdges();
-	void Clear()
-	{
-		m_points.clear();
-		m_edges.clear();
-	}
-	Ogre::Vector2 m_centroid;
-	AABB2D	m_AABB2D;
-	float	m_radius;
+	void Clear();
 private:
 	void BuildEdges();
 	// Calculate the distance between [minA, maxA] and [minB, maxB]

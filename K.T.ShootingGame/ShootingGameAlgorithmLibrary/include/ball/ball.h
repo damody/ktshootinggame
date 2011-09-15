@@ -5,7 +5,7 @@
 #include "math/OgreVector3.h"
 #include "common/utility.h"
 #include "behavior.h"
-#include "Polygon2D.h"
+#include "math/Polygon2D.h"
 #include <vector>
 #include <list>
 

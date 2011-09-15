@@ -1,8 +1,8 @@
 #pragma once
 #include "common/SGA_config.h"
 #include "common/shared_ptr.h"
-#include "Trajectory.h"
-#include "ball/Polygon2D.h"
+#include "algo/Trajectory.h"
+#include "math/Polygon2D.h"
 
 class BallptrManager
 {
