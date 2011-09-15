@@ -64,7 +64,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ANNd.lib"
 				OutputFile="SGALd.lib"
 			/>
 			<Tool
@@ -193,7 +192,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ANN.lib"
 				OutputFile="SGAL.lib"
 			/>
 			<Tool

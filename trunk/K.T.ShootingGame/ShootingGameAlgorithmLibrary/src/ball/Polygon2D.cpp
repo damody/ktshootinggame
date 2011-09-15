@@ -42,7 +42,15 @@ void Polygon2D::BuildEdges()
 				m_radius = tmp;
 		}
 	}
-	
+	if (m_computeAABB && !m_points.empty())
+	{
+		m_AABB2D.m_min = m_points[0];
+		m_AABB2D.m_max = m_points[0];
+		for (size_t i = 1; i < m_points.size(); i++) 
+		{
+			m_AABB2D.AddPoint(m_points[i]);
+		}
+	}
 }
 
 bool Polygon2D::IsCollision( const Polygon2D& rhs )

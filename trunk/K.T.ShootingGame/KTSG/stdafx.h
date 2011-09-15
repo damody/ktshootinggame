@@ -3,7 +3,7 @@
 #include <d3dx9.h>
 
 #include <d3d11.h>
-#include <winuser.h>
+#include <windows.h>
 #include <d3dx11.h>
 
 #include <dxerr.h>
@@ -30,7 +30,6 @@
 		}                                              \
 	}
 	#endif
-
 #else
 	#ifndef HR
 	#define HR(x) x;
@@ -38,9 +37,9 @@
 #endif 
 
 #define CTRL_KEY_NUM 6
-#define DEFAULT_CTRL_KEY_UP KEY_UP
-#define DEFAULT_CTRL_KEY_LEFT KEY_LEFT
-#define DEFAULT_CTRL_KEY_RIGHT KEY_RIGHT
-#define DEFAULT_CTRL_KEY_DOWN KEY_DOWN
-#define DEFAULT_CTRL_KEY_SKILL KEY_SPACE
-#define DEFAULT_CTRL_KEY_TIMECHENGE KEY_LCONTROL
+#define DEFAULT_CTRL_KEY_UP 0xC8
+#define DEFAULT_CTRL_KEY_LEFT 0xCB
+#define DEFAULT_CTRL_KEY_RIGHT 0xCD
+#define DEFAULT_CTRL_KEY_DOWN 0xD0
+#define DEFAULT_CTRL_KEY_SKILL 0x39
+#define DEFAULT_CTRL_KEY_TIMECHENGE 0x1D

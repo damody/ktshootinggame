@@ -12,7 +12,6 @@ BallptrManager::BallptrManager( int _mNumThreads /*= 1 */ ) :mNumThreads(_mNumTh
 				boost::bind(&BallptrManager::MutiThreadUpdate, boost::ref(*this), i));
 		}
 	}
-	dataPts = annAllocPts(200000, 2);
 }
 
 BallptrManager::~BallptrManager()
@@ -133,38 +132,30 @@ BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
 	if (mBallptrVector.empty())
 		return res;
 	poly.CheckBuildEdges();
-// 	int findnum = mBallptrVector.size();
-// 	ids.resize(findnum);
-// 	dists.resize(findnum);
-// 	findnum = mkdTree->annkFRSearch((float*)(&poly.m_centroid), poly.m_radius, findnum, &ids[0], &dists[0]);
-// 	for (size_t i=0;i < findnum;i++)
-// 	{
-// 		if (mBallptrVector[ids[i]]->mCollisionMask&&collisionMask)
-// 		{
-// 			if (mBallptrVector[ids[i]]->mPolygon2D.IsCollision(poly))
-// 				res.push_back(mBallptrVector[ids[i]]);
-// 		}
-// 	}
+	axis_binds::iterator x_index_max, x_index_min, y_index_max, y_index_min;
+	//x_index_max = std::upper_bound(mYbinds.begin(), mYbinds.end(), poly);
+
 	size_t bsize = mBallptrVector.size();
 	for (size_t i=0;i < bsize;i++)
 	{
-		if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
-			res.push_back(mBallptrVector[i]);
+		if (mBallptrVector[i]->mCollisionMask & collisionMask)
+			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
+				res.push_back(mBallptrVector[i]);
 	}
 	return res;
 }
 
-void BallptrManager::BuildKdtree()
+void BallptrManager::Sort( CompareBall fun_cb )
 {
-	std::vector<float*> BallCentroid;
-	if (mBallptrVector.empty())
-		return ;
-	size_t bsize = mBallptrVector.size();
-	for (size_t i=0;i < bsize;i++)
-	{
-		mBallptrVector[i]->mPolygon2D.CheckBuildEdges();
-		dataPts[i][0] = mBallptrVector[i]->mPolygon2D.m_centroid.x;
-		dataPts[i][1] = mBallptrVector[i]->mPolygon2D.m_centroid.y;
-	}
-	mkdTree = ANNkd_tree_Sptr(new ANNkd_tree(dataPts, bsize, 2));
+	std::sort(mBallptrVector.begin(), mBallptrVector.end(), fun_cb);
+}
+
+bool BallptrManager::Empty()
+{
+	return mBallptrVector.empty();
+}
+
+const BallptrVector& BallptrManager::Ballptrs()
+{
+	return mBallptrVector;
 }

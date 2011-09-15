@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ANNd.lib SGALd.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
+				AdditionalDependencies="SGALd.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
 				OutputFile="$(ProjectName)d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
@@ -216,7 +216,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ANN.lib SGAL.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
+				AdditionalDependencies="SGAL.lib D3DX11Effects.lib d3d11.lib d3dx11.lib d3d9.lib d3dx9.lib DxErr.lib dinput8.lib d3dcompiler.lib dxguid.lib d3dxof.lib winmm.lib odbc32.lib odbccp32.lib dwrite.lib D2d1.lib imm32.lib Version.lib comctl32.lib dsound.lib"
 				OutputFile="$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ShootingGameAlgorithmLibrary"
@@ -359,7 +359,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 			</File>
@@ -372,6 +372,8 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
+						PrecompiledHeaderThrough="StdAfx.h"
+						PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -414,16 +416,46 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
+							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\DX11\GetDirectXInput.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\DX11\InitDirect3DApp.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="2"
+							PrecompiledHeaderThrough="StdAfx.h"
+							PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DX11\InputState.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -438,19 +470,7 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\DX11\InputState.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
+							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
 				</File>
@@ -470,7 +490,7 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="2"
+							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
 				</File>
