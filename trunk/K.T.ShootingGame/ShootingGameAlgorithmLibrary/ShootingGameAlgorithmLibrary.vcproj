@@ -292,6 +292,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\ball\BallManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ball\BallptrManager.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\ball\BehaviorAnimator.cpp"
 					>
 				</File>
@@ -323,14 +331,6 @@
 			<Filter
 				Name="algo"
 				>
-				<File
-					RelativePath=".\src\algo\BallManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\algo\BallptrManager.cpp"
-					>
-				</File>
 				<File
 					RelativePath=".\src\algo\nway.cpp"
 					>
@@ -399,6 +399,10 @@
 					RelativePath=".\src\math\OgreVector4.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\src\math\Polygon2D.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -411,6 +415,14 @@
 				>
 				<File
 					RelativePath=".\include\ball\Ball.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\ball\ballmanager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\ball\BallptrManager.h"
 					>
 				</File>
 				<File
@@ -434,10 +446,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\include\ball\Polygon2D.h"
-					>
-				</File>
-				<File
 					RelativePath=".\include\ball\split.h"
 					>
 				</File>
@@ -449,14 +457,6 @@
 			<Filter
 				Name="algo"
 				>
-				<File
-					RelativePath=".\include\algo\BallManager.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\algo\BallptrManager.h"
-					>
-				</File>
 				<File
 					RelativePath=".\include\algo\NWay.h"
 					>
@@ -555,6 +555,10 @@
 				</File>
 				<File
 					RelativePath=".\include\math\OgreVector4.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\math\Polygon2D.h"
 					>
 				</File>
 			</Filter>
