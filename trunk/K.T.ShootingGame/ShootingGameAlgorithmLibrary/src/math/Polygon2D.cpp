@@ -28,29 +28,6 @@ void Polygon2D::BuildEdges()
 		}
 		m_edges.push_back(*p2 - *p1);
 	}
-	if (m_computeCentroid && !m_points.empty())
-	{
-		m_centroid = Ogre::Vector2::ZERO;
-		for (size_t i = 0; i < m_points.size(); i++) 
-			m_centroid += m_points[i];
-		m_centroid /= (float)m_points.size();
-		m_radius = 0;
-		for (size_t i = 0; i < m_points.size(); i++) 
-		{		
-			float tmp = m_centroid.dotProduct(m_points[i]);
-			if (tmp>m_radius)
-				m_radius = tmp;
-		}
-	}
-	if (m_computeAABB && !m_points.empty())
-	{
-		m_AABB2D.m_min = m_points[0];
-		m_AABB2D.m_max = m_points[0];
-		for (size_t i = 1; i < m_points.size(); i++) 
-		{
-			m_AABB2D.AddPoint(m_points[i]);
-		}
-	}
 }
 
 bool Polygon2D::IsCollision( const Polygon2D& rhs )
@@ -112,6 +89,73 @@ void Polygon2D::CheckBuildEdges()
 		BuildEdges();
 		m_needBuildEdges = false;
 	}
+}
+
+void Polygon2D::AddPoint( float x, float y )
+{
+	m_needBuildEdges = true;
+	m_points.push_back(Ogre::Vector2(x, y));
+}
+
+void Polygon2D::AddPoint( const Ogre::Vector2& p )
+{
+	m_needBuildEdges = true;
+	m_points.push_back(p);
+}
+
+void Polygon2D::Offset( float x, float y )
+{
+	for (Vector2s::iterator it = m_points.begin();
+		it != m_points.end();++it)
+	{
+		it->x += x;
+		it->y += y;
+	}
+}
+
+void Polygon2D::Offset( const Ogre::Vector2& v )
+{
+	for (Vector2s::iterator it = m_points.begin();
+		it != m_points.end();++it)
+	{
+		*it += v;
+	}
+}
+
+void Polygon2D::Offset( const Ogre::Vector3& v )
+{
+	for (Vector2s::iterator it = m_points.begin();
+		it != m_points.end();++it)
+	{
+		it->x += v.x;
+		it->y += v.y;
+	}
+}
+
+void Polygon2D::SetAngle( float angle )
+{
+	for (Vector2s::iterator it = m_points.begin();
+		it != m_points.end();++it)
+	{
+		*it = GetRotation(*it, angle-m_angle, Ogre::Vector2::ZERO);
+	}
+	m_angle = angle;
+}
+
+void Polygon2D::Rotation( float angle, const Ogre::Vector2& middle /*= Ogre::Vector2::ZERO*/ )
+{
+	m_angle = angle;
+	for (Vector2s::iterator it = m_points.begin();
+		it != m_points.end();++it)
+	{
+		*it = GetRotation(*it, angle, middle);
+	}
+}
+
+void Polygon2D::Clear()
+{
+	m_points.clear();
+	m_edges.clear();
 }
 
 

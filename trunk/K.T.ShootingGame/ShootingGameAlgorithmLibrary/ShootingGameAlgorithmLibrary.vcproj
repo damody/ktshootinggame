@@ -316,10 +316,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\ball\Polygon2D.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\src\ball\split.cpp"
 					>
 				</File>
@@ -363,6 +359,14 @@
 			<Filter
 				Name="math"
 				>
+				<File
+					RelativePath=".\src\math\AABB2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\math\Centroid.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\src\math\OgreAxisAlignedBox.cpp"
 					>
@@ -507,6 +511,10 @@
 				>
 				<File
 					RelativePath=".\include\math\asm_math.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\math\Centroid.h"
 					>
 				</File>
 				<File
