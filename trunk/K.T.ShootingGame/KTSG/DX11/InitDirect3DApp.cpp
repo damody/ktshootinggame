@@ -224,17 +224,17 @@ void InitDirect3DApp::buildPoint()
 	vinitData.pSysMem = &m_ShipVertex[0];
 	HR(m_d3dDevice->CreateBuffer(&m_vbd, &vinitData, &m_Buffer_WarShip));
 
+	// save each vertex groups's texture
+	m_DrawVertexGroups.clear();
+	DrawVertexGroup dvg;
+	int vertexCount = 0, count = 0;
 	if (!g_BallptrManager.Empty())
 	{
-		// save each vertex groups's texture
-		m_DrawVertexGroups.clear();
-		DrawVertexGroup dvg;
 		dvg.texture = ((Bullet*)g_BallptrManager.Ballptrs().front())->m_texture;
 		dvg.StartVertexLocation = 0;
 		// save all vertex points
 		m_BVertex.clear();
 		const BallptrVector& vec = g_BallptrManager.Ballptrs();
-		int vertexCount = 0, count = 0;
 		for (BallptrVector::const_iterator it = vec.begin();
 			it != vec.end(); ++it)
 		{
@@ -254,36 +254,59 @@ void InitDirect3DApp::buildPoint()
 		// save finally dvg
 		dvg.VertexCount = vertexCount;
 		m_DrawVertexGroups.push_back(dvg);
+		// debug mother collison
+		vertexCount = 3;
+		dvg.StartVertexLocation = count;
+		count += 3;
+		BulletVertex pic =((Bullet*)vec.front())->m_pic;
+		Polygon2D poly = m_motherShip.m_Polygon2D;
+		poly.Offset(m_motherShip.m_position);
+		pic.size.x = 30;
+		pic.size.y = 30;
+		pic.angle = m_motherShip.m_Polygon2D.m_angle;
+		pic.position.x = poly.Points()[0].x;
+		pic.position.y = poly.Points()[0].y;
+		m_BVertex.push_back(pic);
+		pic.position.x = poly.Points()[1].x;
+		pic.position.y = poly.Points()[1].y;
+		m_BVertex.push_back(pic);
+		pic.position.x = poly.Points()[2].x;
+		pic.position.y = poly.Points()[2].y;
+		m_BVertex.push_back(pic);
+		dvg.VertexCount = vertexCount;
+		m_DrawVertexGroups.push_back(dvg);
+	}
 
-		// save enemy ball
-		if (!g_EnemyBallptrManager.Empty())
+	// save enemy ball
+	if (!g_EnemyBallptrManager.Empty())
+	{
+		dvg.texture = ((Bullet*)g_EnemyBallptrManager.Ballptrs().front())->m_texture;
+		dvg.StartVertexLocation = count;
+		// save all vertex points
+		const BallptrVector& vec = g_EnemyBallptrManager.Ballptrs();
+		vertexCount = 0;
+		for (BallptrVector::const_iterator it = vec.begin();
+		     it != vec.end(); ++it)
 		{
-			dvg.texture = ((Bullet*)g_EnemyBallptrManager.Ballptrs().front())->m_texture;
-			dvg.StartVertexLocation = count;
-			// save all vertex points
-			const BallptrVector& vec = g_EnemyBallptrManager.Ballptrs();
-			vertexCount = 0;
-			for (BallptrVector::const_iterator it = vec.begin();
-			     it != vec.end(); ++it)
+			if (((Bullet*)(*it))->m_texture != dvg.texture)
 			{
-				if (((Bullet*)(*it))->m_texture != dvg.texture)
-				{
-					dvg.VertexCount = vertexCount;
-					m_DrawVertexGroups.push_back(dvg);
-					vertexCount = 0;
-					// save next info
-					dvg.StartVertexLocation = count;
-					dvg.texture = ((Bullet*)(*it))->m_texture;
-				}
-				++vertexCount;
-				++count;
-				m_BVertex.push_back(((Bullet*)(*it))->m_pic);
+				dvg.VertexCount = vertexCount;
+				m_DrawVertexGroups.push_back(dvg);
+				vertexCount = 0;
+				// save next info
+				dvg.StartVertexLocation = count;
+				dvg.texture = ((Bullet*)(*it))->m_texture;
 			}
-			// save finally dvg
-			dvg.VertexCount = vertexCount;
-			m_DrawVertexGroups.push_back(dvg);
+			++vertexCount;
+			++count;
+			m_BVertex.push_back(((Bullet*)(*it))->m_pic);
 		}
-
+		// save finally dvg
+		dvg.VertexCount = vertexCount;
+		m_DrawVertexGroups.push_back(dvg);
+	}
+	if (vertexCount>0)
+	{
 		// save other info
 		m_vbd.ByteWidth = (UINT)(sizeof(BulletVertex)*m_BVertex.size());
 		m_vbd.StructureByteStride=sizeof(BulletVertex);
@@ -417,13 +440,13 @@ void InitDirect3DApp::LoadTowers()
 	
 	t.m_ball_texture = g_TextureManager.GetTexture(103);
 	t.m_ball_pic.picpos.x = 1;
-	t.m_ball_pic.picpos.y = 1;  
+	t.m_ball_pic.picpos.y = 1;
 	t.m_ball_pic.picpos.z = 2;
 	t.m_ball_pic.picpos.w = 2;
 	t.m_ball_pic.size.x = 2;
 	t.m_ball_pic.size.y = 20;
 	t.m_atkSpeed = 0.05f;
-	t.m_Trajectory = new NWay(10, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
+	t.m_Trajectory = new NWay(1, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 	t.m_Trajectory->SetBehavior(t.m_Behavior);
 	t.m_Trajectory->mPolygon.AddPoint(0,0);
 	t.m_Trajectory->mPolygon.AddPoint(0,20);
@@ -439,8 +462,8 @@ void InitDirect3DApp::LoadTowers()
 	{
 		if (i==3)
 			t.m_type = Tower::NOTHING;
-		tx = (double)m_Lua.getLua<double>("TowerPos/Tpos%d/px", i+1);
-		ty = (double)m_Lua.getLua<double>("TowerPos/Tpos%d/py", i+1);
+		tx = (float)m_Lua.getLua<double>("TowerPos/Tpos%d/px", i+1);
+		ty = (float)m_Lua.getLua<double>("TowerPos/Tpos%d/py", i+1);
 		t.m_position = Ogre::Vector3(tx, ty, 0);
 		ts.push_back(t);
 	}
@@ -488,12 +511,7 @@ int InitDirect3DApp::UpdateEnemy( float dt )
 	EnemyPlaneptrs eps = m_Stage.GetTimeToGenerateEnmyPlane(dt);
 	if (!eps.empty())
 	{
-		for(EnemyPlaneptrs::iterator it = eps.begin();
-			it != eps.end();it++)
-		{
-			m_EnemyShips.push_back(*it);
-		}
-		//std::copy(eps.begin(), eps.end(), m_EnemyShips.end());
+		std::copy(eps.begin(), eps.end(), std::back_inserter(m_EnemyShips));
 	}
 	for(EnemyPlaneptrs::iterator it = m_EnemyShips.begin();
 		it != m_EnemyShips.end();it++)
@@ -529,6 +547,8 @@ int InitDirect3DApp::UpdateBullectCollision()
 {
 	Polygon2D poly = m_motherShip.m_Polygon2D;
 	poly.Offset(m_motherShip.m_position);
+	//std::cout << poly.Points()[2] << std::endl;
+	g_EnemyBallptrManager.SortCollision();
 	BallptrVector ans = g_EnemyBallptrManager.GetCollision(poly);
 	for (size_t i=0;i < ans.size();++i)
 	{

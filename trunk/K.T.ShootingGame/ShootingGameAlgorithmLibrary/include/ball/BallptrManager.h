@@ -3,6 +3,10 @@
 #include "common/shared_ptr.h"
 #include "algo/Trajectory.h"
 #include "math/Polygon2D.h"
+#include "ball/Axis_bind.h"
+
+// for sort
+typedef bool (*CompareBall)(const Ball* lhs, const Ball* rhs);
 
 class BallptrManager
 {
@@ -10,18 +14,6 @@ public:
 	BallptrVector	mDeleteVector;
 private:
 	BallptrVector	mBallptrVector;
-	struct axis_bind
-	{
-		axis_bind(float* v, Ball* b):
-		val(v), ball(b){}
-		float* val;
-		Ball* ball;
-		bool operator < (const axis_bind& ab)
-		{
-			return *val < *ab.val;
-		}
-	};
-	typedef std::vector<axis_bind> axis_binds;
 	int		mNumThreads;
 	bool		mKdtreeBuild;
 	boost::thread_group mThreadgroup;
@@ -41,7 +33,7 @@ private:
 		bool	work_done;
 	};
 	SHARE_PTR(work_info)
-	work_info* mThreadsWork[SGA_MAX_THREADS];
+		work_info* mThreadsWork[SGA_MAX_THREADS];
 	bool mOver;
 	axis_binds mXbinds, mYbinds;
 public:
@@ -52,20 +44,15 @@ public:
 	void MutiThreadUpdate( int i );
 	void Update( float time );
 	void SetNumThreads( int i );
-	typedef bool (*CompareBall)(const Ball* lhs, const Ball* rhs);
 	void Sort(CompareBall fun_cb);
 	BallptrVector GetCollision( Polygon2D& poly, int collisionMask = 0xffffffff);
-	void SortCollision()
-	{
-		std::sort(mXbinds.begin(), mXbinds.end());
-		std::sort(mYbinds.begin(), mYbinds.end());
-	}
+	void SortCollision();
 	void AddBallptr( Ball* b )
 	{
 		assert(!b->mPolygon2D.Points().empty());
 		mBallptrVector.push_back(b);
-		mXbinds.push_back(axis_bind(&(mBallptrVector.back()->mPosition.x), mBallptrVector.back()));
-		mYbinds.push_back(axis_bind(&(mBallptrVector.back()->mPosition.y), mBallptrVector.back()));
+		mXbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.x), mBallptrVector.back()));
+		mYbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.y), mBallptrVector.back()));
 	}
 	void AddBallptrs( const BallptrVector& bv )
 	{
@@ -74,6 +61,8 @@ public:
 		{
 			assert(!(*it)->mPolygon2D.Points().empty());
 			mBallptrVector.push_back(*it);
+			mXbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.x), mBallptrVector.back()));
+			mYbinds.push_back(Axis_bind(&(mBallptrVector.back()->mPosition.y), mBallptrVector.back()));
 		}
 	}
 };

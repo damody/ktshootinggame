@@ -288,6 +288,10 @@
 				Name="ball"
 				>
 				<File
+					RelativePath=".\src\ball\Axis_bind.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\ball\Ball.cpp"
 					>
 				</File>
@@ -417,6 +421,10 @@
 			<Filter
 				Name="ball"
 				>
+				<File
+					RelativePath=".\include\ball\Axis_bind.h"
+					>
+				</File>
 				<File
 					RelativePath=".\include\ball\Ball.h"
 					>
