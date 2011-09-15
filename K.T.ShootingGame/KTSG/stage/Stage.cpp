@@ -29,7 +29,7 @@ EnemyPlaneptrs Stage::GetTimeToGenerateEnmyPlane( float dt )
 	elpsedtime += dt;
 	for (;;++lastindex)
 	{
-		if (lastindex < m_EnemyShips.size())
+		if (lastindex < (int)m_EnemyShips.size())
 		{
 			if (m_EnemyShips[lastindex].time <= elpsedtime)
 				eps.push_back(m_EnemyShips[lastindex].plane);

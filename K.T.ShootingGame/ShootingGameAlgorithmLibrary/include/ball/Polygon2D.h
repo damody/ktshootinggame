@@ -18,12 +18,33 @@
 #include "algo\sgmath.h"
 #include <vector>
 
+class AABB2D
+{
+public:
+	void AddPoint(const Ogre::Vector2& p)
+	{
+		if (p.x > m_max.x)
+			m_max.x = p.x;
+		else if (p.x < m_min.x)
+			m_min.x = p.x;
+		if (p.y > m_max.y)
+			m_max.y = p.y;
+		else if (p.y < m_min.y)
+			m_min.y = p.y;
+	}
+	AABB2D(){}
+	AABB2D(const Ogre::Vector2& orgin)
+		:m_min(orgin), m_max(orgin)
+	{}
+	Ogre::Vector2 m_min, m_max;
+};
+
 typedef std::vector<Ogre::Vector2> Vector2s;
 class Polygon2D 
 {
 public:
-	Polygon2D(bool computeCentroid = true)
-		:m_computeCentroid(computeCentroid), m_angle(0){}
+	Polygon2D(bool computeCentroid = false, bool computeAABB = true)
+		:m_computeCentroid(computeCentroid), m_computeAABB(computeAABB), m_angle(0){}
 	Vector2s& Points()
 	{
 		m_needBuildEdges = true;
@@ -91,6 +112,7 @@ public:
 		m_edges.clear();
 	}
 	Ogre::Vector2 m_centroid;
+	AABB2D	m_AABB2D;
 	float	m_radius;
 private:
 	void BuildEdges();
@@ -108,7 +130,7 @@ private:
 	void ProjectPolygon(const Ogre::Vector2& axis, const Polygon2D& polygon, float* min, float* max);
 private:
 	Vector2s m_points, m_edges;
-	bool	m_computeCentroid; // true
+	bool	m_computeCentroid, m_computeAABB;
 	bool	m_needBuildEdges;
 	float	m_angle;
 };

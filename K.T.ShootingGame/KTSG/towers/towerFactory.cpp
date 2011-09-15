@@ -45,7 +45,6 @@ void towerFactory::Init()
 {
 	Tower nt;
 	TowerGrowUp ntgu;
-	char s[64];
 	m_LuaCell.InputLuaFile("tower.lua");
 	m_TowerTypeNum = m_LuaCell.getLua<int>("Towers/typenum");
 
@@ -64,7 +63,7 @@ void towerFactory::Init()
 		nt.m_rotateSpeed = (float)m_LuaCell.getLua<double>("Towers/tower%d/RotateSpeed", i);
 		nt.m_ball_texture = g_TextureManager.GetTexture(m_LuaCell.getLua<int>("Towers/tower%d/ballpic", i));
 		st = new Straight;
-		st->mVelocity = m_LuaCell.getLua<int>("Towers/tower%d/ballspeed", i);
+		st->mVelocity = (float)m_LuaCell.getLua<double>("Towers/tower%d/ballspeed", i);
 		nt.m_Behavior = st;
 		nt.m_Trajectory = new NWay(1, Ogre::Vector3(0,0,0), Ogre::Vector3(0,1,0));
 		nt.m_Trajectory->SetBehavior(nt.m_Behavior);

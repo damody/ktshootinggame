@@ -224,18 +224,18 @@ void InitDirect3DApp::buildPoint()
 	vinitData.pSysMem = &m_ShipVertex[0];
 	HR(m_d3dDevice->CreateBuffer(&m_vbd, &vinitData, &m_Buffer_WarShip));
 
-	if (!g_BallptrManager.mBallptrVector.empty())
+	if (!g_BallptrManager.Empty())
 	{
 		// save each vertex groups's texture
 		m_DrawVertexGroups.clear();
 		DrawVertexGroup dvg;
-		dvg.texture = ((Bullet*)*(g_BallptrManager.mBallptrVector.begin()))->m_texture;
+		dvg.texture = ((Bullet*)g_BallptrManager.Ballptrs().front())->m_texture;
 		dvg.StartVertexLocation = 0;
 		// save all vertex points
 		m_BVertex.clear();
-		BallptrVector& vec = g_BallptrManager.mBallptrVector;
+		const BallptrVector& vec = g_BallptrManager.Ballptrs();
 		int vertexCount = 0, count = 0;
-		for (BallptrVector::iterator it = vec.begin();
+		for (BallptrVector::const_iterator it = vec.begin();
 			it != vec.end(); ++it)
 		{
 			if (((Bullet*)(*it))->m_texture != dvg.texture)
@@ -256,14 +256,14 @@ void InitDirect3DApp::buildPoint()
 		m_DrawVertexGroups.push_back(dvg);
 
 		// save enemy ball
-		if (!g_EnemyBallptrManager.mBallptrVector.empty())
+		if (!g_EnemyBallptrManager.Empty())
 		{
-			dvg.texture = ((Bullet*)*(g_EnemyBallptrManager.mBallptrVector.begin()))->m_texture;
+			dvg.texture = ((Bullet*)g_EnemyBallptrManager.Ballptrs().front())->m_texture;
 			dvg.StartVertexLocation = count;
 			// save all vertex points
-			BallptrVector& vec = g_EnemyBallptrManager.mBallptrVector;
+			const BallptrVector& vec = g_EnemyBallptrManager.Ballptrs();
 			vertexCount = 0;
-			for (BallptrVector::iterator it = vec.begin();
+			for (BallptrVector::const_iterator it = vec.begin();
 			     it != vec.end(); ++it)
 			{
 				if (((Bullet*)(*it))->m_texture != dvg.texture)
@@ -431,7 +431,6 @@ void InitDirect3DApp::LoadTowers()
 
 	m_Lua.InputLuaFile("tower.lua");
 	float tx,ty;
-	char s[64];
 	t.m_hp = 10000;
 	t.m_type = Tower::MACHINE_GUN;
 	t.m_level = 1;
@@ -440,10 +439,8 @@ void InitDirect3DApp::LoadTowers()
 	{
 		if (i==3)
 			t.m_type = Tower::NOTHING;
-		sprintf_s(s, 64, "TowerPos/Tpos%d/px", i+1);
-		tx = m_Lua.getLua<double>(s);
-		sprintf_s(s, 64, "TowerPos/Tpos%d/py", i+1);
-		ty = m_Lua.getLua<double>(s);
+		tx = (double)m_Lua.getLua<double>("TowerPos/Tpos%d/px", i+1);
+		ty = (double)m_Lua.getLua<double>("TowerPos/Tpos%d/py", i+1);
 		t.m_position = Ogre::Vector3(tx, ty, 0);
 		ts.push_back(t);
 	}
@@ -517,20 +514,19 @@ int InitDirect3DApp::UpdateBullectMove( float dt )
 	for (BallptrVector::iterator it = bv.begin();it != bv.end();++it)
 		delete *it;
 	bv.clear();
-	std::sort(g_BallptrManager.mBallptrVector.begin(), g_BallptrManager.mBallptrVector.end(), CompareBullet);
+	g_BallptrManager.Sort(CompareBullet);
 	// update enemy ball
 	g_EnemyBallptrManager.Update(dt);
 	BallptrVector& bv2 = g_EnemyBallptrManager.mDeleteVector;
 	for (BallptrVector::iterator it = bv2.begin();it != bv2.end();++it)
 		delete *it;
 	bv2.clear();
-	std::sort(g_EnemyBallptrManager.mBallptrVector.begin(), g_EnemyBallptrManager.mBallptrVector.end(), CompareBullet);
+	g_EnemyBallptrManager.Sort(CompareBullet);
 	return 0;
 }
 
 int InitDirect3DApp::UpdateBullectCollision()
 {
-	g_EnemyBallptrManager.BuildKdtree();
 	Polygon2D poly = m_motherShip.m_Polygon2D;
 	poly.Offset(m_motherShip.m_position);
 	BallptrVector ans = g_EnemyBallptrManager.GetCollision(poly);
@@ -574,8 +570,8 @@ void InitDirect3DApp::PrintInfo()
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
-		std::wcout << L"FPS: " << fps << L" Balls: " << g_BallptrManager.mBallptrVector.size()
-			 << "\t"<< g_EnemyBallptrManager.mBallptrVector.size() << L"\n";
+		std::wcout << L"FPS: " << fps << L" Balls: " << g_BallptrManager.Ballptrs().size()
+			 << "\t"<< g_EnemyBallptrManager.Ballptrs().size() << L"\n";
 		std::wcout << m_FrameStats;
 		// Reset for next average.
 		frameCnt = 0;
@@ -956,7 +952,7 @@ void InitDirect3DApp::DealMainMenu()
 {
 	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
 
-	for (int i=0; i<cmdstate.size(); i++)
+	for (size_t i=0; i<cmdstate.size(); i++)
 	{
 		switch(cmdstate[i].id)
 		{
@@ -981,7 +977,7 @@ void InitDirect3DApp::DealOptionPage()
 	if (m_SettingKeyID>=0)
 		SetCtrlKey();		//設定控制按鍵的處理函數
 
-	for (int i=0; i<cmdstate.size(); i++)
+	for (size_t i=0; i<cmdstate.size(); i++)
 	{
 		switch(cmdstate[i].id)
 		{
@@ -1022,12 +1018,10 @@ void InitDirect3DApp::DealOptionPage()
 
 void InitDirect3DApp::DealTowerSettingPage()
 {
-	int tid, tlv, thp;
-	float tatk,tatkspeed;
+	int tid;
 	Tower::tower_type ttype;
-	char s[36];
 	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
-	for (int i=0; i<cmdstate.size(); i++)
+	for (size_t i=0; i<cmdstate.size(); i++)
 	{
 		switch(cmdstate[i].id)
 		{
@@ -1068,7 +1062,7 @@ void InitDirect3DApp::DealTowerSettingPage()
 void InitDirect3DApp::DealGamePlayPage()
 {
 	std::vector<CmdState> cmdstate = m_DXUT_UI->GetCmdState();
-	for (int i=0; i<cmdstate.size(); i++)
+	for (size_t i=0; i<cmdstate.size(); i++)
 	{
 		switch(cmdstate[i].id)
 		{
@@ -1080,7 +1074,7 @@ void InitDirect3DApp::DealGamePlayPage()
 
 	int hp;
 	char c[36];
-	for (int i=0; i<m_motherShip.m_Towers.size(); i++)
+	for (size_t i=0; i<m_motherShip.m_Towers.size(); i++)
 	{
 		hp = m_motherShip.m_Towers[i].m_hp;
 		sprintf_s(c, 36, "hp:%d", hp);
