@@ -43,6 +43,7 @@ public:
 	bool IsCollision(const Polygon2D& rhs);
 	void CheckBuildEdges();
 	void Clear();
+	float	m_angle;
 private:
 	void BuildEdges();
 	// Calculate the distance between [minA, maxA] and [minB, maxB]
@@ -59,9 +60,8 @@ private:
 	void ProjectPolygon(const Ogre::Vector2& axis, const Polygon2D& polygon, float* min, float* max);
 private:
 	Vector2s m_points, m_edges;
-	bool	m_computeCentroid, m_computeAABB;
 	bool	m_needBuildEdges;
-	float	m_angle;
+	
 };
 
 #endif  //_POLYGON_H

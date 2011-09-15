@@ -1,4 +1,5 @@
 #include "BallptrManager.h"
+#include "math/AABB2D.h"
 
 BallptrManager::BallptrManager( int _mNumThreads /*= 1 */ ) :mNumThreads(_mNumThreads), mOver(false)
 {
@@ -123,26 +124,31 @@ void BallptrManager::Update( float time )
 				bsize--;
 			}
 		}
+		// TODO: it's can faster
+		bsize = mDeleteVector.size();
+		for (int ix = 0;ix < (int)mXbinds.size();++ix)
+		{
+			for (size_t i=0;i < bsize;i++)
+			{
+				if (mXbinds[ix] == mDeleteVector[i])
+				{
+					mXbinds.erase(mXbinds.begin()+ix);
+					if (ix-1>=0) ix--;
+				}
+			}
+		}
+		for (int iy = 0;iy < (int)mYbinds.size();++iy)
+		{
+			for (size_t i=0;i < bsize;i++)
+			{
+				if (mYbinds[iy] == mDeleteVector[i])
+				{
+					mYbinds.erase(mYbinds.begin()+iy);
+					if (iy-1>=0) iy--;
+				}
+			}
+		}
 	}
-}
-
-BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
-{
-	BallptrVector res;
-	if (mBallptrVector.empty())
-		return res;
-	poly.CheckBuildEdges();
-	axis_binds::iterator x_index_max, x_index_min, y_index_max, y_index_min;
-	//x_index_max = std::upper_bound(mYbinds.begin(), mYbinds.end(), poly);
-
-	size_t bsize = mBallptrVector.size();
-	for (size_t i=0;i < bsize;i++)
-	{
-		if (mBallptrVector[i]->mCollisionMask & collisionMask)
-			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
-				res.push_back(mBallptrVector[i]);
-	}
-	return res;
 }
 
 void BallptrManager::Sort( CompareBall fun_cb )
@@ -158,4 +164,48 @@ bool BallptrManager::Empty()
 const BallptrVector& BallptrManager::Ballptrs()
 {
 	return mBallptrVector;
+}
+
+void BallptrManager::SortCollision()
+{
+	std::sort(mXbinds.begin(), mXbinds.end());
+	std::sort(mYbinds.begin(), mYbinds.end());
+}
+
+
+BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
+{
+	BallptrVector res;
+	if (mBallptrVector.empty())
+		return res;
+	poly.CheckBuildEdges();
+	AABB2D aabb(poly);
+	axis_binds::iterator x_index_max, x_index_min, y_index_max, y_index_min;
+ 	x_index_max = std::lower_bound(mXbinds.begin(), mXbinds.end(), aabb.m_max.x);
+	x_index_min = std::upper_bound(mXbinds.begin(), mXbinds.end(), aabb.m_min.x);
+// 	y_index_max = std::lower_bound(mYbinds.begin(), mYbinds.end(), aabb.m_max.y);
+// 	y_index_min = std::upper_bound(mYbinds.begin(), mYbinds.end(), aabb.m_min.y);
+	axis_binds tmpbinds;
+	tmpbinds.clear();
+	if (x_index_max != mXbinds.end())
+	{
+		std::copy(x_index_min, x_index_max, std::back_inserter(tmpbinds));
+		std::sort(tmpbinds.begin(), tmpbinds.end());
+		y_index_max = std::lower_bound(tmpbinds.begin(), tmpbinds.end(), aabb.m_max.y);
+		y_index_min = std::upper_bound(tmpbinds.begin(), tmpbinds.end(), aabb.m_min.y);
+		for (;y_index_min != y_index_max;y_index_min++)
+		{
+			if (y_index_min->ball->mCollisionMask & collisionMask)
+				if (y_index_min->ball->mPolygon2D.IsCollision(poly))
+					res.push_back(y_index_min->ball);
+		}
+	}
+// 	size_t bsize = mBallptrVector.size();
+// 	for (size_t i=0;i < bsize;i++)
+// 	{
+// 		if (mBallptrVector[i]->mCollisionMask & collisionMask)
+// 			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
+// 				res.push_back(mBallptrVector[i]);
+// 	}
+	return res;
 }

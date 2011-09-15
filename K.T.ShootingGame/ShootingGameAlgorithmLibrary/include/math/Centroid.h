@@ -9,12 +9,12 @@ public:
 	Centroid(const Polygon2D& poly)
 	{
 		m_centroid = Ogre::Vector2::ZERO;
-		int psize = poly.const_Points().size();
-		for (size_t i = 0; i < psize; i++) 
+		int psize = (int)poly.const_Points().size();
+		for (int i = 0; i < psize; i++) 
 			m_centroid += poly.const_Points()[i];
 		m_centroid /= (float)psize;
 		m_radius = 0;
-		for (size_t i = 0; i < psize; i++) 
+		for (int i = 0; i < psize; i++) 
 		{		
 			float tmp = m_centroid.dotProduct(poly.const_Points()[i]);
 			if (tmp>m_radius)
