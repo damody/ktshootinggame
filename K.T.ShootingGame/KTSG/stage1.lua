@@ -127,7 +127,7 @@ straight1=
 	velocity=200,
 	polygon=
 	{
-		{x=1,y=1},
+
 		{x=1,y=50},
 	}
 }
@@ -135,7 +135,7 @@ straight1=
 nway1=
 {
 	type="nway",
-	num=40,
+	num=60,
 	RadiationAngle=40,
 }
 
@@ -152,7 +152,7 @@ tower1=
 	picpos={w=1,h=1,x=1,y=1},
 	angle=0,
 	--
-	ballw=5,
+	ballw=15,
 	ballh=50,
 }
 
