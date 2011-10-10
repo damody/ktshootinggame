@@ -171,27 +171,48 @@ void BallptrManager::SortCollision()
 	std::sort(mXbinds.begin(), mXbinds.end(), Compare_axis_x);
 }
 
+template<class _Ty>
+struct axis_y_greater
+	: public std::binary_function<_Ty, _Ty, bool>
+{	// functor for operator>
+	bool operator()(const _Ty& _Left, const _Ty& _Right) const
+	{	// apply operator> to operands
+		return *_Left.y > *_Right.y;
+	}
+};
+
+template<class _Ty>
+struct axis_y_less
+	: public std::binary_function<_Ty, _Ty, bool>
+{	// functor for operator>
+	bool operator()(const _Ty& _Left, const _Ty& _Right) const
+	{	// apply operator> to operands
+		return *_Left.y < *_Right.y;
+	}
+};
 
 BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
 {
-	BallptrVector res;
+ 	BallptrVector res;
 	if (mBallptrVector.empty())
 		return res;
 	poly.CheckBuildEdges(); // important
 	
 	AABB2D aabb(poly);
 	aabb.Big(50);
-	Axis_binds::iterator x_index_max, x_index_min, y_index_max, y_index_min;
+	Axis_binds::iterator x_index_max, x_index_min, tmp;
  	x_index_max = std::upper_bound(mXbinds.begin(), mXbinds.end(), Axis_bind(&aabb.m_max.x), Compare_axis_x);
 	x_index_min = std::lower_bound(mXbinds.begin(), mXbinds.end(), Axis_bind(&aabb.m_min.x), Compare_axis_x);
 	if (x_index_max-x_index_min > 0)
 	{
 		mYbinds.clear();
 		std::copy(x_index_min, x_index_max, std::back_inserter(mYbinds));
-		std::sort(mYbinds.begin(), mYbinds.end(), Compare_axis_y);
-		y_index_max = std::upper_bound(mYbinds.begin(), mYbinds.end(), Axis_bind(&aabb.m_max.y), Compare_axis_y);
-		y_index_min = std::lower_bound(mYbinds.begin(), mYbinds.end(), Axis_bind(&aabb.m_min.y), Compare_axis_y);
-		for (Axis_binds::iterator it = y_index_min;it != y_index_max;it++)
+		tmp = std::partition(mYbinds.begin(), mYbinds.end(),         // range
+			std::bind2nd(axis_y_greater<Axis_bind>(), Axis_bind(&aabb.m_min.y)));   // criterion
+		tmp = std::partition(mYbinds.begin(), tmp,       // range
+			std::bind2nd(axis_y_less<Axis_bind>(), Axis_bind(&aabb.m_max.y)));
+		if (tmp - mYbinds.begin()>0)
+		for (Axis_binds::iterator it = mYbinds.begin();it != tmp;it++)
 		{
 			if (it->ball->mCollisionMask & collisionMask)
 				if (it->ball->mPolygon2D.IsCollision(poly))
@@ -206,6 +227,6 @@ BallptrVector BallptrManager::GetCollision( Polygon2D& poly, int collisionMask )
 			if (mBallptrVector[i]->mPolygon2D.IsCollision(poly))
 				res.push_back(mBallptrVector[i]);
 	}
-	return res;
 	*/
+	return res;
 }
