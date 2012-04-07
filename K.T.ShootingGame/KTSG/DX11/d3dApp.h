@@ -1,8 +1,8 @@
-#ifndef D3DAPP_H
-#define D3DAPP_H
-#include "common/SGA_config.h"
+#pragma once
+
 #include <string>
 #include <dwrite.h>
+#include "common/SGA_config.h"
 #include "Timer.h"
 #include "ui/DXUTUI.h"
 #include "DX11/GetDirectXInput.h"
@@ -54,7 +54,3 @@ protected:
 	int mClientHeight;
 };
 
-
-
-
-#endif // D3DAPP_H

@@ -1,10 +1,10 @@
 #include "stdafx.h"
+#include <cstdlib>
+#include <ctime>
 #include "InitDirect3DApp.h"
 #include "InputState.h"
 #include "WaveSound.h"
-#include "planes\EnemyPlane.h"
-#include <stdlib.h>
-#include <time.h>
+#include "planes/EnemyPlane.h"
 #include "stage/LoadStage.h"
 #include "ui/CmdDef.h"
 
