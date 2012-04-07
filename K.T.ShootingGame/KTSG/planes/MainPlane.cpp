@@ -8,18 +8,18 @@
 //  @ Author : 
 //
 //
+#include <iostream>
+#include <algo/nway.h>
+#include <ball/homing.h>
+
 
 #include "MainPlane.h"
 #include "EnemyPlane.h"
 #include "DX11/InputState.h"
-#include "algo/sgmath.h"
-#include "DX11/InitDirect3DApp.h"
-#include "global.h"
 #include "DX11/WaveSound.h"
-#include <algo/nway.h>
-#include <ball/homing.h>
-#include <iostream>
-#include <boost/bind.hpp>
+#include "DX11/InitDirect3DApp.h"
+#include "algo/sgmath.h"
+#include "global.h"
 
 Texture_Sptr texture2;
 BulletVertex ball_pic2;
