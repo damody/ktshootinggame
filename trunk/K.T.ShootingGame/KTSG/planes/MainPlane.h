@@ -12,7 +12,7 @@
 
 #if !defined(_MAINPLANE_H)
 #define _MAINPLANE_H
-
+#include <boost/bind.hpp>
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
 #include "math\OgreVector3.h"
