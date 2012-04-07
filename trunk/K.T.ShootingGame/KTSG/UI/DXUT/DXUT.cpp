@@ -4764,7 +4764,7 @@ void DXUTResizeDXGIBuffers( UINT Width, UINT Height, BOOL bFullScreen )
         Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
     // ResizeBuffers
-    V( pSwapChain->ResizeBuffers( pDevSettings->d3d11.sd.BufferCount,
+    V_DX( pSwapChain->ResizeBuffers( pDevSettings->d3d11.sd.BufferCount,
                                   Width,
                                   Height,
                                   pDevSettings->d3d11.sd.BufferDesc.Format,

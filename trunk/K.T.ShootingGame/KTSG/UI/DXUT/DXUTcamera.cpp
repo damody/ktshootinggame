@@ -1205,8 +1205,8 @@ HRESULT CDXUTDirectionWidget::StaticOnD3D9CreateDevice( IDirect3DDevice9* pd3dDe
     DWORD* rgdwAdjacency = new DWORD[s_pD3D9Mesh->GetNumFaces() * 3];
     if( rgdwAdjacency == NULL )
         return E_OUTOFMEMORY;
-    V( s_pD3D9Mesh->GenerateAdjacency( 1e-6f, rgdwAdjacency ) );
-    V( s_pD3D9Mesh->OptimizeInplace( D3DXMESHOPT_VERTEXCACHE, rgdwAdjacency, NULL, NULL, NULL ) );
+    V_DX( s_pD3D9Mesh->GenerateAdjacency( 1e-6f, rgdwAdjacency ) );
+    V_DX( s_pD3D9Mesh->OptimizeInplace( D3DXMESHOPT_VERTEXCACHE, rgdwAdjacency, NULL, NULL, NULL ) );
     delete []rgdwAdjacency;
 
     return S_OK;
@@ -1321,12 +1321,12 @@ HRESULT CDXUTDirectionWidget::OnRender9( D3DXCOLOR color, const D3DXMATRIX* pmVi
     D3DXMATRIXA16 mWorldViewProj;
     HRESULT hr;
 
-    V( s_pD3D9Effect->SetTechnique( s_hRenderWith1LightNoTexture ) );
-    V( s_pD3D9Effect->SetVector( s_hMaterialDiffuseColor, ( D3DXVECTOR4* )&color ) );
+    V_DX( s_pD3D9Effect->SetTechnique( s_hRenderWith1LightNoTexture ) );
+    V_DX( s_pD3D9Effect->SetVector( s_hMaterialDiffuseColor, ( D3DXVECTOR4* )&color ) );
 
     D3DXVECTOR3 vEyePt;
     D3DXVec3Normalize( &vEyePt, pEyePt );
-    V( s_pD3D9Effect->SetValue( s_hLightDir, &vEyePt, sizeof( D3DXVECTOR3 ) ) );
+    V_DX( s_pD3D9Effect->SetValue( s_hLightDir, &vEyePt, sizeof( D3DXVECTOR3 ) ) );
 
     // Rotate arrow model to point towards origin
     D3DXMATRIX mRotateA, mRotateB;
@@ -1344,19 +1344,19 @@ HRESULT CDXUTDirectionWidget::OnRender9( D3DXCOLOR color, const D3DXMATRIX* pmVi
     D3DXMATRIX mWorld = mRotate * mScale * mTrans;
     mWorldViewProj = mWorld * ( m_mView )*( *pmProj );
 
-    V( s_pD3D9Effect->SetMatrix( s_hWorldViewProjection, &mWorldViewProj ) );
-    V( s_pD3D9Effect->SetMatrix( s_hWorld, &mWorld ) );
+    V_DX( s_pD3D9Effect->SetMatrix( s_hWorldViewProjection, &mWorldViewProj ) );
+    V_DX( s_pD3D9Effect->SetMatrix( s_hWorld, &mWorld ) );
 
     for( int iSubset = 0; iSubset < 2; iSubset++ )
     {
-        V( s_pD3D9Effect->Begin( &cPasses, 0 ) );
+        V_DX( s_pD3D9Effect->Begin( &cPasses, 0 ) );
         for( iPass = 0; iPass < cPasses; iPass++ )
         {
-            V( s_pD3D9Effect->BeginPass( iPass ) );
-            V( s_pD3D9Mesh->DrawSubset( iSubset ) );
-            V( s_pD3D9Effect->EndPass() );
+            V_DX( s_pD3D9Effect->BeginPass( iPass ) );
+            V_DX( s_pD3D9Mesh->DrawSubset( iSubset ) );
+            V_DX( s_pD3D9Effect->EndPass() );
         }
-        V( s_pD3D9Effect->End() );
+        V_DX( s_pD3D9Effect->End() );
     }
 
     return S_OK;
