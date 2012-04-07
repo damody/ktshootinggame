@@ -2129,7 +2129,7 @@ HRESULT CDXUTXFileMesh::SetVertexDecl( LPDIRECT3DDEVICE9 pd3dDevice, const D3DVE
             rgdwAdjacency = new DWORD[m_pMesh->GetNumFaces() * 3];
             if( rgdwAdjacency == NULL )
                 return E_OUTOFMEMORY;
-            V( m_pMesh->GenerateAdjacency( 1e-6f, rgdwAdjacency ) );
+            V_DX( m_pMesh->GenerateAdjacency( 1e-6f, rgdwAdjacency ) );
 
             float fPartialEdgeThreshold;
             float fSingularPointThreshold;

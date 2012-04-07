@@ -2,19 +2,20 @@
 
 #include <vector>
 #include <map>
+//#include "SDKmisc.h"
+//#include "SDKMesh.h"
+#include <D3DX11tex.h>
+#include <D3DX11.h>
+#include <D3DX11core.h>
+#include <D3DX11async.h>
 
-#include "../Lua/LuaCell.h"
 #include "dxut/DXUT.h"
 #include "dxut/DXUTcamera.h"
 #include "dxut/DXUTgui.h"
 #include "dxut/DXUTsettingsdlg.h"
 
-//#include "SDKmisc.h"
-//#include "SDKMesh.h"
-//#include <D3DX11tex.h>
-#include <D3DX11.h>
-//#include <D3DX11core.h>
-//#include <D3DX11async.h>
+#include "Lua/LuaCell.h"
+
 
 enum CommandType
 {

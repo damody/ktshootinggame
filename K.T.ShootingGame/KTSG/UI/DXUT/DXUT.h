@@ -4,8 +4,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 #pragma once
-#ifndef DXUT_H
-#define DXUT_H
 
 #ifndef UNICODE
 #error "DXUT requires a Unicode build."
@@ -97,15 +95,15 @@
 
 
 #if defined(DEBUG) || defined(_DEBUG)
-#ifndef V
-#define V(x)           { hr = (x); if( FAILED(hr) ) { DXUTTrace( __FILE__, (DWORD)__LINE__, hr, L#x, true ); } }
+#ifndef V_DX
+#define V_DX(x)           { hr = (x); if( FAILED(hr) ) { DXUTTrace( __FILE__, (DWORD)__LINE__, hr, L#x, true ); } }
 #endif
 #ifndef V_RETURN
 #define V_RETURN(x)    { hr = (x); if( FAILED(hr) ) { return DXUTTrace( __FILE__, (DWORD)__LINE__, hr, L#x, true ); } }
 #endif
 #else
-#ifndef V
-#define V(x)           { hr = (x); }
+#ifndef V_DX
+#define V_DX(x)           { hr = (x); }
 #endif
 #ifndef V_RETURN
 #define V_RETURN(x)    { hr = (x); if( FAILED(hr) ) { return hr; } }
@@ -357,12 +355,4 @@ void DXUTResizeDXGIBuffers( UINT Width, UINT Height, BOOL bFullScreen );
 #include "DXUTmisc.h"
 #include "DXUTDevice9.h"
 #include "DXUTDevice11.h"
-
-
-
-
-#endif
-
-
-
 
