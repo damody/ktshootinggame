@@ -32,8 +32,8 @@ private:
 		float	time;
 		bool	work_done;
 	};
-	SHARE_PTR(work_info)
-		work_info* mThreadsWork[SGA_MAX_THREADS];
+	SHARE_PTR(work_info);
+	work_info* mThreadsWork[SGA_MAX_THREADS];
 	bool mOver;
 	Axis_binds mXbinds, mYbinds;
 public:
