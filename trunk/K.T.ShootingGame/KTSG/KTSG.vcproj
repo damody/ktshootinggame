@@ -396,6 +396,10 @@
 					RelativePath=".\Lua\LuaCell.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\DX11\Vertex.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="DX11"
@@ -450,7 +454,7 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
+							UsePrecompiledHeader="2"
 						/>
 					</FileConfiguration>
 				</File>
@@ -496,10 +500,6 @@
 				</File>
 				<File
 					RelativePath=".\DX11\Timer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DX11\Vertex.cpp"
 					>
 				</File>
 				<File
