@@ -13,10 +13,10 @@
 #if !defined(_BULLET_H)
 #define _BULLET_H
 #include "ball\BallptrManager.h"
+#include "ball\ball.h"
 #include "math\OgreVector3.h"
 #include "DX11\Vertex.h"
 #include "DX11\TextureManager.h"
-#include "ball\ball.h"
 #include "memory\VMemPool.h"
 
 class Bullet : public Ball , public CVMemPool<Bullet,200000>
