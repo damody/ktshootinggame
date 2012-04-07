@@ -1,19 +1,21 @@
 #pragma once
-#include "d3dApp.h"
-#include "ball/BallptrManager.h"
-#include "algo/nway.h"
-#include "algo/RandomWay.h"
-#include "ball/straight.h"
-#include "global.h"
 #include <d3dCompiler.h>
 #include <d3dx11effect.h>
+#include "d3dApp.h"
+
+#include "algo/nway.h"
+#include "algo/RandomWay.h"
+#include "ball/BallptrManager.h"
+#include "ball/straight.h"
+#include "global.h"
+
 #include "Vertex.h"
 #include "Lua/LuaCell.h"
 #include "TextureManager.h"
 #include "planes/MainPlane.h"
+#include "planes/EnemyPlane.h"
 #include "bullets/bullet.h"
 #include "towers/tower.h"
-#include "planes/EnemyPlane.h"
 #include "stage/Stage.h"
 
 class InitDirect3DApp : public D3DApp
